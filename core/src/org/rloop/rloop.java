@@ -9,13 +9,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class rloop extends Game {
 
-	public SpriteBatch batch;
-	public BitmapFont font;
-	
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
-		font = new BitmapFont();
 		this.setScreen(new MainMenuScreen(this));
 	}
 
@@ -26,7 +21,5 @@ public class rloop extends Game {
 	
 	@Override
 	public void dispose () {
-		batch.dispose();
-		font.dispose();
 	}
 }
