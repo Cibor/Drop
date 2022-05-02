@@ -9,6 +9,9 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class rloop extends Game {
 
+	float AudioVolume = 1;
+	float MusicVolume = 1;
+
 	@Override
 	public void create () {
 		this.setScreen(new MainMenuScreen(this));
