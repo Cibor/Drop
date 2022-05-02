@@ -26,55 +26,6 @@ public class Room {
     protected ArrayList<ArrayList<Tile>> tiles  = new ArrayList<>();
     protected Viewport viewport;
 
-    private void GenerateWalls(){
-
-        BodyDef groundBodyDefR = new BodyDef();
-        groundBodyDefR.position.set(new Vector2(16, 0));
-        Body groundBodyR = world.createBody(groundBodyDefR);
-        PolygonShape groundBoxR = new PolygonShape();
-        groundBoxR.setAsBox(viewport.getCamera().viewportWidth, 12.0f);
-        groundBodyR.createFixture(groundBoxR, 0.0f);
-        groundBoxR.dispose();
-
-        BodyDef groundBodyDefL = new BodyDef();
-        groundBodyDefL.position.set(new Vector2(-16, 0));
-        Body groundBodyL = world.createBody(groundBodyDefL);
-        PolygonShape groundBoxL = new PolygonShape();
-        groundBoxL.setAsBox(viewport.getCamera().viewportWidth, 12.0f);
-        groundBodyL.createFixture(groundBoxL, 0.0f);
-        groundBoxL.dispose();
-
-        BodyDef groundBodyDefU = new BodyDef();
-        groundBodyDefU.position.set(new Vector2(0, 12));
-        Body groundBodyU = world.createBody(groundBodyDefU);
-        PolygonShape groundBoxU = new PolygonShape();
-        groundBoxU.setAsBox(16.0f, viewport.getCamera().viewportHeight);
-        groundBodyU.createFixture(groundBoxU, 0.0f);
-        groundBoxU.dispose();
-
-        BodyDef groundBodyDefD = new BodyDef();
-        groundBodyDefD.position.set(new Vector2(0, -12));
-        Body groundBodyD = world.createBody(groundBodyDefD);
-        PolygonShape groundBoxD = new PolygonShape();
-        groundBoxD.setAsBox(16.0f, viewport.getCamera().viewportHeight);
-        groundBodyD.createFixture(groundBoxD, 0.0f);
-        groundBoxD.dispose();
-    }
-    public void GenerateDoors(){
-//        Random rand = new Random();
-//        if(rand.nextInt(2) == 0){
-//            doors.add(new Door(new Random().nextInt(22) - 12, -10, this));
-//        }
-//        if(rand.nextInt(2) == 0){
-//            doors.add(new Door(new Random().nextInt(22) -12, 10, this));
-//        }
-//        if(rand.nextInt(2) == 0){
-//            doors.add(new Door(-14, new Random().nextInt(32) - 16, this));
-//        }
-//        if(rand.nextInt(2) == 0) {
-//            doors.add(new Door(14, new Random().nextInt(32) - 16, this));
-//        }
-    }
     public void GenerateTiles(){
         for(int i=-HALF_ROOM_HEIGHT;i<=HALF_ROOM_HEIGHT; i +=  2) {
             ArrayList<Tile> temp = new ArrayList<>();

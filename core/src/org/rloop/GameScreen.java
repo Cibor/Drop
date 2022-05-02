@@ -102,7 +102,7 @@ public class GameScreen extends ScreenAdapter {
 
 //        Gdx.gl.glClearColor(0f, 0f, 0f, 1);
 //        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        debugRenderer.render(world, camera.combined);
+        //debugRenderer.render(world, camera.combined); еще надо будет
         world.step(1/60f, 6, 2);
     }
 
