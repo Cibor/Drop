@@ -7,126 +7,101 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.physics.box2d.joints.FrictionJointDef;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class GameScreen extends ScreenAdapter {
-    final Game game;
-    Body player;
+    final rloop game;
+    Player player;
     World world;
     float MAX_VELOCITY = 5;
     Camera camera;
     Box2DDebugRenderer debugRenderer;
-    BodyDef groundBodyDef;
-    Body groundBody;
     ExtendViewport viewport;
     Vector2 vel;
-    PolygonShape groundBox;
     Vector2 pos;
+    Room map;
+    float stateTime;
 
-    public GameScreen(Game game) {
+    public GameScreen(rloop game) {
         this.game = game;
 
-        world = new World(new Vector2(0, 0), true);
         debugRenderer = new Box2DDebugRenderer();
-        BodyDef def = new BodyDef();
-        def.type = BodyDef.BodyType.DynamicBody;
-        def.position.set(0, 0);
+        world = new World(new Vector2(0, 0), true);
+        world.setContactListener(new DoorsContactListener(game));
 
-        player = world.createBody(def);
-
-        PolygonShape circle = new PolygonShape();
-        circle.setAsBox(1, 1);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = circle;
-        fixtureDef.density = 0.5f;
-        fixtureDef.friction = 0.2f;
-        fixtureDef.restitution = 0f;
-
-//        Fixture fixture = player.createFixture(fixtureDef);
-        circle.dispose();
         camera = new OrthographicCamera();
         viewport = new ExtendViewport(32,24,camera);
-        vel = this.player.getLinearVelocity();
-        pos = this.player.getPosition();
 
-        BodyDef groundBodyDefR = new BodyDef();
-        groundBodyDefR.position.set(new Vector2(16, 0));
-        Body groundBodyR = world.createBody(groundBodyDefR);
-        PolygonShape groundBoxR = new PolygonShape();
-        groundBoxR.setAsBox(camera.viewportWidth, 12.0f);
-        groundBodyR.createFixture(groundBoxR, 0.0f);
-        groundBoxR.dispose();
+        map = new Room(world, game, viewport);
 
-        BodyDef groundBodyDefL = new BodyDef();
-        groundBodyDefL.position.set(new Vector2(-16, 0));
-        Body groundBodyL = world.createBody(groundBodyDefL);
-        PolygonShape groundBoxL = new PolygonShape();
-        groundBoxL.setAsBox(camera.viewportWidth, 12.0f);
-        groundBodyL.createFixture(groundBoxL, 0.0f);
-        groundBoxL.dispose();
+        player = new Player(0,0, map);
+        vel = this.player.getBody().getLinearVelocity();
+        pos = this.player.getBody().getPosition();
 
-        BodyDef groundBodyDefU = new BodyDef();
-        groundBodyDefU.position.set(new Vector2(0, 12));
-        Body groundBodyU = world.createBody(groundBodyDefU);
-        PolygonShape groundBoxU = new PolygonShape();
-        groundBoxU.setAsBox(16.0f, camera.viewportHeight);
-        groundBodyU.createFixture(groundBoxU, 0.0f);
-        groundBoxU.dispose();
-
-        BodyDef groundBodyDefD = new BodyDef();
-        groundBodyDefD.position.set(new Vector2(0, -12));
-        Body groundBodyD = world.createBody(groundBodyDefD);
-        PolygonShape groundBoxD = new PolygonShape();
-        groundBoxD.setAsBox(16.0f, camera.viewportHeight);
-        groundBodyD.createFixture(groundBoxD, 0.0f);
-        groundBoxD.dispose();
-//
-//        FrictionJointDef jointDef = new FrictionJointDef ();
-//        jointDef.maxForce = 150f;
-//        jointDef.maxTorque = 1f;
-//        jointDef.initialize(player, groundBodyD, new Vector2(0, 0));
-//        Joint frJ = world.createJoint(jointDef);
+        stateTime = 0;
     }
 
-
-    float velx;
-    float vely;
     @Override
     public void render(float x){
-        super.render(x);
+        stateTime +=  Gdx.graphics.getDeltaTime();
+        ScreenUtils.clear(0, 0, 0, 1);
+        this.player.setX(this.player.getBody().getPosition().x);
+        this.player.setY(this.player.getBody().getPosition().y);
+//        camera.update();
+//        viewport.apply();
+//        game.getBatch().setProjectionMatrix(camera.combined);
+//        game.getBatch().begin();
+//        game.getBatch().draw(new Texture("WallSet.png"),10, 2, 1,1);
+////		batchForPlayer.draw(player,  800 / 2 - 64 / 2,400);
+//        game.getBatch().end();
+        map.render();
+        float velx = player.getBody().getLinearVelocity().x;
+        float vely = player.getBody().getLinearVelocity().y;
+        if(velx == 0 && vely == 0){
+            stateTime = 0;
+        }
+        player.render(stateTime);
+
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-//            this.player.setLinearVelocity(new Vector2(-10,0));//applyLinearImpulse(-0.80f, 0, pos.x, pos.y, true);
+            this.player.setDirection(3);
             velx = -10f;
         } else if (velx == -10f) {
             velx = 0;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            this.player.setDirection(2);
             velx = 10f;
         } else if (velx == 10f) {
             velx = 0;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.W) && vel.y > -MAX_VELOCITY) {
+            this.player.setDirection(0);
             vely = 10f;
         } else if (vely == 10f) {
             vely = 0;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S) && vel.y < MAX_VELOCITY) {
+            this.player.setDirection(1);
             vely = -10f;
         } else if (vely == -10f) {
             vely = 0;
         }
+        if(velx != player.getBody().getLinearVelocity().x && vely != player.getBody().getLinearVelocity().y){
+            stateTime = 0;
+        }
+        this.player.getBody().setLinearVelocity(velx, vely);
 
-        this.player.setLinearVelocity(velx, vely);
-
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//        Gdx.gl.glClearColor(0f, 0f, 0f, 1);
+//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         debugRenderer.render(world, camera.combined);
         world.step(1/60f, 6, 2);
     }
