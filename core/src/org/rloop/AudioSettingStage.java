@@ -13,7 +13,7 @@ public class AudioSettingStage extends Stage {
 
     MainMenuScreen mainMenu;
 
-    AudioSettingStage(MainMenuScreen mainMenuSuper, Skin skin, TextureRegionDrawable backScreen) {
+    AudioSettingStage(MainMenuScreen mainMenuSuper, final Skin skin, final TextureRegionDrawable backScreen) {
 
         mainMenu = mainMenuSuper;
 
@@ -96,7 +96,8 @@ public class AudioSettingStage extends Stage {
         backButAudio.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                mainMenu.globalStage = mainMenu.settingsStage.currentStage;
+                mainMenu.globalStage.dispose();
+                mainMenu.globalStage = new SettingStage(mainMenu, skin, backScreen).currentStage;
                 Gdx.input.setInputProcessor(mainMenu.globalStage);
             }
         });
