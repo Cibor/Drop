@@ -34,7 +34,7 @@ public class AudioSettingStage extends Stage {
         currentStage.addActor(window);
 
         Slider MusicSli = new Slider(0, 100, 1, false, skin);
-        MusicSli.setValue(100);
+        MusicSli.setValue(mainMenu.game.MusicVolume * 100);
         MusicSli.setWidth(Util.monitorResolutionX(600));
         MusicSli.setPosition(Gdx.graphics.getWidth()/2 - MusicSli.getWidth()/2 - Util.monitorResolutionX(50), Gdx.graphics.getHeight()/2);
 
@@ -67,7 +67,7 @@ public class AudioSettingStage extends Stage {
 
 
         Slider VolumeSli = new Slider(0, 100, 1, false, skin);
-        VolumeSli.setValue(100);
+        VolumeSli.setValue(mainMenu.game.MusicVolume * 100);
         VolumeSli.setWidth(Util.monitorResolutionX(600));
         VolumeSli.setPosition(Gdx.graphics.getWidth()/2 - VolumeSli.getWidth()/2 - Util.monitorResolutionX(50), VolumeLab.getY() - 100);
 
