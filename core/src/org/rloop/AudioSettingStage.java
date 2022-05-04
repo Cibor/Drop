@@ -38,7 +38,7 @@ public class AudioSettingStage extends Stage {
         MusicSli.setWidth(Util.monitorResolutionX(600));
         MusicSli.setPosition(Gdx.graphics.getWidth()/2 - MusicSli.getWidth()/2 - Util.monitorResolutionX(50), Gdx.graphics.getHeight()/2);
 
-        Label MusicCount = new Label("100", skin, "subtitle");
+        Label MusicCount = new Label(((Float)(mainMenu.game.getOurMusic().getMusicVolume() * 100)).toString(), skin, "subtitle");
         MusicCount.setPosition(MusicSli.getX() + MusicSli.getWidth() + Util.monitorResolutionX(40), MusicSli.getY());
 
         MusicSli.addListener(new ChangeListener() {
@@ -67,11 +67,11 @@ public class AudioSettingStage extends Stage {
 
 
         Slider VolumeSli = new Slider(0, 100, 1, false, skin);
-        VolumeSli.setValue(mainMenu.game.getOurMusic().getMusicVolume() * 100);
+        VolumeSli.setValue(mainMenu.game.getOurMusic().getSoundVolume() * 100);
         VolumeSli.setWidth(Util.monitorResolutionX(600));
         VolumeSli.setPosition(Gdx.graphics.getWidth()/2 - VolumeSli.getWidth()/2 - Util.monitorResolutionX(50), VolumeLab.getY() - 100);
 
-        Label VolumeCount = new Label("100", skin, "subtitle");
+        Label VolumeCount = new Label(((Float)(mainMenu.game.getOurMusic().getSoundVolume() * 100)).toString(), skin, "subtitle");
         VolumeCount.setPosition(VolumeSli.getX() + VolumeSli.getWidth() + Util.monitorResolutionX(40), VolumeSli.getY());
 
         VolumeSli.addListener(new ChangeListener() {

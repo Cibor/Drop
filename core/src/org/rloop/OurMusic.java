@@ -14,11 +14,13 @@ public class OurMusic {
     }
 
     public void setMusicVolume(float volume) {
+        MusicVolume = volume;
 
+        //bgAmbient.setVolume(MusicVolume);
     }
 
     public void setSoundVolume(float volume) {
-
+        SoundVolume = volume;
     }
 
     public float getMusicVolume() {
