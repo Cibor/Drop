@@ -17,7 +17,7 @@ public class SettingStage extends Stage {
     Table tableSettings;
 
     MainMenuScreen mainMenu;
-    SettingStage(MainMenuScreen mainMenuSuper, Skin skin, TextureRegionDrawable backScreen) {
+    SettingStage(MainMenuScreen mainMenuSuper, final Skin skin, final TextureRegionDrawable backScreen) {
         mainMenu =  mainMenuSuper;
 
         tableSettings = new Table(skin);
@@ -31,7 +31,8 @@ public class SettingStage extends Stage {
         BackBut.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                mainMenu.globalStage = mainMenu.startStage.currentStage;
+                mainMenu.globalStage.dispose();
+                mainMenu.globalStage = new StartStage(mainMenu, skin, backScreen).currentStage;
                 Gdx.input.setInputProcessor(mainMenu.globalStage);
             }
         });
@@ -57,7 +58,8 @@ public class SettingStage extends Stage {
         AudioBut.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                mainMenu.globalStage = mainMenu.audioStage.currentStage;
+                mainMenu.globalStage.dispose();
+                mainMenu.globalStage = new AudioSettingStage(mainMenu, skin, backScreen).currentStage;
                 Gdx.input.setInputProcessor(mainMenu.globalStage);
             }
         });

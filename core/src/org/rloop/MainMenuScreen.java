@@ -39,6 +39,7 @@ public class MainMenuScreen extends ScreenAdapter {
         startStage = new StartStage(this, skin, backScreen);
         settingsStage = new SettingStage(this, skin, backScreen);
         audioStage = new AudioSettingStage(this, skin, backScreen);
+
         globalStage = startStage.currentStage;
 
 

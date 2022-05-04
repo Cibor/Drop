@@ -38,7 +38,7 @@ public class Player {
         body = room.getWorld().createBody(def);
 
         PolygonShape square = new PolygonShape();
-        square.setAsBox(1, 1);
+        square.setAsBox(0.65f, 0.85f);
         FixtureDef fixtureDef = new FixtureDef();
 
         fixtureDef.shape = square ;
@@ -51,14 +51,13 @@ public class Player {
         square.dispose();
     }
     public void render(float stateTime){
-        TextureRegion currentFrame = walkAnimation.get(direction).getKeyFrame(stateTime, true);
-        this.room.getCamera().update();
-        this.room.getViewport().apply();
-        this.room.getGame().getBatch().setProjectionMatrix(room.getCamera().combined);
-        this.room.getGame().getBatch().begin();
-        room.getGame().getBatch().draw(currentFrame, x-1, y-1,2,2);
-        this.room.getGame().getBatch().end();
-
+            TextureRegion currentFrame = walkAnimation.get(direction).getKeyFrame(stateTime, true);
+            this.room.getCamera().update();
+            this.room.getViewport().apply();
+            this.room.getGame().getBatch().setProjectionMatrix(room.getCamera().combined);
+            this.room.getGame().getBatch().begin();
+            room.getGame().getBatch().draw(currentFrame, x - 1, y - 1, 2, 2);
+            this.room.getGame().getBatch().end();
     }
 
     public void setX(float x){

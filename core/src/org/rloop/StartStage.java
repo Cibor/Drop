@@ -19,7 +19,7 @@ public class StartStage extends Stage {
     Table tableStart;
 
     MainMenuScreen mainMenu;
-    StartStage(MainMenuScreen mainMenuSuper, Skin skin, TextureRegionDrawable backScreen){
+    StartStage(MainMenuScreen mainMenuSuper, final Skin skin, final TextureRegionDrawable backScreen){
         mainMenu = mainMenuSuper;
 
         currentStage = new Stage(mainMenu.viewport);
@@ -31,7 +31,8 @@ public class StartStage extends Stage {
         SettingsBut.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                mainMenu.globalStage = mainMenu.settingsStage.currentStage;
+                mainMenu.globalStage.dispose();
+                mainMenu.globalStage = new SettingStage(mainMenu, skin, backScreen).currentStage;
                 Gdx.input.setInputProcessor(mainMenu.globalStage);
             }
         });
@@ -39,6 +40,7 @@ public class StartStage extends Stage {
         StartGameBut.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                mainMenu.dispose();
                 mainMenu.game.setScreen(new GameScreen(mainMenu.game));
             }
         });

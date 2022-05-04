@@ -13,7 +13,7 @@ public class AudioSettingStage extends Stage {
 
     MainMenuScreen mainMenu;
 
-    AudioSettingStage(MainMenuScreen mainMenuSuper, Skin skin, TextureRegionDrawable backScreen) {
+    AudioSettingStage(MainMenuScreen mainMenuSuper, final Skin skin, final TextureRegionDrawable backScreen) {
 
         mainMenu = mainMenuSuper;
 
@@ -34,11 +34,11 @@ public class AudioSettingStage extends Stage {
         currentStage.addActor(window);
 
         Slider MusicSli = new Slider(0, 100, 1, false, skin);
-        MusicSli.setValue(100);
+        MusicSli.setValue(mainMenu.game.getOurMusic().getMusicVolume() * 100);
         MusicSli.setWidth(Util.monitorResolutionX(600));
         MusicSli.setPosition(Gdx.graphics.getWidth()/2 - MusicSli.getWidth()/2 - Util.monitorResolutionX(50), Gdx.graphics.getHeight()/2);
 
-        Label MusicCount = new Label("100", skin, "subtitle");
+        Label MusicCount = new Label(((Float)(mainMenu.game.getOurMusic().getMusicVolume() * 100)).toString(), skin, "subtitle");
         MusicCount.setPosition(MusicSli.getX() + MusicSli.getWidth() + Util.monitorResolutionX(40), MusicSli.getY());
 
         MusicSli.addListener(new ChangeListener() {
@@ -48,30 +48,30 @@ public class AudioSettingStage extends Stage {
                 for(Actor curActor: currentStage.getActors()){
                     if(curActor.getX() == cur.getX() + cur.getWidth() + Util.monitorResolutionX(40) && curActor.getY() == cur.getY()){
                         Label curLab = (Label) curActor;
-                        Float curval = cur.getValue();
-                        curLab.setText(curval.toString());
+                        float curval = cur.getValue();
+                        curLab.setText(Float.toString(curval));
                     }
                 }
-                mainMenu.game.MusicVolume = ((Slider) actor).getValue()/100;
+                mainMenu.game.getOurMusic().setMusicVolume(((Slider) actor).getValue()/100);
             }
         });
 
         Label MusiLab = new Label("Music", skin, "subtitle");
         Label VolumeLab = new Label("Volume", skin, "subtitle");
-        Label AudioLab = new Label("Audio", skin, "title");
+        Label SoundLab = new Label("Sound", skin, "title");
         MusiLab.setPosition(Gdx.graphics.getWidth()/2 - MusiLab.getWidth()/2, MusicSli.getY() + Util.monitorResolutionY(100));
 
-        AudioLab.setPosition(Gdx.graphics.getWidth()/2 - AudioLab.getWidth()/2, MusiLab.getY() + Util.monitorResolutionY(200));
+        SoundLab.setPosition(Gdx.graphics.getWidth()/2 - SoundLab.getWidth()/2, MusiLab.getY() + Util.monitorResolutionY(200));
 
         VolumeLab.setPosition(Gdx.graphics.getWidth()/2 - VolumeLab.getWidth()/2, MusicSli.getY() - Util.monitorResolutionY(100));
 
 
         Slider VolumeSli = new Slider(0, 100, 1, false, skin);
-        VolumeSli.setValue(100);
+        VolumeSli.setValue(mainMenu.game.getOurMusic().getSoundVolume() * 100);
         VolumeSli.setWidth(Util.monitorResolutionX(600));
         VolumeSli.setPosition(Gdx.graphics.getWidth()/2 - VolumeSli.getWidth()/2 - Util.monitorResolutionX(50), VolumeLab.getY() - 100);
 
-        Label VolumeCount = new Label("100", skin, "subtitle");
+        Label VolumeCount = new Label(((Float)(mainMenu.game.getOurMusic().getSoundVolume() * 100)).toString(), skin, "subtitle");
         VolumeCount.setPosition(VolumeSli.getX() + VolumeSli.getWidth() + Util.monitorResolutionX(40), VolumeSli.getY());
 
         VolumeSli.addListener(new ChangeListener() {
@@ -81,32 +81,33 @@ public class AudioSettingStage extends Stage {
                 for(Actor curActor: currentStage.getActors()){
                     if(curActor.getX() == cur.getX() + cur.getWidth() + Util.monitorResolutionX(40) && curActor.getY() == cur.getY()){
                         Label curLab = (Label) curActor;
-                        Float curval = cur.getValue();
-                        curLab.setText(curval.toString());
+                        float curval = cur.getValue();
+                        curLab.setText(Float.toString(curval));
                     }
                 }
-                mainMenu.game.AudioVolume = ((Slider) actor).getValue()/100;
+                mainMenu.game.getOurMusic().setSoundVolume(((Slider) actor).getValue()/100);
             }
         });
 
 
-        TextButton backButAudio = new TextButton("Back", skin);
-        backButAudio.setPosition(Gdx.graphics.getWidth()/2 - backButAudio.getWidth()/2, Util.monitorResolutionY(100));
+        TextButton backButSound = new TextButton("Back", skin);
+        backButSound.setPosition(Gdx.graphics.getWidth()/2 - backButSound.getWidth()/2, Util.monitorResolutionY(100));
 
-        backButAudio.addListener(new ChangeListener() {
+        backButSound.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                mainMenu.globalStage = mainMenu.settingsStage.currentStage;
+                mainMenu.globalStage.dispose();
+                mainMenu.globalStage = new SettingStage(mainMenu, skin, backScreen).currentStage;
                 Gdx.input.setInputProcessor(mainMenu.globalStage);
             }
         });
 
-        currentStage.addActor(backButAudio);
+        currentStage.addActor(backButSound);
         currentStage.addActor(VolumeCount);
         currentStage.addActor(VolumeSli);
         currentStage.addActor(VolumeLab);
         currentStage.addActor(MusicSli);
-        currentStage.addActor(AudioLab);
+        currentStage.addActor(SoundLab);
         currentStage.addActor(MusicCount);
         currentStage.addActor(MusiLab);
     }
