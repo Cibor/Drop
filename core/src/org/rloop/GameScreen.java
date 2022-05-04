@@ -105,13 +105,7 @@ public class GameScreen extends ScreenAdapter {
         ScreenUtils.clear(0, 0, 0, 1);
         this.player.setX(this.player.getBody().getPosition().x);
         this.player.setY(this.player.getBody().getPosition().y);
-//        camera.update();
-//        viewport.apply();
-//        game.getBatch().setProjectionMatrix(camera.combined);
-//        game.getBatch().begin();
-//        game.getBatch().draw(new Texture("WallSet.png"),10, 2, 1,1);
-////		batchForPlayer.draw(player,  800 / 2 - 64 / 2,400);
-//        game.getBatch().end();
+
         map.render();
         float velx = player.getBody().getLinearVelocity().x;
         float vely = player.getBody().getLinearVelocity().y;
@@ -157,8 +151,6 @@ public class GameScreen extends ScreenAdapter {
             this.paused = true;
         }
 
-//        Gdx.gl.glClearColor(0f, 0f, 0f, 1);
-//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         //debugRenderer.render(world, camera.combined); еще надо будет
         world.step(1 / 60f, 6, 2);
     }
