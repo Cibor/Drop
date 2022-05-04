@@ -38,7 +38,7 @@ public class Player {
         body = room.getWorld().createBody(def);
 
         PolygonShape square = new PolygonShape();
-        square.setAsBox(1, 1);
+        square.setAsBox(0.65f, 0.85f);
         FixtureDef fixtureDef = new FixtureDef();
 
         fixtureDef.shape = square ;
