@@ -6,12 +6,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class rloop extends Game {
 	SpriteBatch batch;
 
-	float AudioVolume = 1;
-	float MusicVolume = 1;
+	OurMusic ourMusic;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		ourMusic = new OurMusic();
 		this.setScreen(new MainMenuScreen(this));
 	}
 
@@ -23,8 +23,10 @@ public class rloop extends Game {
 	public SpriteBatch getBatch() {
 		return batch;
 	}
+	public OurMusic getOurMusic() { return ourMusic; }
 
 	@Override
 	public void dispose () {
+		batch.dispose();
 	}
 }

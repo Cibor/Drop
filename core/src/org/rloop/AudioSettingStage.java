@@ -34,7 +34,7 @@ public class AudioSettingStage extends Stage {
         currentStage.addActor(window);
 
         Slider MusicSli = new Slider(0, 100, 1, false, skin);
-        MusicSli.setValue(mainMenu.game.MusicVolume * 100);
+        MusicSli.setValue(mainMenu.game.getOurMusic().getMusicVolume() * 100);
         MusicSli.setWidth(Util.monitorResolutionX(600));
         MusicSli.setPosition(Gdx.graphics.getWidth()/2 - MusicSli.getWidth()/2 - Util.monitorResolutionX(50), Gdx.graphics.getHeight()/2);
 
@@ -48,26 +48,26 @@ public class AudioSettingStage extends Stage {
                 for(Actor curActor: currentStage.getActors()){
                     if(curActor.getX() == cur.getX() + cur.getWidth() + Util.monitorResolutionX(40) && curActor.getY() == cur.getY()){
                         Label curLab = (Label) curActor;
-                        Float curval = cur.getValue();
-                        curLab.setText(curval.toString());
+                        float curval = cur.getValue();
+                        curLab.setText(Float.toString(curval));
                     }
                 }
-                mainMenu.game.MusicVolume = ((Slider) actor).getValue()/100;
+                mainMenu.game.getOurMusic().setMusicVolume(((Slider) actor).getValue()/100);
             }
         });
 
         Label MusiLab = new Label("Music", skin, "subtitle");
         Label VolumeLab = new Label("Volume", skin, "subtitle");
-        Label AudioLab = new Label("Audio", skin, "title");
+        Label SoundLab = new Label("Sound", skin, "title");
         MusiLab.setPosition(Gdx.graphics.getWidth()/2 - MusiLab.getWidth()/2, MusicSli.getY() + Util.monitorResolutionY(100));
 
-        AudioLab.setPosition(Gdx.graphics.getWidth()/2 - AudioLab.getWidth()/2, MusiLab.getY() + Util.monitorResolutionY(200));
+        SoundLab.setPosition(Gdx.graphics.getWidth()/2 - SoundLab.getWidth()/2, MusiLab.getY() + Util.monitorResolutionY(200));
 
         VolumeLab.setPosition(Gdx.graphics.getWidth()/2 - VolumeLab.getWidth()/2, MusicSli.getY() - Util.monitorResolutionY(100));
 
 
         Slider VolumeSli = new Slider(0, 100, 1, false, skin);
-        VolumeSli.setValue(mainMenu.game.MusicVolume * 100);
+        VolumeSli.setValue(mainMenu.game.getOurMusic().getMusicVolume() * 100);
         VolumeSli.setWidth(Util.monitorResolutionX(600));
         VolumeSli.setPosition(Gdx.graphics.getWidth()/2 - VolumeSli.getWidth()/2 - Util.monitorResolutionX(50), VolumeLab.getY() - 100);
 
@@ -81,19 +81,19 @@ public class AudioSettingStage extends Stage {
                 for(Actor curActor: currentStage.getActors()){
                     if(curActor.getX() == cur.getX() + cur.getWidth() + Util.monitorResolutionX(40) && curActor.getY() == cur.getY()){
                         Label curLab = (Label) curActor;
-                        Float curval = cur.getValue();
-                        curLab.setText(curval.toString());
+                        float curval = cur.getValue();
+                        curLab.setText(Float.toString(curval));
                     }
                 }
-                mainMenu.game.AudioVolume = ((Slider) actor).getValue()/100;
+                mainMenu.game.getOurMusic().setSoundVolume(((Slider) actor).getValue()/100);
             }
         });
 
 
-        TextButton backButAudio = new TextButton("Back", skin);
-        backButAudio.setPosition(Gdx.graphics.getWidth()/2 - backButAudio.getWidth()/2, Util.monitorResolutionY(100));
+        TextButton backButSound = new TextButton("Back", skin);
+        backButSound.setPosition(Gdx.graphics.getWidth()/2 - backButSound.getWidth()/2, Util.monitorResolutionY(100));
 
-        backButAudio.addListener(new ChangeListener() {
+        backButSound.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenu.globalStage.dispose();
@@ -102,12 +102,12 @@ public class AudioSettingStage extends Stage {
             }
         });
 
-        currentStage.addActor(backButAudio);
+        currentStage.addActor(backButSound);
         currentStage.addActor(VolumeCount);
         currentStage.addActor(VolumeSli);
         currentStage.addActor(VolumeLab);
         currentStage.addActor(MusicSli);
-        currentStage.addActor(AudioLab);
+        currentStage.addActor(SoundLab);
         currentStage.addActor(MusicCount);
         currentStage.addActor(MusiLab);
     }
