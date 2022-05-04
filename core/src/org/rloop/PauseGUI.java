@@ -12,10 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class pauseGUI extends Stage {
+public class PauseGUI extends Stage {
     Stage currentStage;
 
-    pauseGUI(final GameScreen gameScreenSuper, Skin skin) {
+    PauseGUI(final GameScreen gameScreenSuper, Skin skin) {
         currentStage = new Stage(new ScreenViewport());
 
         Window pauseBlock = new Window("", skin);
