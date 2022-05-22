@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -45,7 +46,7 @@ public class GameScreen extends ScreenAdapter {
         viewport = new ExtendViewport(32,24,camera);
 
         MapBuilder mapBuilder = new MapBuilder(world);
-        mapBuilder.generateRoom();
+        currentRoom = new Room(world, game, viewport, mapBuilder.generateRoom());
         //generating map:
 //        currentRoom = new Room(world, game, viewport);
 
@@ -69,8 +70,8 @@ public class GameScreen extends ScreenAdapter {
 //        }
 
         //adding player
-//        player = new Player(0,0, currentRoom);
-//        pos = this.player.getBody().getPosition();
+        player = new Player(currentRoom.getPlayerPosition().x,currentRoom.getPlayerPosition().y, currentRoom);
+        pos = this.player.getBody().getPosition();
 
         //adding monsters
 //        monsters = new ArrayList<>();
@@ -93,9 +94,9 @@ public class GameScreen extends ScreenAdapter {
     }
 
     void renderPaused(){
-//        currentRoom.render();
+        currentRoom.render();
 
-//        this.player.renderPaused();
+        this.player.renderPaused();
 //        for(Monster monster: monsters){
 //            monster.renderPaused();
 //        }
@@ -121,11 +122,14 @@ public class GameScreen extends ScreenAdapter {
     void renderUnpaused(){
         ScreenUtils.clear(0, 0, 0, 1);
 
-//        currentRoom.render();
-//        player.render();
+        currentRoom.render();
+        player.render();
 //        for(Monster monster: monsters){
 //            monster.render();
 //        }
+
+        camera.position.x = player.x;
+        camera.position.y = player.y;
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             this.paused = true;

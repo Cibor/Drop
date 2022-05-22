@@ -1,6 +1,7 @@
 package org.rloop;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -17,162 +18,97 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import static com.badlogic.gdx.math.Intersector.overlaps;
 import static java.lang.Math.max;
 
 
 public class MapBuilder {
-    int width;
-    int height;
-    ArrayList<Integer> roomWidth, roomHeight;
-    ArrayList<Fixture> rooms;
+    ArrayList<Rectangle> rooms;
     int n;
     World world;
 
-    public static int rnd(int min, int max)
-    {
+    public static int rnd(int min, int max) {
         max -= min;
         return (int) (Math.random() * ++max) + min;
     }
 
-    public MapBuilder(World world){
+    public MapBuilder(World world) {
         this.world = world;
-        this.width = Room.HALF_ROOM_HEIGHT;
-        this.height = Room.HALF_ROOM_WIDTH;
     }
 
-    public static boolean IsOverlapping(Fixture fA, Fixture fB) {
-        ArrayList<Vector2> outputVertices = new ArrayList<>();
-        PolygonShape polyA = (PolygonShape) fA.getShape();
-        PolygonShape polyB = (PolygonShape) fB.getShape();
-
-        for (int i = 0; i < polyA.getVertexCount(); i++) {
-            Vector2 vertex = new Vector2();
-            polyA.getVertex(i, vertex);
-            vertex = fA.getBody().getWorldPoint(vertex);
-            outputVertices.add(new Vector2(vertex));
-        }
-
-        // fill clip polygon from fixtureB polygon
-        ArrayList<Vector2> clipPolygon = new ArrayList<>();
-        for (int i = 0; i < polyB.getVertexCount(); i++) {
-            Vector2 vertex = new Vector2();
-            polyB.getVertex(i, vertex);
-            vertex = fB.getBody().getWorldPoint(vertex);
-            clipPolygon.add(new Vector2(vertex));
-        }
-
-        Vector2 cp1 = clipPolygon.get(clipPolygon.size() - 1);
-        for (int j = 0; j < clipPolygon.size(); j++) {
-            Vector2 cp2 = clipPolygon.get(j);
-            if (outputVertices.isEmpty())
-                return false;
-            ArrayList<Vector2> inputList = new ArrayList<Vector2>(outputVertices);
-            outputVertices.clear();
-            Vector2 s = inputList.get(inputList.size() - 1);
-            for (int i = 0; i < inputList.size(); i++) {
-                Vector2 e = inputList.get(i);
-                if (inside(cp1, cp2, e)) {
-                    if (!inside(cp1, cp2, s)) {
-                        outputVertices.add(intersection(cp1, cp2, s, e));
-                    }
-                    outputVertices.add(e);
-                } else if (inside(cp1, cp2, s)) {
-                    outputVertices.add(intersection(cp1, cp2, s, e));
-                }
-                s = e;
-            }
-            cp1 = cp2;
-        }
-
-        return !outputVertices.isEmpty();
-    }
-
-    public static Vector2 intersection(Vector2 cp1, Vector2 cp2, Vector2 s, Vector2 e) {
-        Vector2 dc = new Vector2(cp1.x - cp2.x, cp1.y - cp2.y);
-        Vector2 dp = new Vector2(s.x - e.x, s.y - e.y);
-        float n1 = cp1.x * cp2.y - cp1.y * cp2.x;
-        float n2 = s.x * e.y - s.y * e.x;
-        float n3 = (dc.x * dp.y - dc.y * dp.x);
-        if(n3 != 0){
-            n3 = 1.0f / n3;
-            return new Vector2((n1 * dp.x - n2 * dc.x) * n3, (n1 * dp.y - n2 * dc.y) * n3);
-        }
-
-        return null;
-    }
-
-    public static boolean inside(Vector2 cp1, Vector2 cp2, Vector2 p) {
-        return (cp2.x - cp1.x) * (p.y - cp1.y) > (cp2.y - cp1.y) * (p.x - cp1.x);
-    }
-
-    public boolean IsAnyRoomOverlapped(){
-        for(Fixture f1: rooms){
-            for(Fixture f2: rooms){
-                if(f1 != f2 && IsOverlapping(f1,f2)){
+    public boolean IsAnyRoomOverlapped() {
+        for (Rectangle r1 : rooms) {
+            for (Rectangle r2 : rooms) {
+                if (r1 != r2 && overlaps(r1, r2)) {
                     return true;
                 }
             }
         }
+
         return false;
     }
 
-    private void SeparateRooms()
-    {
+    private void SeparateRooms() {
         do {
-            for (int current = 0; current < n; current++)
-            {
-                for (int other = 0; other < n; other++)
-                {
-                    if (current == other || !IsOverlapping(rooms.get(current), rooms.get(other))){
+            for (int current = 0; current < n; current++) {
+                for (int other = current + 1; other < n; other++) {
+                    if (!overlaps(rooms.get(current), rooms.get(other))) {
                         continue;
                     }
-                    float x1 = rooms.get(other).getBody().getPosition().x;
-                    float y1 = rooms.get(other).getBody().getPosition().y;
-                    float x2 = rooms.get(current).getBody().getPosition().x;
-                    float y2 = rooms.get(current).getBody().getPosition().y;
+                    Vector2 vec1 = new Vector2();
+                    rooms.get(other).getCenter(vec1);
+                    float x1 = vec1.x;
+                    float y1 = vec1.y;
 
-                    if(x1 - x2 >= 0){
-                        rooms.get(other).getBody().getPosition().x += 2;
-                        rooms.get(current).getBody().getPosition().x -= 2;
+                    Vector2 vec2 = new Vector2();
+                    rooms.get(current).getCenter(vec2);
+                    float x2 = vec2.x;
+                    float y2 = vec2.y;
 
-                        if(y1 - y2 >= 0){
-                            rooms.get(other).getBody().getPosition().y += 2;
-                            rooms.get(current).getBody().getPosition().y -= 2;
-                        }else{
-                            rooms.get(other).getBody().getPosition().y -= 2;
-                            rooms.get(current).getBody().getPosition().y -= 2;
-                        }
-                    }else{
-                        rooms.get(other).getBody().getPosition().x -= 2;
-                        rooms.get(current).getBody().getPosition().x += 2;
-                        if(y1 - y2 >= 0){
-                            rooms.get(other).getBody().getPosition().y += 2;
-                            rooms.get(current).getBody().getPosition().y -= 2;
-                        }else{
-                            rooms.get(other).getBody().getPosition().y += 2;
-                            rooms.get(current).getBody().getPosition().y -= 2;
-                        }
+                    if (x1 - x2 >= 0) {
+                        x1 += 2;
+                        x2 -= 2;
+                    } else {
+                        x1 -= 2;
+                        x2 += 2;
                     }
+
+                    if (y1 - y2 >= 0) {
+                        y1 += 2;
+                        y2 -= 2;
+                    } else {
+                        y1 -= 2;
+                        y2 += 2;
+                    }
+
+                    rooms.get(other).setCenter(x1, y1);
+                    rooms.get(current).setCenter(x2, y2);
                 }
             }
         } while (IsAnyRoomOverlapped());
     }
 
-    public void generateRoom(){
-        n = rnd(1, 5);
+    public ArrayList<Rectangle> generateRoom() {
+        n = rnd(4,6);
         rooms = new ArrayList<>();
-        for(int i = 0; i < n; i++){
-            BodyDef barrierDef = new BodyDef();
-            barrierDef.position.set(new Vector2(0,0));
-            Body room = world.createBody(barrierDef);
-
-            PolygonShape barrierBox = new PolygonShape();
-            barrierBox.setAsBox(rnd(15, 25), rnd(15, 25));
-            Fixture fixture = room.createFixture(barrierBox, 0.0f);
-            barrierBox.dispose();
-            rooms.add(fixture);
+        for (int i = 0; i < n; i++) {
+            Rectangle rec = new Rectangle(0, 0, 2*rnd(4,7), 2*rnd(4, 7)); // Parity is important!!
+            rooms.add(rec);
         }
         SeparateRooms();
+//        for (Rectangle r1 : rooms) {
+//            for (Rectangle r2 : rooms) {
+//                System.out.print(r1);
+//                System.out.print(" ");
+//                System.out.print(r2);
+//                System.out.println(overlaps(r1, r2));
+//            }
+//        }
+        for(Rectangle r: rooms){
+            r.width+=6;
+            r.height+=6;
+        }
+        return rooms;
     }
 
 //    public ArrayList<ArrayList<Tile>> generateRoomTiles(Room room){
@@ -263,7 +199,7 @@ public class MapBuilder {
 //    }
 
 
-    public void generateMap(){
+//    public void generateMap() {
 //        ArrayList<ArrayList<Integer>> graph = generateGraph();
 //        int n = graph.size();
 //        ArrayList<Room> rooms = new ArrayList<>();
@@ -271,6 +207,6 @@ public class MapBuilder {
 //            rooms.add(new Room(world, game, viewport));
 //        }
 
-    }
+//    }
 
 }

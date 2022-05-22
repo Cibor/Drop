@@ -48,6 +48,12 @@ public abstract class Tile {
         room.getGame().getBatch().draw(texture, x-1, y-1, 2*WIDTH, 2*HEIGHT);
     }
 
+    public float getX(){
+        return x;
+    }
+    public float getY(){
+        return y;
+    }
     public Texture getTexture() {
         return texture;
     }
