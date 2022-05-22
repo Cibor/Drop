@@ -2,6 +2,7 @@ package org.rloop;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -13,6 +14,7 @@ import org.rloop.Tiles.Tile;
 import org.rloop.Tiles.Wall;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static java.lang.Math.abs;
 
@@ -20,23 +22,82 @@ public class Room {
     protected World world;
     protected rloop game;
 
-    protected static int HALF_ROOM_HEIGHT = 15;
-    protected static int HALF_ROOM_WIDTH = 11;
-    protected ArrayList<ArrayList<Tile>> tiles  = new ArrayList<>();
+    protected int HALF_ROOM_HEIGHT = 15;
+    protected int HALF_ROOM_WIDTH = 11;
+    protected ArrayList<Tile> wallTiles;
+    protected ArrayList<Tile> floorTiles;
     protected Viewport viewport;
+    protected Vector2 pos;
+    protected ArrayList<Rectangle> template;
 
+    public static boolean PointIsInRectangle(float x, float y, Rectangle r){
+        if(x >= r.x && y >= r.y && x <= r.x + r.width && y <= r.y + r.height){
+            return true;
+        }else{
+            return false;
+        }
+    }
     public void GenerateTiles(){
-//        for(int i=-HALF_ROOM_HEIGHT;i<=HALF_ROOM_HEIGHT; i +=  2) {
-//            ArrayList<Tile> temp = new ArrayList<>();
-//            for (int j = -HALF_ROOM_WIDTH; j <= HALF_ROOM_WIDTH; j += 2) {
-//                if (abs(i) == HALF_ROOM_HEIGHT || abs(j) == HALF_ROOM_WIDTH) {
-//                    temp.add(new Wall(i*Wall.WIDTH, j * Wall.HEIGHT, this));
-//                } else {
-//                    temp.add(new Floor(i*Wall.WIDTH, j * Wall.HEIGHT, this));
-//                }
-//            }
-//            tiles.add(temp);
-//        }
+        wallTiles  = new ArrayList<>();
+        floorTiles = new ArrayList<>();
+        for(Rectangle r1: template){
+            for(int i=0;i<r1.width;i+=2){
+                for(int j=0;j<r1.height;j+=2){
+                    floorTiles.add(new Floor((int)r1.x + i, (int)r1.y+j, this));
+                }
+            }
+            boolean flag = false;
+            for(Rectangle r2: template) {
+                if (PointIsInRectangle(r1.x-1, r1.y - 1, r2)){
+                    flag = true;
+                }
+            }
+            if (!flag){
+                wallTiles.add(new Wall((int)r1.x-2, (int)r1.y-2, this));
+            }
+            for(int i = 0; i <= r1.width; i += 2){
+                for(int j = 0; j <= r1.height; j += 2){
+                    float x = r1.x + i;
+                    float y = r1.y + j;
+                    flag = false;
+                    for(Rectangle r2: template) {
+                        if (PointIsInRectangle(x+1, r1.y - 1, r2)){
+                            flag = true;
+                        }
+                    }
+                    if (!flag){
+                        wallTiles.add(new Wall((int)x, (int)r1.y-2, this));
+                    }
+                    flag = false;
+                    for(Rectangle r2: template) {
+                        if (PointIsInRectangle(x+1, r1.y + r1.height + 1, r2)){
+                            flag = true;
+                        }
+                    }
+                    if (!flag){
+                        wallTiles.add(new Wall((int)x, (int) (r1.y + r1.height), this));
+                    }
+                    flag = false;
+                    for(Rectangle r2: template) {
+                        if (PointIsInRectangle(r1.x-1, y+1, r2)){
+                            flag = true;
+                        }
+                    }
+                    if (!flag){
+                        wallTiles.add(new Wall((int)r1.x-2, (int)y, this));
+                    }
+                    flag = false;
+                    for(Rectangle r2: template) {
+                        if (PointIsInRectangle(r1.x + r1.width + 1, y+1, r2)){
+                            flag = true;
+                        }
+                    }
+                    if (!flag){
+                        wallTiles.add(new Wall((int)(r1.x + r1.width), (int)y, this));
+                    }
+                }
+            }
+        }
     }
 
     public void render(){
@@ -44,26 +105,29 @@ public class Room {
         this.viewport.apply();
         this.getGame().getBatch().setProjectionMatrix(this.getCamera().combined);
         this.getGame().getBatch().begin();
-        for(ArrayList<Tile> list: tiles){
-            for(Tile tile: list){
+        for(Tile tile: wallTiles){
                 tile.render();
-            }
+        }
+        for(Tile tile: floorTiles){
+            tile.render();
         }
         this.getGame().getBatch().end();
     }
 
-    //TODO: Randomly generated map
-    public Room(World world, rloop game, Viewport viewport){
+    public Vector2 getPlayerPosition(){
+        int k = new Random().nextInt(floorTiles.size());
+        return new Vector2(floorTiles.get(k).getX()+1, floorTiles.get(k).getY()+1);
+    }
+
+    public Room(World world, rloop game, Viewport viewport, ArrayList<Rectangle> r){
+        this.template = r;
+        pos = new Vector2();
         this.viewport = viewport;
         this.game = game;
         this.world = world;
 //        GenerateWalls();
 //        GenerateDoors();
         GenerateTiles();
-    }
-
-    public void setTiles(ArrayList<ArrayList<Tile>> tiles){
-        this.tiles = tiles;
     }
 
     public Viewport getViewport() {

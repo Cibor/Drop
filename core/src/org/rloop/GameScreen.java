@@ -3,7 +3,6 @@ package org.rloop;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -20,12 +19,14 @@ public class GameScreen extends ScreenAdapter {
     final rloop game;
     Player player;
     World world;
-
+    float MAX_VELOCITY = 5;
     Camera camera;
     Box2DDebugRenderer debugRenderer;
     ExtendViewport viewport;
-
+    Vector2 vel;
     Vector2 pos;
+    Room map;
+    float stateTime;
     boolean paused = false;
     ShapeRenderer shapeRenderer;
 
@@ -48,13 +49,13 @@ public class GameScreen extends ScreenAdapter {
         camera = new OrthographicCamera();
         viewport = new ExtendViewport(32,24,camera);
 
-        MapBuilder mapBuilder = new MapBuilder();
+        MapBuilder mapBuilder = new MapBuilder(world);
+        currentRoom = new Room(world, game, viewport, mapBuilder.generateRoom());
         //generating map:
-        currentRoom = new Room(world, game, viewport);
-        currentRoom.setTiles(mapBuilder.generateRoomTiles(currentRoom));
+//        currentRoom = new Room(world, game, viewport);
 
-        player = new Player(0,0, currentRoom);
-        pos = this.player.getBody().getPosition();
+//        player = new Player(0,0, currentRoom);
+//        pos = this.player.getBody().getPosition();
 //        ArrayList<ArrayList<Integer>> graph = mapBuilder.generateGraph();
 //        int n = graph.size();
 //
@@ -71,6 +72,10 @@ public class GameScreen extends ScreenAdapter {
 //                //TODO: Add Contact listener
 //            }
 //        }
+
+        //adding player
+        player = new Player(currentRoom.getPlayerPosition().x,currentRoom.getPlayerPosition().y, currentRoom);
+        pos = this.player.getBody().getPosition();
 
         //adding player
 //        player = new Player(0,0, currentRoom);
@@ -124,6 +129,7 @@ public class GameScreen extends ScreenAdapter {
     }
 
     void renderUnpaused(){
+        stateTime += Gdx.graphics.getDeltaTime();
         ScreenUtils.clear(0, 0, 0, 1);
 
         currentRoom.render();
@@ -154,6 +160,8 @@ public class GameScreen extends ScreenAdapter {
                     curMonster = (ChasingMonster) fb.getUserData();
                 }
 
+        camera.position.x = player.x;
+        camera.position.y = player.y;
                 curPlayer.statCurrentHP -= curMonster.damageMonst;
                 damageImmune = 120;
                 Gdx.audio.newSound(Gdx.files.internal("music/DamageSound.mp3")).play(game.GlobalAudioSound);
@@ -167,6 +175,7 @@ public class GameScreen extends ScreenAdapter {
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            System.out.println(1);
             this.paused = true;
         }
         gameScreenStage.update(this);
@@ -174,6 +183,7 @@ public class GameScreen extends ScreenAdapter {
         gameScreenStage.currentStage.draw();
 
         //debugRenderer.render(world, camera.combined);
+        debugRenderer.render(world, camera.combined);
         world.step(1 / 60f, 6, 2);
     }
 
