@@ -16,9 +16,13 @@ public abstract class Monster {
     protected float y;
     protected ArrayList<Animation<TextureRegion>> walkAnimation;
     protected int direction;
+
     float MAX_VELOCITY = 5;
     float stateTime;
 
+    float damageMonst;
+    float speedMonst;
+    float hpMonst;
 
     void render(){}
     void definePhysics(){}

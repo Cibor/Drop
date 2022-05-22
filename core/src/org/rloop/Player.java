@@ -21,6 +21,13 @@ public class Player {
     float MAX_VELOCITY = 5;
     float stateTime;
 
+    //TODO weapon currentWeapon;
+
+    protected float statCurrentHP;
+    protected float statMaxHP;
+    protected float statSpeed;
+
+
     public Player(float x, float y, Room room){
         this.room = room;
         this.x = x;
@@ -36,7 +43,12 @@ public class Player {
             walkAnimation.add(new Animation<>(0.25f, tmp[i]));
         }
 
+        statSpeed = 1.0f;
+        statCurrentHP = 1.0f;
+        statMaxHP = 1.0f;
+
         definePhysics();
+
     }
 
     void definePhysics(){
@@ -83,30 +95,38 @@ public class Player {
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             this.setDirection(3);
-            velx = -10f;
-        } else if (velx == -10f) {
+            velx = (-7.5f) * statSpeed;
+        } else if (velx == (-7.5f) * statSpeed) {
             velx = 0;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             this.setDirection(2);
-            velx = 10f;
-        } else if (velx == 10f) {
+            velx = (7.5f) * statSpeed;
+        } else if (velx == (7.5f) * statSpeed) {
             velx = 0;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.W) && vel.y > -MAX_VELOCITY) {
             this.setDirection(0);
-            vely = 10f;
-        } else if (vely == 10f) {
+            vely = (7.5f) * statSpeed;
+        } else if (vely == (7.5f) * statSpeed) {
             vely = 0;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S) && vel.y < MAX_VELOCITY) {
             this.setDirection(1);
-            vely = -10f;
-        } else if (vely == -10f) {
+            vely = (-7.5f) * statSpeed;
+        } else if (vely == (-7.5f) * statSpeed) {
             vely = 0;
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.U)){
+            statSpeed += 0.02f;
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.H)){
+            statCurrentHP -= 0.02f;
         }
 
         if (velx != getBody().getLinearVelocity().x && vely != getBody().getLinearVelocity().y) {

@@ -18,7 +18,7 @@ import static java.lang.Math.max;
 
 public class MapBuilder {
     int width;
-    int height;
+  int height;
     ArrayList<Integer> templateLeft, templateRight;
 
     public static int rnd(int min, int max)

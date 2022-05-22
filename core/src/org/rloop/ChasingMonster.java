@@ -13,7 +13,14 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 import java.util.ArrayList;
 
+import static java.lang.Math.abs;
+
 public class ChasingMonster extends Monster{
+
+    double pastAngle = 1080;
+    float speedMonst = 3;
+    float damageMonst = (float) 0.05;
+
     public ChasingMonster(float x, float y, Room room, Player player){
         this.player = player;
         this.room = room;
@@ -76,6 +83,37 @@ public class ChasingMonster extends Monster{
 
         Vector2 direction = new Vector2(playerX-myX, playerY-myY);
 
+        double angle = Math.atan(direction.y * direction.y / direction.x * direction.x);
+
+        angle *= 180;
+        angle /= Math.PI;
+
+        if(playerX < myX && playerY < myY){
+            angle += 180;
+        }
+        else if(playerX < myX){
+                angle += 90;
+        }
+        else if(playerY < myY){
+            angle += 270;
+        }
+        if(abs(pastAngle - angle) > 5) {
+            if ((angle >= 0 && angle <= 45) || (angle >= 315 && angle <= 360)) {
+                this.setDirection(2);
+            } else if (angle > 45 && angle <= 135) {
+                this.setDirection(0);
+            } else if (angle > 135 && angle <= 225) {
+                this.setDirection(3);
+            } else {
+                this.setDirection(1);
+            }
+        }
+        pastAngle = angle;
+
+        float kaf = direction.x * direction.x + direction.y * direction.y;
+        kaf = (speedMonst * speedMonst) / kaf;
+        direction.x *= Math.sqrt(kaf);
+        direction.y *= Math.sqrt(kaf);
         this.getBody().setLinearVelocity(direction);
     }
     public void setX(float x){

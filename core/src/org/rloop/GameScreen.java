@@ -3,6 +3,7 @@ package org.rloop;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -29,17 +30,20 @@ public class GameScreen extends ScreenAdapter {
     ShapeRenderer shapeRenderer;
 
     Stage pauseStage;
+    GameStage gameScreenStage;
 
     ArrayList<Monster> monsters;
 
     Room currentRoom;
+
+    int damageImmune;
 
     public GameScreen(rloop game) {
         this.game = game;
 
         debugRenderer = new Box2DDebugRenderer();
         world = new World(new Vector2(0, 0), true);
-        world.setContactListener(new GameContactListener(game));
+        //world.setContactListener(new GameContactListener(game));
 
         camera = new OrthographicCamera();
         viewport = new ExtendViewport(32,24,camera);
@@ -73,10 +77,12 @@ public class GameScreen extends ScreenAdapter {
 //        pos = this.player.getBody().getPosition();
 
         //adding monsters
-//        monsters = new ArrayList<>();
-//        monsters.add(new ChasingMonster(-5,-5,currentRoom,player));
+        monsters = new ArrayList<>();
+        monsters.add(new ChasingMonster(-5,-5,currentRoom,player));
 
         pauseStage = new PauseGUI(this, new Skin(Gdx.files.internal("pixthulhuui/pixthulhu-ui.json"))).currentStage;
+
+        gameScreenStage = new GameStage(this, new Skin(Gdx.files.internal("pixthulhuui/pixthulhu-ui.json")));
 
         shapeRenderer = new ShapeRenderer();
 
@@ -95,9 +101,9 @@ public class GameScreen extends ScreenAdapter {
     void renderPaused(){
         currentRoom.render();
         this.player.renderPaused();
-//        for(Monster monster: monsters){
-//            monster.renderPaused();
-//        }
+        for(Monster monster: monsters){
+            monster.renderPaused();
+        }
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -122,15 +128,52 @@ public class GameScreen extends ScreenAdapter {
 
         currentRoom.render();
         player.render();
-//        for(Monster monster: monsters){
-//            monster.render();
-//        }
+
+        for(Monster monster: monsters){
+            monster.render();
+        }
+
+        for(Contact curCon : world.getContactList()){
+            Fixture fa = curCon.getFixtureA();
+            Fixture fb = curCon.getFixtureB();
+            if(fa == null || fb == null){
+                continue;
+            }
+            if(fa.getUserData() == null || fb.getUserData() == null){
+               continue;
+            }
+            if(damageImmune == 0 && (fa.getUserData().getClass() == Player.class && fb.getUserData().getClass() == ChasingMonster.class) || (fb.getUserData().getClass() == Player.class && fa.getUserData().getClass() == ChasingMonster.class)) {
+                Player curPlayer;
+                ChasingMonster curMonster;
+                if(fb.getUserData().getClass() == Player.class) {
+                    curPlayer = (Player) fb.getUserData();
+                    curMonster = (ChasingMonster) fa.getUserData();
+                }
+                else{
+                    curPlayer = (Player) fa.getUserData();
+                    curMonster = (ChasingMonster) fb.getUserData();
+                }
+
+                curPlayer.statCurrentHP -= curMonster.damageMonst;
+                damageImmune = 120;
+                Gdx.audio.newSound(Gdx.files.internal("music/DamageSound.mp3")).play(game.GlobalAudioSound);
+            }
+        }
+        if(damageImmune > 0)
+        damageImmune--;
+
+        if(player.statCurrentHP == 0){
+
+        }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             this.paused = true;
         }
+        gameScreenStage.update(this);
+        gameScreenStage.currentStage.act();
+        gameScreenStage.currentStage.draw();
 
-        debugRenderer.render(world, camera.combined);
+        //debugRenderer.render(world, camera.combined);
         world.step(1 / 60f, 6, 2);
     }
 

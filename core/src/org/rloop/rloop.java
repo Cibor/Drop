@@ -8,6 +8,8 @@ public class rloop extends Game {
 
 	OurMusic ourMusic;
 
+	float GlobalAudioSound = 100;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
