@@ -12,40 +12,69 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameScreen extends ScreenAdapter {
     final rloop game;
     Player player;
     World world;
-    float MAX_VELOCITY = 5;
+
     Camera camera;
     Box2DDebugRenderer debugRenderer;
     ExtendViewport viewport;
-    Vector2 vel;
+
     Vector2 pos;
-    Room map;
-    float stateTime;
     boolean paused = false;
     ShapeRenderer shapeRenderer;
 
     Stage pauseStage;
+
+    ArrayList<Monster> monsters;
+
+    Room currentRoom;
 
     public GameScreen(rloop game) {
         this.game = game;
 
         debugRenderer = new Box2DDebugRenderer();
         world = new World(new Vector2(0, 0), true);
-        world.setContactListener(new DoorsContactListener(game));
+        world.setContactListener(new GameContactListener(game));
 
         camera = new OrthographicCamera();
         viewport = new ExtendViewport(32,24,camera);
 
-        map = new Room(world, game, viewport);
+        MapBuilder mapBuilder = new MapBuilder(world);
+        mapBuilder.generateRoom();
+        //generating map:
+//        currentRoom = new Room(world, game, viewport);
 
-        player = new Player(0,0, map);
-        vel = this.player.getBody().getLinearVelocity();
-        pos = this.player.getBody().getPosition();
+//        player = new Player(0,0, currentRoom);
+//        pos = this.player.getBody().getPosition();
+//        ArrayList<ArrayList<Integer>> graph = mapBuilder.generateGraph();
+//        int n = graph.size();
+//
+//        ArrayList<Room> rooms = new ArrayList<>();
+//        for(int i = 0; i < n; i++){
+//            Room room = new Room(world, game, viewport);
+//            room.setTiles(mapBuilder.generateRoomTiles(room));
+//            rooms.add(room);
+//        }
+//
+//        for(int i = 0; i < n; i++){
+//            for(int j = 0; j < graph.get(i).size(); j++){
+//                Portal portal = new Portal(2,4, rooms.get(i), rooms.get(graph.get(i).get(j)));
+//                //TODO: Add Contact listener
+//            }
+//        }
 
-        stateTime = 0;
+        //adding player
+//        player = new Player(0,0, currentRoom);
+//        pos = this.player.getBody().getPosition();
+
+        //adding monsters
+//        monsters = new ArrayList<>();
+//        monsters.add(new ChasingMonster(-5,-5,currentRoom,player));
 
         pauseStage = new PauseGUI(this, new Skin(Gdx.files.internal("pixthulhuui/pixthulhu-ui.json"))).currentStage;
 
@@ -64,16 +93,12 @@ public class GameScreen extends ScreenAdapter {
     }
 
     void renderPaused(){
-        this.player.setX(this.player.getBody().getPosition().x);
-        this.player.setY(this.player.getBody().getPosition().y);
-        map.render();
-        float velx = player.getBody().getLinearVelocity().x;
-        float vely = player.getBody().getLinearVelocity().y;
-        if (velx == 0 && vely == 0) {
-            stateTime = 0;
-        }
-        player.render(stateTime);
+//        currentRoom.render();
 
+//        this.player.renderPaused();
+//        for(Monster monster: monsters){
+//            monster.renderPaused();
+//        }
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -94,57 +119,19 @@ public class GameScreen extends ScreenAdapter {
     }
 
     void renderUnpaused(){
-        stateTime += Gdx.graphics.getDeltaTime();
         ScreenUtils.clear(0, 0, 0, 1);
-        this.player.setX(this.player.getBody().getPosition().x);
-        this.player.setY(this.player.getBody().getPosition().y);
 
-        map.render();
-        float velx = player.getBody().getLinearVelocity().x;
-        float vely = player.getBody().getLinearVelocity().y;
-        if (velx == 0 && vely == 0) {
-            stateTime = 0;
-        }
-        player.render(stateTime);
-
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            this.player.setDirection(3);
-            velx = -10f;
-        } else if (velx == -10f) {
-            velx = 0;
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            this.player.setDirection(2);
-            velx = 10f;
-        } else if (velx == 10f) {
-            velx = 0;
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.W) && vel.y > -MAX_VELOCITY) {
-            this.player.setDirection(0);
-            vely = 10f;
-        } else if (vely == 10f) {
-            vely = 0;
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.S) && vel.y < MAX_VELOCITY) {
-            this.player.setDirection(1);
-            vely = -10f;
-        } else if (vely == -10f) {
-            vely = 0;
-        }
-        if (velx != player.getBody().getLinearVelocity().x && vely != player.getBody().getLinearVelocity().y) {
-            stateTime = 0;
-        }
-        this.player.getBody().setLinearVelocity(velx, vely);
+//        currentRoom.render();
+//        player.render();
+//        for(Monster monster: monsters){
+//            monster.render();
+//        }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            System.out.println(1);
             this.paused = true;
         }
 
-        //debugRenderer.render(world, camera.combined); еще надо будет
+        debugRenderer.render(world, camera.combined);
         world.step(1 / 60f, 6, 2);
     }
 

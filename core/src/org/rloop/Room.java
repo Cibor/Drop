@@ -18,26 +18,25 @@ import static java.lang.Math.abs;
 
 public class Room {
     protected World world;
-    protected ArrayList<Door> doors;
     protected rloop game;
 
-    protected int HALF_ROOM_HEIGHT = 15;
-    protected int HALF_ROOM_WIDTH = 11;
+    protected static int HALF_ROOM_HEIGHT = 15;
+    protected static int HALF_ROOM_WIDTH = 11;
     protected ArrayList<ArrayList<Tile>> tiles  = new ArrayList<>();
     protected Viewport viewport;
 
     public void GenerateTiles(){
-        for(int i=-HALF_ROOM_HEIGHT;i<=HALF_ROOM_HEIGHT; i +=  2) {
-            ArrayList<Tile> temp = new ArrayList<>();
-            for (int j = -HALF_ROOM_WIDTH; j <= HALF_ROOM_WIDTH; j += 2) {
-                if (abs(i) == HALF_ROOM_HEIGHT || abs(j) == HALF_ROOM_WIDTH) {
-                    temp.add(new Wall(i*Wall.WIDTH, j * Wall.HEIGHT, this));
-                } else {
-                    temp.add(new Floor(i*Wall.WIDTH, j * Wall.HEIGHT, this));
-                }
-            }
-            tiles.add(temp);
-        }
+//        for(int i=-HALF_ROOM_HEIGHT;i<=HALF_ROOM_HEIGHT; i +=  2) {
+//            ArrayList<Tile> temp = new ArrayList<>();
+//            for (int j = -HALF_ROOM_WIDTH; j <= HALF_ROOM_WIDTH; j += 2) {
+//                if (abs(i) == HALF_ROOM_HEIGHT || abs(j) == HALF_ROOM_WIDTH) {
+//                    temp.add(new Wall(i*Wall.WIDTH, j * Wall.HEIGHT, this));
+//                } else {
+//                    temp.add(new Floor(i*Wall.WIDTH, j * Wall.HEIGHT, this));
+//                }
+//            }
+//            tiles.add(temp);
+//        }
     }
 
     public void render(){
@@ -59,9 +58,12 @@ public class Room {
         this.game = game;
         this.world = world;
 //        GenerateWalls();
-        doors = new ArrayList<>();
 //        GenerateDoors();
         GenerateTiles();
+    }
+
+    public void setTiles(ArrayList<ArrayList<Tile>> tiles){
+        this.tiles = tiles;
     }
 
     public Viewport getViewport() {
