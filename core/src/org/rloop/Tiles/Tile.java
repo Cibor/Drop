@@ -40,7 +40,7 @@ public abstract class Tile {
 
         PolygonShape barrierBox = new PolygonShape();
         barrierBox.setAsBox(WIDTH, HEIGHT);
-        barrier.createFixture(barrierBox, 0.0f);
+        barrier.createFixture(barrierBox, 0.0f).setUserData(this);
         barrierBox.dispose();
     }
 

@@ -6,9 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class rloop extends Game {
 	SpriteBatch batch;
 
-	OurMusic ourMusic;
+	public OurMusic ourMusic;
 
-	float GlobalAudioSound = 100;
+	public float GlobalAudioSound = 100;
+
+	GameScreen mainScreen;
 
 	@Override
 	public void create () {

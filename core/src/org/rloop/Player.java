@@ -21,6 +21,8 @@ public class Player {
     float MAX_VELOCITY = 5;
     float stateTime;
 
+    int damageImmune;
+
     //TODO weapon currentWeapon;
 
     protected float statCurrentHP;
@@ -150,6 +152,18 @@ public class Player {
 
     public Body getBody() {
         return body;
+    }
+
+    public void getHit(float hit){
+        statCurrentHP -= hit;
+    }
+
+    public boolean isImmune(){
+        return damageImmune > 0;
+    }
+
+    public void makeImmune(){
+        damageImmune = 120;
     }
 
     void renderPaused(){

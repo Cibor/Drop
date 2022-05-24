@@ -11,9 +11,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import org.rloop.Tiles.Tile;
+import org.rloop.Tiles.Wall;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Vector;
 
 public class GameScreen extends ScreenAdapter {
     final rloop game;
@@ -33,11 +37,11 @@ public class GameScreen extends ScreenAdapter {
     Stage pauseStage;
     GameStage gameScreenStage;
 
-    ArrayList<Monster> monsters;
+    HashSet<Monster> monsters;
+    HashSet<Monster> monstersNotRender;
+    ArrayList<Monster> monstersDied;
 
     Room currentRoom;
-
-    int damageImmune;
 
     public GameScreen(rloop game) {
         this.game = game;
@@ -74,7 +78,8 @@ public class GameScreen extends ScreenAdapter {
 //        }
 
         //adding player
-        player = new Player(currentRoom.getPlayerPosition().x,currentRoom.getPlayerPosition().y, currentRoom);
+        Vector2 p = currentRoom.getPlayerPosition();
+        player = new Player(p.x,p.y, currentRoom);
         pos = this.player.getBody().getPosition();
 
         //adding player
@@ -82,8 +87,14 @@ public class GameScreen extends ScreenAdapter {
 //        pos = this.player.getBody().getPosition();
 
         //adding monsters
-        monsters = new ArrayList<>();
-        monsters.add(new ChasingMonster(-5,-5,currentRoom,player));
+        monsters = new HashSet<>();
+        monstersNotRender = new HashSet<>();
+        monstersDied = new ArrayList<>();
+        monsters.add(new ChasingMonster(-1,-1,currentRoom,player));
+        monsters.add(new ShootingMonster(-3, -3, currentRoom, player));
+
+        monsters.add(new ShootingMonsterProjectile(-2, -2, currentRoom, this.player, new Vector2(1,1), 180));
+        //monsters.add(new ShootingMonsterProjectile(-2, -2, currentRoom, this.player, new Vector2(1,1), 243));
 
         pauseStage = new PauseGUI(this, new Skin(Gdx.files.internal("pixthulhuui/pixthulhu-ui.json"))).currentStage;
 
@@ -109,6 +120,17 @@ public class GameScreen extends ScreenAdapter {
         for(Monster monster: monsters){
             monster.renderPaused();
         }
+
+        for(Monster monster: monstersNotRender){
+            monster.renderPaused();
+            monsters.add(monster);
+        }
+
+        for(Monster monster: monstersDied){
+            monster.body.getWorld().destroyBody(monster.body);
+            monsters.remove(monster);
+        }
+        monstersDied.clear();
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -136,9 +158,24 @@ public class GameScreen extends ScreenAdapter {
         player.render();
 
         for(Monster monster: monsters){
-            monster.render();
+           monster.render();
         }
 
+        for(Monster monster: monstersNotRender){
+            monster.render();
+            monsters.add(monster);
+        }
+
+        for(Monster monster: monstersDied){
+            monster.body.getWorld().destroyBody(monster.body);
+            monsters.remove(monster);
+        }
+        monstersDied.clear();
+
+        monstersNotRender.clear();
+
+        camera.position.x = player.x;
+        camera.position.y = player.y;
         for(Contact curCon : world.getContactList()){
             Fixture fa = curCon.getFixtureA();
             Fixture fb = curCon.getFixtureB();
@@ -148,27 +185,61 @@ public class GameScreen extends ScreenAdapter {
             if(fa.getUserData() == null || fb.getUserData() == null){
                continue;
             }
-            if(damageImmune == 0 && (fa.getUserData().getClass() == Player.class && fb.getUserData().getClass() == ChasingMonster.class) || (fb.getUserData().getClass() == Player.class && fa.getUserData().getClass() == ChasingMonster.class)) {
+            if((fa.getUserData().getClass() == Player.class && fb.getUserData().getClass() == ChasingMonster.class) || (fb.getUserData().getClass() == Player.class && fa.getUserData().getClass() == ChasingMonster.class)) {
                 Player curPlayer;
                 ChasingMonster curMonster;
-                if(fb.getUserData().getClass() == Player.class) {
+                if (fb.getUserData().getClass() == Player.class) {
                     curPlayer = (Player) fb.getUserData();
                     curMonster = (ChasingMonster) fa.getUserData();
-                }
-                else{
+                } else {
                     curPlayer = (Player) fa.getUserData();
                     curMonster = (ChasingMonster) fb.getUserData();
                 }
+                if (!curPlayer.isImmune()) {
+                    curPlayer.getHit(curMonster.damageMonst);
+                    curPlayer.makeImmune();
+                    Gdx.audio.newSound(Gdx.files.internal("music/DamageSound.mp3")).play(game.GlobalAudioSound);
+                }
+            }
+            else
+            if((fa.getUserData().getClass() == Player.class && fb.getUserData().getClass() == ShootingMonsterProjectile.class) || (fb.getUserData().getClass() == Player.class && fa.getUserData().getClass() == ShootingMonsterProjectile.class)) {
+                Player curPlayer;
+                ShootingMonsterProjectile curMonster;
+                if (fb.getUserData().getClass() == Player.class) {
+                    curPlayer = (Player) fb.getUserData();
+                    curMonster = (ShootingMonsterProjectile) fa.getUserData();
+                } else {
+                    curPlayer = (Player) fa.getUserData();
+                    curMonster = (ShootingMonsterProjectile) fb.getUserData();
+                }
 
-        camera.position.x = player.x;
-        camera.position.y = player.y;
-                curPlayer.statCurrentHP -= curMonster.damageMonst;
-                damageImmune = 120;
-                Gdx.audio.newSound(Gdx.files.internal("music/DamageSound.mp3")).play(game.GlobalAudioSound);
+                if (!curPlayer.isImmune()){
+                    curPlayer.getHit(curMonster.damageMonst);
+                    curPlayer.makeImmune();
+                    Gdx.audio.newSound(Gdx.files.internal("music/DamageSound.mp3")).play(game.GlobalAudioSound);
+                }
+
+                curMonster.getBody().getWorld().destroyBody(curMonster.getBody());
+                monsters.remove(curMonster);
+            }
+            else if ((fa.getUserData().getClass() == Wall.class && fb.getUserData().getClass() == ShootingMonsterProjectile.class) || (fb.getUserData().getClass() == Wall.class && fa.getUserData().getClass() == ShootingMonsterProjectile.class)){
+                Wall curWall;
+                ShootingMonsterProjectile curMonster;
+                if(fb.getUserData().getClass() == Wall.class) {
+                    curWall = (Wall) fb.getUserData();
+                    curMonster = (ShootingMonsterProjectile) fa.getUserData();
+                }
+                else{
+                    curWall = (Wall) fa.getUserData();
+                    curMonster = (ShootingMonsterProjectile) fb.getUserData();
+                }
+
+                curMonster.getBody().getWorld().destroyBody(curMonster.getBody());
+                monsters.remove(curMonster);
             }
         }
-        if(damageImmune > 0)
-        damageImmune--;
+        if(player.isImmune())
+        player.damageImmune--;
 
         if(player.statCurrentHP == 0){
 
@@ -182,7 +253,6 @@ public class GameScreen extends ScreenAdapter {
         gameScreenStage.currentStage.act();
         gameScreenStage.currentStage.draw();
 
-        //debugRenderer.render(world, camera.combined);
         debugRenderer.render(world, camera.combined);
         world.step(1 / 60f, 6, 2);
     }

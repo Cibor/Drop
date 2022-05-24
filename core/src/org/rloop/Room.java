@@ -9,9 +9,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import org.rloop.Tiles.Floor;
-import org.rloop.Tiles.Tile;
-import org.rloop.Tiles.Wall;
+import org.rloop.Tiles.*;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -26,6 +24,7 @@ public class Room {
     protected int HALF_ROOM_WIDTH = 11;
     protected ArrayList<Tile> wallTiles;
     protected ArrayList<Tile> floorTiles;
+    protected ArrayList<Spikes> spikesTiles;
     protected Viewport viewport;
     protected Vector2 pos;
     protected ArrayList<Rectangle> template;
@@ -40,10 +39,16 @@ public class Room {
     public void GenerateTiles(){
         wallTiles  = new ArrayList<>();
         floorTiles = new ArrayList<>();
+        spikesTiles = new ArrayList<>();
         for(Rectangle r1: template){
             for(int i=0;i<r1.width;i+=2){
                 for(int j=0;j<r1.height;j+=2){
                     floorTiles.add(new Floor((int)r1.x + i, (int)r1.y+j, this));
+                    if(new Random().nextInt(10) == 9){
+                        if(new Random().nextBoolean())
+                        spikesTiles.add(new Spikes((int)r1.x + i, (int)r1.y+j, this));
+                        else spikesTiles.add(new HiddenSpikes((int)r1.x + i, (int)r1.y+j, this));
+                    }
                 }
             }
             boolean flag = false;
@@ -111,12 +116,19 @@ public class Room {
         for(Tile tile: floorTiles){
             tile.render();
         }
+        for(Tile tile: spikesTiles){
+            tile.render();
+        }
         this.getGame().getBatch().end();
     }
 
     public Vector2 getPlayerPosition(){
         int k = new Random().nextInt(floorTiles.size());
         return new Vector2(floorTiles.get(k).getX()+1, floorTiles.get(k).getY()+1);
+    }
+
+    public Vector2 getPlayerCurrentPosition(){
+        return new Vector2(game.mainScreen.player.x, game.mainScreen.player.y);
     }
 
     public Room(World world, rloop game, Viewport viewport, ArrayList<Rectangle> r){
@@ -128,6 +140,10 @@ public class Room {
 //        GenerateWalls();
 //        GenerateDoors();
         GenerateTiles();
+    }
+
+    public Player getPlayer(){
+        return game.mainScreen.player;
     }
 
     public Viewport getViewport() {

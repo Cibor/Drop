@@ -41,7 +41,7 @@ public class StartStage extends Stage {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 mainMenu.dispose();
-                mainMenu.game.setScreen(new GameScreen(mainMenu.game));
+                mainMenu.game.setScreen(mainMenu.game.mainScreen = new GameScreen(mainMenu.game));
             }
         });
 

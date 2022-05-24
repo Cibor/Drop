@@ -2,6 +2,9 @@ package org.rloop;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import jdk.internal.net.http.common.Pair;
+
+import java.awt.*;
 
 public class Util {
 
@@ -21,5 +24,8 @@ public class Util {
         }
     }
 
-
+    protected static double GetAngle(float MachineX, float MachineY, float DestinationX, float DestinationY)
+    {
+        return Math.atan2(DestinationY - MachineY, DestinationX - MachineX) * 180 / Math.PI;
+    }
 }
