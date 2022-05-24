@@ -23,12 +23,13 @@ public class Player {
 
     int damageImmune;
 
-    //TODO weapon currentWeapon;
+    Weapon playerWeapon = null;
 
     protected float statCurrentHP;
     protected float statMaxHP;
     protected float statSpeed;
 
+    int attackCoolDown = 0;
 
     public Player(float x, float y, Room room){
         this.room = room;
@@ -48,6 +49,8 @@ public class Player {
         statSpeed = 1.0f;
         statCurrentHP = 1.0f;
         statMaxHP = 1.0f;
+
+        playerWeapon = new RangeWeapon(0.1f, 1, 2);
 
         definePhysics();
 
@@ -95,6 +98,10 @@ public class Player {
             stateTime = 0;
         }
 
+        if(attackCoolDown > 0){
+            attackCoolDown --;
+        }
+
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             this.setDirection(3);
             velx = (-7.5f) * statSpeed;
@@ -121,6 +128,13 @@ public class Player {
             vely = (-7.5f) * statSpeed;
         } else if (vely == (-7.5f) * statSpeed) {
             vely = 0;
+        }
+
+        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
+            if(attackCoolDown == 0){
+                attackCoolDown = Math.round(playerWeapon.getWeaponAttackSpeed() * 1);
+                playerWeapon.attack(this, Gdx.input.getX(), Gdx.input.getY());
+            }
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.U)){
