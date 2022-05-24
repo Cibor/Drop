@@ -23,20 +23,6 @@ public class GameContactListener implements ContactListener {
         if(fa.getUserData() == null || fb.getUserData() == null){
             return;
         }
-        if((fa.getUserData().getClass() == Player.class && fb.getUserData().getClass() == ChasingMonster.class) || (fb.getUserData().getClass() == Player.class && fa.getUserData().getClass() == ChasingMonster.class)) {
-            Player curPlayer;
-            ChasingMonster curMonster;
-            if(fb.getUserData().getClass() == Player.class) {
-                curPlayer = (Player) fb.getUserData();
-                curMonster = (ChasingMonster) fa.getUserData();
-            }
-            else{
-                curPlayer = (Player) fa.getUserData();
-                curMonster = (ChasingMonster) fb.getUserData();
-            }
-
-            curPlayer.statCurrentHP -= curMonster.damageMonst;
-        }
     }
 
     @Override
@@ -46,7 +32,18 @@ public class GameContactListener implements ContactListener {
 
     @Override
     public void preSolve(Contact contact, Manifold oldManifold) {
-
+        Fixture fa = contact.getFixtureA();
+        Fixture fb = contact.getFixtureB();
+        if(fa == null || fb == null){
+            return;
+        }
+        if(fa.getUserData() == null || fb.getUserData() == null){
+            return;
+        }
+        if((fa.getUserData().getClass() == ShootingMonsterProjectile.class && Monster.class.isAssignableFrom(fb.getUserData().getClass())) || (fb.getUserData().getClass() == ShootingMonsterProjectile.class && Monster.class.isAssignableFrom(fa.getUserData().getClass())) ){
+            System.out.println(1);
+            contact.setEnabled(false);
+        }
     }
 
     @Override

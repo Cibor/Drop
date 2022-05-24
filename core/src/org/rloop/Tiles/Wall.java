@@ -5,7 +5,9 @@ import org.rloop.Room;
 
 public class Wall extends Tile {
 
+    static Texture wallTexture = new Texture("water 3.png");
+
     public Wall(int x, int y, Room room) {
-        super(new Texture("water 3.png"), true, x, y, room);
+        super(wallTexture, true, x, y, room);
     }
 }

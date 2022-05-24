@@ -43,12 +43,14 @@ public class GameScreen extends ScreenAdapter {
 
     Room currentRoom;
 
+    static Skin globalSkin = new Skin(Gdx.files.internal("pixthulhuui/pixthulhu-ui.json"));
+
     public GameScreen(rloop game) {
         this.game = game;
 
         debugRenderer = new Box2DDebugRenderer();
         world = new World(new Vector2(0, 0), true);
-        //world.setContactListener(new GameContactListener(game));
+        world.setContactListener(new GameContactListener(game));
 
         camera = new OrthographicCamera();
         viewport = new ExtendViewport(32,24,camera);
@@ -96,9 +98,9 @@ public class GameScreen extends ScreenAdapter {
         monsters.add(new ShootingMonsterProjectile(-2, -2, currentRoom, this.player, new Vector2(1,1), 180));
         //monsters.add(new ShootingMonsterProjectile(-2, -2, currentRoom, this.player, new Vector2(1,1), 243));
 
-        pauseStage = new PauseGUI(this, new Skin(Gdx.files.internal("pixthulhuui/pixthulhu-ui.json"))).currentStage;
+        pauseStage = new PauseGUI(this, globalSkin).currentStage;
 
-        gameScreenStage = new GameStage(this, new Skin(Gdx.files.internal("pixthulhuui/pixthulhu-ui.json")));
+        gameScreenStage = new GameStage(this, globalSkin);
 
         shapeRenderer = new ShapeRenderer();
 
