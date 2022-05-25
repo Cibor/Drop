@@ -11,7 +11,7 @@ public class GameContactListener implements ContactListener {
 
 
     rloop game;
-    GameContactListener(rloop game){
+    public GameContactListener(rloop game){
         this.game = game;
 
     }

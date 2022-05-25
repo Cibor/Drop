@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import java.util.ArrayList;
 
 public abstract class Monster {
-    protected Body body;
+    public Body body;
     protected Fixture fixture;
     protected Level level;
     Player player;
@@ -28,7 +28,7 @@ public abstract class Monster {
     void update() {
 
     }
-    void render(){}
+    public void render(){}
     void definePhysics(){}
     void renderPaused(){}
 }

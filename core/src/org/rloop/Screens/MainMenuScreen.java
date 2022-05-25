@@ -1,33 +1,27 @@
-package org.rloop;
+package org.rloop.Screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import org.rloop.Stages.AudioSettingStage;
+import org.rloop.Stages.SettingStage;
+import org.rloop.Stages.StartStage;
+import org.rloop.rloop;
 
 public class MainMenuScreen extends ScreenAdapter {
 
     rloop game;
-    protected Stage globalStage ;
-    protected StartStage startStage  ;
+    public Stage globalStage;
+    protected StartStage startStage;
     protected SettingStage settingsStage;
     protected AudioSettingStage audioStage;
-    protected Viewport viewport;
+    public Viewport viewport;
 
     public MainMenuScreen(final rloop game) {
         this.game = game;
@@ -63,6 +57,9 @@ public class MainMenuScreen extends ScreenAdapter {
         super.resize(width, height);
         globalStage.getViewport().update(width, height, true);
     }
+
+    public rloop getGame() {return game;}
+    public Stage getGlobalStage() {return globalStage;}
 
     @Override
     public void dispose() {

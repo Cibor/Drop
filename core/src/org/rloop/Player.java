@@ -22,13 +22,15 @@ public class Player {
     float MAX_VELOCITY = 5;
     float stateTime;
 
-    int damageImmune;
-
-    Weapon playerWeapon = null;
+    Weapon playerWeapon;
 
     protected float statCurrentHP;
     protected float statMaxHP;
     protected float statSpeed;
+
+    public float getCurrentHP() { return statCurrentHP; }
+
+    public float getMaxHP() { return statMaxHP; }
 
     int attackCoolDown = 0;
 
@@ -156,24 +158,6 @@ public class Player {
         this.level.getGame().getBatch().end();
     }
 
-//    void renderPaused(){
-//        this.setX(this.getBody().getPosition().x);
-//        this.setY(this.getBody().getPosition().y);
-//        float velx = getBody().getLinearVelocity().x;
-//        float vely = getBody().getLinearVelocity().y;
-//        if (velx == 0 && vely == 0) {
-//            stateTime = 0;
-//        }
-//        TextureRegion currentFrame = walkAnimation.get(direction).getKeyFrame(stateTime, true);
-//        this.level.getCamera().update();
-//        this.level.getViewport().apply();
-//        this.level.getGame().getBatch().setProjectionMatrix(level.getCamera().combined);
-//        this.level.getGame().getBatch().begin();
-//        level.getGame().getBatch().draw(currentFrame, x - 1, y - 1, 2, 2);
-//        this.level.getGame().getBatch().end();
-//    }
-
-
     HashSet<DamageMaker> damageMakers = new HashSet<>();
 
     public void addDamageMaker(DamageMaker damageMaker) {
@@ -215,6 +199,14 @@ public class Player {
 
     public void getHit(float hit){
         statCurrentHP -= hit;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
     }
 }
 

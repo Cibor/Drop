@@ -1,4 +1,4 @@
-package org.rloop;
+package org.rloop.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -11,7 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import org.rloop.Tiles.Wall;
+import org.rloop.*;
+import org.rloop.Stages.GameStage;
+import org.rloop.Stages.*;
 
 import java.util.HashSet;
 
@@ -24,15 +26,15 @@ public class GameScreen extends ScreenAdapter {
     ExtendViewport viewport;
     Vector2 pos;
     float stateTime;
-    boolean paused = false;
+    public boolean paused = false;
     ShapeRenderer shapeRenderer;
 
     Stage pauseStage;
     GameStage gameScreenStage;
 
     public HashSet<Monster> monsters;
-    HashSet<Monster> monstersNotRender;
-    HashSet<Monster> monstersDied;
+    public HashSet<Monster> monstersNotRender;
+    public HashSet<Monster> monstersDied;
 
     Level currentLevel;
 
@@ -66,7 +68,7 @@ public class GameScreen extends ScreenAdapter {
         monsters.add(new ShootingMonsterProjectile(-2, -2, currentLevel, this.player, new Vector2(1,1), 180));
         //monsters.add(new ShootingMonsterProjectile(-2, -2, currentRoom, this.player, new Vector2(1,1), 243));
 
-        pauseStage = new PauseGUI(this, globalSkin).currentStage;
+        pauseStage = new PauseGUI(this, globalSkin).getCurrentStage();
 
         gameScreenStage = new GameStage(this, globalSkin);
 
@@ -90,8 +92,8 @@ public class GameScreen extends ScreenAdapter {
 
     public void update(float x) {
         player.update();
-        camera.position.x = player.x;
-        camera.position.y = player.y;
+        camera.position.x = player.getX();
+        camera.position.y = player.getY();
 
         currentLevel.update();
         //clearing monsters
@@ -121,8 +123,8 @@ public class GameScreen extends ScreenAdapter {
         monstersNotRender.clear();
 
         gameScreenStage.update(this);
-        gameScreenStage.currentStage.act();
-        gameScreenStage.currentStage.draw();
+        gameScreenStage.getCurrentStage().act();
+        gameScreenStage.getCurrentStage().draw();
 
         debugRenderer.render(world, camera.combined);
     }
@@ -142,6 +144,9 @@ public class GameScreen extends ScreenAdapter {
         pauseStage.act();
         pauseStage.draw();
     }
+
+    public Player getPlayer() {return player;}
+    public rloop getGame() {return game;}
 
     @Override
     public void dispose(){

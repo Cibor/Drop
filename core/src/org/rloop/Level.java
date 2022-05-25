@@ -136,7 +136,7 @@ public class Level {
     }
 
     public Vector2 getPlayerCurrentPosition(){
-        return new Vector2(game.mainScreen.player.x, game.mainScreen.player.y);
+        return new Vector2(game.mainScreen.getPlayer().x, game.mainScreen.getPlayer().y);
     }
 
     public Level(World world, rloop game, Viewport viewport, ArrayList<Rectangle> r){
@@ -149,7 +149,7 @@ public class Level {
     }
 
     public Player getPlayer(){
-        return game.mainScreen.player;
+        return game.mainScreen.getPlayer();
     }
 
     public Viewport getViewport() {

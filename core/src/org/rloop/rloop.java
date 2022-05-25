@@ -2,6 +2,8 @@ package org.rloop;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import org.rloop.Screens.GameScreen;
+import org.rloop.Screens.MainMenuScreen;
 
 public class rloop extends Game {
 	SpriteBatch batch;
@@ -9,7 +11,7 @@ public class rloop extends Game {
 	public OurMusic ourMusic;
 	public Resources resources;
 
-	GameScreen mainScreen;
+	public GameScreen mainScreen;
 
 	@Override
 	public void create () {
