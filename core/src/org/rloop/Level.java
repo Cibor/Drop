@@ -133,8 +133,6 @@ public class Level {
         this.viewport = viewport;
         this.game = game;
         this.world = world;
-//        GenerateWalls();
-//        GenerateDoors();
         GenerateTiles();
     }
 

@@ -22,7 +22,7 @@ public class Spikes extends Tile{
             Player curPlayer = level.getPlayer();
             if(!curPlayer.isImmune()){
                 curPlayer.getHit(0.05f);
-                Gdx.audio.newSound(Gdx.files.internal("music/DamageSound.mp3")).play(level.getGame().GlobalAudioSound);
+                level.getGame().getOurMusic().dmgSound.play(level.getGame().getOurMusic().getSoundVolume());
                 curPlayer.makeImmune();
             }
         }

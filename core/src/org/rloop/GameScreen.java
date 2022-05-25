@@ -198,7 +198,7 @@ public class GameScreen extends ScreenAdapter {
                 if (!curPlayer.isImmune()) {
                     curPlayer.getHit(curMonster.damageMonst);
                     curPlayer.makeImmune();
-                    Gdx.audio.newSound(Gdx.files.internal("music/DamageSound.mp3")).play(game.GlobalAudioSound);
+                    game.getOurMusic().dmgSound.play(game.getOurMusic().getSoundVolume());
                 }
             }
             else
@@ -216,7 +216,7 @@ public class GameScreen extends ScreenAdapter {
                 if (!curPlayer.isImmune()){
                     curPlayer.getHit(curMonster.damageMonst);
                     curPlayer.makeImmune();
-                    Gdx.audio.newSound(Gdx.files.internal("music/DamageSound.mp3")).play(game.GlobalAudioSound);
+                    game.getOurMusic().dmgSound.play(game.getOurMusic().getSoundVolume());
                 }
 
                 curMonster.getBody().getWorld().destroyBody(curMonster.getBody());

@@ -52,7 +52,6 @@ public class AudioSettingStage extends Stage {
                     }
                 }
                 mainMenu.game.getOurMusic().setMusicVolume(((Slider) actor).getValue()/100);
-                mainMenu.game.GlobalAudioSound = (((Slider) actor).getValue()/100);
             }
         });
 

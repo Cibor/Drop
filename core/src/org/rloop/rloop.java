@@ -9,8 +9,6 @@ public class rloop extends Game {
 	public OurMusic ourMusic;
 	public Resources resources;
 
-	public float GlobalAudioSound = 100;
-
 	GameScreen mainScreen;
 
 	@Override

@@ -2,18 +2,24 @@ package org.rloop;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 
 public class OurMusic {
-    Music bgAmbient;
+    public Music bgAmbient;
+    public Sound dmgSound;
 
     float SoundVolume = 1;
     float MusicVolume = 1;
 
     OurMusic() {
+        //Musics
         bgAmbient = Gdx.audio.newMusic(Gdx.files.internal("music/ambience_1.mp3"));
         bgAmbient.setLooping(true);
 
         bgAmbient.play();
+
+        //Sounds
+        dmgSound = Gdx.audio.newSound(Gdx.files.internal("music/DamageSound.mp3"));
     }
 
     public void setMusicVolume(float volume) {
