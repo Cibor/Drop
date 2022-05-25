@@ -17,16 +17,20 @@ public class GameContactListener implements ContactListener {
     }
     @Override
     public void beginContact(Contact contact) {
-        System.out.println(3);
         Fixture fa = contact.getFixtureA();
         Fixture fb = contact.getFixtureB();
+
+        //обработать хуйню
         if(fa == null || fb == null){
             return;
         }
         if(fa.getUserData() == null || fb.getUserData() == null){
             return;
         }
-        if((fa.getUserData().getClass() == RangeWeaponProjectile.class && fb.getUserData().getClass() == ChasingMonster.class) || (fb.getUserData().getClass() == RangeWeaponProjectile.class && fa.getUserData().getClass() == ChasingMonster.class)) {
+
+        //Урон монстрам от проджектайла
+        if(     (fa.getUserData().getClass() == RangeWeaponProjectile.class && fb.getUserData().getClass() == ChasingMonster.class)
+                || (fb.getUserData().getClass() == RangeWeaponProjectile.class && fa.getUserData().getClass() == ChasingMonster.class)) {
             RangeWeaponProjectile curProjectile;
             ChasingMonster curMonster;
             if (fb.getUserData().getClass() == RangeWeaponProjectile.class) {
@@ -74,13 +78,62 @@ public class GameContactListener implements ContactListener {
                 curProjectile = (RangeWeaponProjectile) fa.getUserData();
             }
             game.mainScreen.monstersDied.add(curProjectile);
+
+        } else if (((fa.getUserData() instanceof ShootingMonsterProjectile && fb.getUserData() instanceof Wall)
+                || (fb.getUserData() instanceof ShootingMonsterProjectile && fa.getUserData() instanceof Wall))) {
+                Wall curWall;
+                ShootingMonsterProjectile curMonster;
+                if(fb.getUserData().getClass() == Wall.class) {
+                    curWall = (Wall) fb.getUserData();
+                    curMonster = (ShootingMonsterProjectile) fa.getUserData();
+                }
+                else{
+                    curWall = (Wall) fa.getUserData();
+                    curMonster = (ShootingMonsterProjectile) fb.getUserData();
+                }
+
+//                curMonster.getBody().getWorld().destroyBody(curMonster.getBody());
+                game.mainScreen.monstersDied.add(curMonster);
+        } else if ((fa.getUserData() instanceof Player && fb.getUserData() instanceof DamageMaker)
+                || (fb.getUserData() instanceof Player && fa.getUserData() instanceof DamageMaker)) {
+            Player player;
+            DamageMaker damageMaker;
+            if (fa.getUserData() instanceof Player) {
+                player = (Player) fa.getUserData();
+                damageMaker = (DamageMaker) fb.getUserData();
+            } else {
+                player = (Player) fb.getUserData();
+                damageMaker = (DamageMaker) fa.getUserData();
+            }
+            player.addDamageMaker(damageMaker);
         }
-        System.out.println(4);
     }
 
     @Override
     public void endContact(Contact contact) {
+        Fixture fa = contact.getFixtureA();
+        Fixture fb = contact.getFixtureB();
 
+        //обработать хуйню
+        if(fa == null || fb == null){
+            return;
+        }
+        if(fa.getUserData() == null || fb.getUserData() == null){
+            return;
+        }
+
+        if (fa.getUserData() instanceof Player && fb.getUserData() instanceof DamageMaker || fb.getUserData() instanceof Player && fa.getUserData() instanceof DamageMaker) {
+            Player player;
+            DamageMaker damageMaker;
+            if (fa.getUserData() instanceof Player) {
+                player = (Player) fa.getUserData();
+                damageMaker = (DamageMaker) fb.getUserData();
+            } else {
+                player = (Player) fb.getUserData();
+                damageMaker = (DamageMaker) fa.getUserData();
+            }
+            player.removeDamageMaker(damageMaker);
+        }
     }
 
     @Override

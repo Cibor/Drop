@@ -19,13 +19,10 @@ public class GameScreen extends ScreenAdapter {
     final rloop game;
     Player player;
     World world;
-    float MAX_VELOCITY = 5;
     Camera camera;
     Box2DDebugRenderer debugRenderer;
     ExtendViewport viewport;
-    Vector2 vel;
     Vector2 pos;
-    Level map;
     float stateTime;
     boolean paused = false;
     ShapeRenderer shapeRenderer;
@@ -33,7 +30,7 @@ public class GameScreen extends ScreenAdapter {
     Stage pauseStage;
     GameStage gameScreenStage;
 
-    HashSet<Monster> monsters;
+    public HashSet<Monster> monsters;
     HashSet<Monster> monstersNotRender;
     HashSet<Monster> monstersDied;
 
@@ -53,43 +50,18 @@ public class GameScreen extends ScreenAdapter {
 
         LevelBuilder levelBuilder = new LevelBuilder(world);
         currentLevel = new Level(world, game, viewport, levelBuilder.generateRoom());
-        //generating map:
-//        currentRoom = new Room(world, game, viewport);
-
-//        player = new Player(0,0, currentRoom);
-//        pos = this.player.getBody().getPosition();
-//        ArrayList<ArrayList<Integer>> graph = mapBuilder.generateGraph();
-//        int n = graph.size();
-//
-//        ArrayList<Room> rooms = new ArrayList<>();
-//        for(int i = 0; i < n; i++){
-//            Room room = new Room(world, game, viewport);
-//            room.setTiles(mapBuilder.generateRoomTiles(room));
-//            rooms.add(room);
-//        }
-//
-//        for(int i = 0; i < n; i++){
-//            for(int j = 0; j < graph.get(i).size(); j++){
-//                Portal portal = new Portal(2,4, rooms.get(i), rooms.get(graph.get(i).get(j)));
-//                //TODO: Add Contact listener
-//            }
-//        }
 
         //adding player
         Vector2 p = currentLevel.getPlayerPosition();
         player = new Player(p.x,p.y, currentLevel);
         pos = this.player.getBody().getPosition();
 
-        //adding player
-//        player = new Player(0,0, currentRoom);
-//        pos = this.player.getBody().getPosition();
-
         //adding monsters
         monsters = new HashSet<>();
         monstersNotRender = new HashSet<>();
         monstersDied = new HashSet<>();
         monsters.add(new ChasingMonster(-1,-1, currentLevel,player));
-       // monsters.add(new ShootingMonster(-3, -3, currentRoom, player));
+        monsters.add(new ShootingMonster(-3, -3, currentLevel, player));
 
         monsters.add(new ShootingMonsterProjectile(-2, -2, currentLevel, this.player, new Vector2(1,1), 180));
         //monsters.add(new ShootingMonsterProjectile(-2, -2, currentRoom, this.player, new Vector2(1,1), 243));
@@ -105,16 +77,78 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void render(float x){
         if(!paused) {
-            renderUnpaused();
-        }
-        else{
-            renderPaused();
+            update(x);
+            justRender(x);
+
+            if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
+                paused = !paused;
+            }
+        } else{
+            justRender(x);
+            renderPauseScreen();
+
+            if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
+                paused = !paused;
+            }
         }
     }
 
-    void renderPaused(){
+    public void update(float x) {
+        player.update();
+        camera.position.x = player.x;
+        camera.position.y = player.y;
+
+        //clearing monsters
+        for(Monster monster: monstersDied){
+            monster.body.getWorld().destroyBody(monster.body);
+            monsters.remove(monster);
+        }
+        monstersDied.clear();
+
+        world.step(1 / 60f, 6, 2);
+    }
+
+    public void justRender(float x) {
+        ScreenUtils.clear(0, 0, 0, 1);
         currentLevel.render();
-        this.player.renderPaused();
+        this.player.render();
+
+        //rendering monsters
+        for(Monster monster: monsters){
+            monster.render();
+        }
+        for(Monster monster: monstersNotRender){
+            monster.render();
+            monsters.add(monster);
+        }
+
+        gameScreenStage.update(this);
+        gameScreenStage.currentStage.act();
+        gameScreenStage.currentStage.draw();
+
+        debugRenderer.render(world, camera.combined);
+    }
+
+    public void renderPauseScreen() {
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0,0,0,0.5f);
+        shapeRenderer.rect(0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        shapeRenderer.end();
+
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+        Gdx.input.setInputProcessor(pauseStage);
+
+        pauseStage.act();
+        pauseStage.draw();
+    }
+
+    void renderPaused(float x){
+        currentLevel.render();
+        this.player.render();
+
         for(Monster monster: monsters){
             monster.renderPaused();
         }
@@ -144,12 +178,10 @@ public class GameScreen extends ScreenAdapter {
         }
 
         pauseStage.act();
-
         pauseStage.draw();
     }
 
-    void renderUnpaused(){
-        System.out.println(2);
+    void renderUnpaused(float x){
         stateTime += Gdx.graphics.getDeltaTime();
         ScreenUtils.clear(0, 0, 0, 1);
 
@@ -176,71 +208,68 @@ public class GameScreen extends ScreenAdapter {
 
         camera.position.x = player.x;
         camera.position.y = player.y;
-        for(Contact curCon : world.getContactList()){
-            Fixture fa = curCon.getFixtureA();
-            Fixture fb = curCon.getFixtureB();
-            if(fa == null || fb == null){
-                continue;
-            }
-            if(fa.getUserData() == null || fb.getUserData() == null){
-               continue;
-            }
-            if((fa.getUserData().getClass() == Player.class && fb.getUserData().getClass() == ChasingMonster.class) || (fb.getUserData().getClass() == Player.class && fa.getUserData().getClass() == ChasingMonster.class)) {
-                Player curPlayer;
-                ChasingMonster curMonster;
-                if (fb.getUserData().getClass() == Player.class) {
-                    curPlayer = (Player) fb.getUserData();
-                    curMonster = (ChasingMonster) fa.getUserData();
-                } else {
-                    curPlayer = (Player) fa.getUserData();
-                    curMonster = (ChasingMonster) fb.getUserData();
-                }
-                if (!curPlayer.isImmune()) {
-                    curPlayer.getHit(curMonster.damageMonst);
-                    curPlayer.makeImmune();
-                    game.getOurMusic().dmgSound.play(game.getOurMusic().getSoundVolume());
-                }
-            }
-            else
-            if((fa.getUserData().getClass() == Player.class && fb.getUserData().getClass() == ShootingMonsterProjectile.class) || (fb.getUserData().getClass() == Player.class && fa.getUserData().getClass() == ShootingMonsterProjectile.class)) {
-                Player curPlayer;
-                ShootingMonsterProjectile curMonster;
-                if (fb.getUserData().getClass() == Player.class) {
-                    curPlayer = (Player) fb.getUserData();
-                    curMonster = (ShootingMonsterProjectile) fa.getUserData();
-                } else {
-                    curPlayer = (Player) fa.getUserData();
-                    curMonster = (ShootingMonsterProjectile) fb.getUserData();
-                }
-
-                if (!curPlayer.isImmune()){
-                    curPlayer.getHit(curMonster.damageMonst);
-                    curPlayer.makeImmune();
-                    game.getOurMusic().dmgSound.play(game.getOurMusic().getSoundVolume());
-                }
-
-                curMonster.getBody().getWorld().destroyBody(curMonster.getBody());
-                monsters.remove(curMonster);
-            }
-            else if ((fa.getUserData().getClass() == Wall.class && fb.getUserData().getClass() == ShootingMonsterProjectile.class) || (fb.getUserData().getClass() == Wall.class && fa.getUserData().getClass() == ShootingMonsterProjectile.class)){
-                Wall curWall;
-                ShootingMonsterProjectile curMonster;
-                if(fb.getUserData().getClass() == Wall.class) {
-                    curWall = (Wall) fb.getUserData();
-                    curMonster = (ShootingMonsterProjectile) fa.getUserData();
-                }
-                else{
-                    curWall = (Wall) fa.getUserData();
-                    curMonster = (ShootingMonsterProjectile) fb.getUserData();
-                }
-
-                curMonster.getBody().getWorld().destroyBody(curMonster.getBody());
-                monsters.remove(curMonster);
-            }
-        }
-        if(player.isImmune())
-        player.damageImmune--;
-
+//        for(Contact curCon : world.getContactList()){
+//            Fixture fa = curCon.getFixtureA();
+//            Fixture fb = curCon.getFixtureB();
+//            if(fa == null || fb == null){
+//                continue;
+//            }
+//            if(fa.getUserData() == null || fb.getUserData() == null){
+//               continue;
+//            }
+//            if((fa.getUserData().getClass() == Player.class && fb.getUserData().getClass() == ChasingMonster.class) || (fb.getUserData().getClass() == Player.class && fa.getUserData().getClass() == ChasingMonster.class)) {
+//                Player curPlayer;
+//                ChasingMonster curMonster;
+//                if (fb.getUserData().getClass() == Player.class) {
+//                    curPlayer = (Player) fb.getUserData();
+//                    curMonster = (ChasingMonster) fa.getUserData();
+//                } else {
+//                    curPlayer = (Player) fa.getUserData();
+//                    curMonster = (ChasingMonster) fb.getUserData();
+//                }
+//                if (!curPlayer.isImmune()) {
+//                    curPlayer.getHit(curMonster.damageMonst);
+//                    curPlayer.makeImmune();
+//                    game.getOurMusic().dmgSound.play(game.getOurMusic().getSoundVolume());
+//                }
+//            }
+//            else
+//            if((fa.getUserData().getClass() == Player.class && fb.getUserData().getClass() == ShootingMonsterProjectile.class) || (fb.getUserData().getClass() == Player.class && fa.getUserData().getClass() == ShootingMonsterProjectile.class)) {
+//                Player curPlayer;
+//                ShootingMonsterProjectile curMonster;
+//                if (fb.getUserData().getClass() == Player.class) {
+//                    curPlayer = (Player) fb.getUserData();
+//                    curMonster = (ShootingMonsterProjectile) fa.getUserData();
+//                } else {
+//                    curPlayer = (Player) fa.getUserData();
+//                    curMonster = (ShootingMonsterProjectile) fb.getUserData();
+//                }
+//
+//                if (!curPlayer.isImmune()){
+//                    curPlayer.getHit(curMonster.damageMonst);
+//                    curPlayer.makeImmune();
+//                    game.getOurMusic().dmgSound.play(game.getOurMusic().getSoundVolume());
+//                }
+//
+//                curMonster.getBody().getWorld().destroyBody(curMonster.getBody());
+//                monsters.remove(curMonster);
+//            }
+//            else if ((fa.getUserData().getClass() == Wall.class && fb.getUserData().getClass() == ShootingMonsterProjectile.class) || (fb.getUserData().getClass() == Wall.class && fa.getUserData().getClass() == ShootingMonsterProjectile.class)){
+//                Wall curWall;
+//                ShootingMonsterProjectile curMonster;
+//                if(fb.getUserData().getClass() == Wall.class) {
+//                    curWall = (Wall) fb.getUserData();
+//                    curMonster = (ShootingMonsterProjectile) fa.getUserData();
+//                }
+//                else{
+//                    curWall = (Wall) fa.getUserData();
+//                    curMonster = (ShootingMonsterProjectile) fb.getUserData();
+//                }
+//
+//                curMonster.getBody().getWorld().destroyBody(curMonster.getBody());
+//                monsters.remove(curMonster);
+//            }
+//        }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             this.paused = true;
@@ -250,9 +279,6 @@ public class GameScreen extends ScreenAdapter {
         gameScreenStage.currentStage.draw();
 
         debugRenderer.render(world, camera.combined);
-        System.out.println(1);
-        world.step(1 / 60f, 6, 2);
-
     }
 
     @Override

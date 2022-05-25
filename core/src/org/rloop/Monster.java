@@ -24,6 +24,10 @@ public abstract class Monster {
     float speedMonst;
     float hpMonst;
 
+
+    void update() {
+
+    }
     void render(){}
     void definePhysics(){}
     void renderPaused(){}

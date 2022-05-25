@@ -29,6 +29,7 @@ public class rloop extends Game {
 		return batch;
 	}
 	public OurMusic getOurMusic() { return ourMusic; }
+	public GameScreen getMainScreen() { return mainScreen; }
 
 	@Override
 	public void dispose () {

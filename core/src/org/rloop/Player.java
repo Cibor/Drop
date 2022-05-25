@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Player {
     protected Body body;
@@ -76,24 +77,21 @@ public class Player {
         fixture.setUserData(this);
         square.dispose();
     }
-    public void render(){
+
+    public void update() {
         this.setX(this.getBody().getPosition().x);
         this.setY(this.getBody().getPosition().y);
-        TextureRegion currentFrame = walkAnimation.get(direction).getKeyFrame(stateTime, true);
-        this.level.getCamera().update();
-        this.level.getViewport().apply();
-        this.level.getGame().getBatch().setProjectionMatrix(level.getCamera().combined);
-        this.level.getGame().getBatch().begin();
-        level.getGame().getBatch().draw(currentFrame, x - 1, y - 1, 2, 2);
-        this.level.getGame().getBatch().end();
+
+        calculateDamage();
 
         stateTime += Gdx.graphics.getDeltaTime();
 
-        float velx = getBody().getLinearVelocity().x;
-        float vely = getBody().getLinearVelocity().y;
         Vector2 vel = this.getBody().getLinearVelocity();
 
-        if (velx == 0 && vely == 0) {
+        if (vel.x == 0 && vel.y == 0) {
+            stateTime = 0;
+        }
+        if (vel.x != getBody().getLinearVelocity().x && vel.y != getBody().getLinearVelocity().y) {
             stateTime = 0;
         }
 
@@ -103,37 +101,30 @@ public class Player {
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             this.setDirection(3);
-            velx = (-7.5f) * statSpeed;
-        } else if (velx == (-7.5f) * statSpeed) {
-            velx = 0;
+            vel.x = (-7.5f) * statSpeed;
+        } else if (vel.x == (-7.5f) * statSpeed) {
+            vel.x = 0;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             this.setDirection(2);
-            velx = (7.5f) * statSpeed;
-        } else if (velx == (7.5f) * statSpeed) {
-            velx = 0;
+            vel.x = (7.5f) * statSpeed;
+        } else if (vel.x == (7.5f) * statSpeed) {
+            vel.x = 0;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.W) && vel.y > -MAX_VELOCITY) {
             this.setDirection(0);
-            vely = (7.5f) * statSpeed;
-        } else if (vely == (7.5f) * statSpeed) {
-            vely = 0;
+            vel.y = (7.5f) * statSpeed;
+        } else if (vel.y == (7.5f) * statSpeed) {
+            vel.y = 0;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S) && vel.y < MAX_VELOCITY) {
             this.setDirection(1);
-            vely = (-7.5f) * statSpeed;
-        } else if (vely == (-7.5f) * statSpeed) {
-            vely = 0;
-        }
-
-        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
-            if(attackCoolDown == 0){
-                attackCoolDown = Math.round(playerWeapon.getWeaponAttackSpeed() * 1);
-                playerWeapon.attack(this, Gdx.input.getX(), Gdx.input.getY());
-            }
+            vel.y = (-7.5f) * statSpeed;
+        } else if (vel.y == (-7.5f) * statSpeed) {
+            vel.y = 0;
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.U)){
@@ -144,11 +135,74 @@ public class Player {
             statCurrentHP -= 0.02f;
         }
 
-        if (velx != getBody().getLinearVelocity().x && vely != getBody().getLinearVelocity().y) {
-            stateTime = 0;
-        }
+        this.getBody().setLinearVelocity(vel);
 
-        this.getBody().setLinearVelocity(velx, vely);
+        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
+            if(attackCoolDown == 0){
+                attackCoolDown = Math.round(playerWeapon.getWeaponAttackSpeed() * 1);
+                playerWeapon.attack(this, Gdx.input.getX(), Gdx.input.getY());
+            }
+        }
+    }
+
+    TextureRegion currentFrame;
+    public void render(){
+        currentFrame = walkAnimation.get(direction).getKeyFrame(stateTime, true);
+        this.level.getCamera().update();
+        this.level.getViewport().apply();
+        this.level.getGame().getBatch().setProjectionMatrix(level.getCamera().combined);
+        this.level.getGame().getBatch().begin();
+        level.getGame().getBatch().draw(currentFrame, x - 1, y - 1, 2, 2);
+        this.level.getGame().getBatch().end();
+    }
+
+//    void renderPaused(){
+//        this.setX(this.getBody().getPosition().x);
+//        this.setY(this.getBody().getPosition().y);
+//        float velx = getBody().getLinearVelocity().x;
+//        float vely = getBody().getLinearVelocity().y;
+//        if (velx == 0 && vely == 0) {
+//            stateTime = 0;
+//        }
+//        TextureRegion currentFrame = walkAnimation.get(direction).getKeyFrame(stateTime, true);
+//        this.level.getCamera().update();
+//        this.level.getViewport().apply();
+//        this.level.getGame().getBatch().setProjectionMatrix(level.getCamera().combined);
+//        this.level.getGame().getBatch().begin();
+//        level.getGame().getBatch().draw(currentFrame, x - 1, y - 1, 2, 2);
+//        this.level.getGame().getBatch().end();
+//    }
+
+
+    HashSet<DamageMaker> damageMakers = new HashSet<>();
+
+    void addDamageMaker(DamageMaker damageMaker) {
+        damageMakers.add(damageMaker);
+    }
+    void removeDamageMaker(DamageMaker damageMaker) {
+        damageMakers.remove(damageMaker);
+    }
+    long immuneTime = 1000;
+    long lastDamaged = System.currentTimeMillis();
+
+    public boolean isImmune(){
+        return (System.currentTimeMillis() - lastDamaged < immuneTime);
+    }
+
+    public void makeImmune() {
+        lastDamaged = System.currentTimeMillis();
+    }
+
+    public void calculateDamage() {
+        System.out.print(System.currentTimeMillis() - lastDamaged);
+        System.out.print(" ");
+        System.out.println(isImmune());
+//        System.out.println(System.currentTimeMillis());
+        if (!isImmune()) {
+            for (DamageMaker damageMaker: damageMakers)
+                damageMaker.makeDamage(this);
+            makeImmune();
+        }
     }
 
     public void setX(float x){
@@ -170,32 +224,6 @@ public class Player {
     public void getHit(float hit){
         statCurrentHP -= hit;
     }
-
-    public boolean isImmune(){
-        return damageImmune > 0;
-    }
-
-    public void makeImmune(){
-        damageImmune = 120;
-    }
-
-    void renderPaused(){
-        this.setX(this.getBody().getPosition().x);
-        this.setY(this.getBody().getPosition().y);
-        float velx = getBody().getLinearVelocity().x;
-        float vely = getBody().getLinearVelocity().y;
-        if (velx == 0 && vely == 0) {
-            stateTime = 0;
-        }
-        TextureRegion currentFrame = walkAnimation.get(direction).getKeyFrame(stateTime, true);
-        this.level.getCamera().update();
-        this.level.getViewport().apply();
-        this.level.getGame().getBatch().setProjectionMatrix(level.getCamera().combined);
-        this.level.getGame().getBatch().begin();
-        level.getGame().getBatch().draw(currentFrame, x - 1, y - 1, 2, 2);
-        this.level.getGame().getBatch().end();
-    }
-
 }
 
 

@@ -14,13 +14,11 @@ import org.rloop.Tiles.Spikes;
 
 import java.util.ArrayList;
 
-import static java.lang.Math.abs;
-
-public class ChasingMonster extends Monster{
+public class ChasingMonster extends Monster implements DamageMaker {
 
     int damageImmune = 0;
 
-    public ChasingMonster(float x, float y, Level level, Player player){
+    public ChasingMonster(float x, float y, Level level, Player player) {
         this.player = player;
         this.level = level;
         this.x = x;
@@ -36,7 +34,7 @@ public class ChasingMonster extends Monster{
                 texture.getWidth() / 4,
                 texture.getHeight() / 4);
         walkAnimation = new ArrayList<>();
-        for(int i=0;i<4;i++){
+        for (int i = 0; i < 4; i++) {
             walkAnimation.add(new Animation<>(0.25f, tmp[i]));
         }
 
@@ -44,7 +42,7 @@ public class ChasingMonster extends Monster{
     }
 
     @Override
-    public void definePhysics(){
+    public void definePhysics() {
 
         BodyDef def = new BodyDef();
         def.fixedRotation = true;
@@ -56,7 +54,7 @@ public class ChasingMonster extends Monster{
         square.setAsBox(0.65f, 0.85f);
         FixtureDef fixtureDef = new FixtureDef();
 
-        fixtureDef.shape = square ;
+        fixtureDef.shape = square;
         fixtureDef.density = 0.5f;
         fixtureDef.friction = 0.2f;
         fixtureDef.restitution = 0f;
@@ -65,8 +63,9 @@ public class ChasingMonster extends Monster{
         fixture.setUserData(this);
         square.dispose();
     }
+
     @Override
-    public void render(){
+    public void render() {
         this.setX(this.getBody().getPosition().x);
         this.setY(this.getBody().getPosition().y);
         TextureRegion currentFrame = walkAnimation.get(direction).getKeyFrame(stateTime, true);
@@ -79,8 +78,8 @@ public class ChasingMonster extends Monster{
 
         stateTime += Gdx.graphics.getDeltaTime();
 
-        if(this.isImmune()){
-            damageImmune --;
+        if (this.isImmune()) {
+            damageImmune--;
         }
 
         float playerX = this.player.getBody().getPosition().x;
@@ -88,17 +87,17 @@ public class ChasingMonster extends Monster{
         float myX = this.getBody().getPosition().x;
         float myY = this.getBody().getPosition().y;
 
-        Vector2 direction = new Vector2(playerX-myX, playerY-myY);
+        Vector2 direction = new Vector2(playerX - myX, playerY - myY);
 
-        for(Spikes spike: level.spikesTiles){
-            if(spike.isHiddenOne){
+        for (Spikes spike : level.spikesTiles) {
+            if (spike.isHiddenOne) {
                 HiddenSpikes curSpike = (HiddenSpikes) spike;
-                if(curSpike.isHidden){
+                if (curSpike.isHidden) {
                     continue;
                 }
             }
-            if(this.x >= spike.getX() - 1 && this.x <= spike.getX() + 1 && this.y >= spike.getY() - 1 && this.y <= spike.getY() + 1 ){
-                if(!this.isImmune()){
+            if (this.x >= spike.getX() - 1 && this.x <= spike.getX() + 1 && this.y >= spike.getY() - 1 && this.y <= spike.getY() + 1) {
+                if (!this.isImmune()) {
                     this.getHit(0.1f);
                     //Gdx.audio.newSound(Gdx.files.internal("music/DamageSound.mp3")).play(room.getGame().GlobalAudioSound);
                     this.makeImmune();
@@ -126,15 +125,16 @@ public class ChasingMonster extends Monster{
         direction.y *= Math.sqrt(kaf);
         this.getBody().setLinearVelocity(direction);
     }
-    public void setX(float x){
+
+    public void setX(float x) {
         this.x = x;
     }
 
-    public void setY(float y){
+    public void setY(float y) {
         this.y = y;
     }
 
-    public void setDirection(int y){
+    public void setDirection(int y) {
         this.direction = y;
     }
 
@@ -142,23 +142,23 @@ public class ChasingMonster extends Monster{
         return body;
     }
 
-    public void getHit(float hit){
+    public void getHit(float hit) {
         hpMonst -= hit;
-        if(hpMonst <= 0){
+        if (hpMonst <= 0) {
             level.game.mainScreen.monstersDied.add(this);
         }
     }
 
-    public boolean isImmune(){
+    public boolean isImmune() {
         return damageImmune > 0;
     }
 
-    public void makeImmune(){
+    public void makeImmune() {
         damageImmune = 60;
     }
 
 
-    void renderPaused(){
+    void renderPaused() {
         this.setX(this.getBody().getPosition().x);
         this.setY(this.getBody().getPosition().y);
         float velx = getBody().getLinearVelocity().x;
@@ -175,4 +175,9 @@ public class ChasingMonster extends Monster{
         this.level.getGame().getBatch().end();
     }
 
+    @Override
+    public void makeDamage(Player player) {
+        player.getHit(damageMonst);
+        level.getGame().getOurMusic().dmgSound.play(level.getGame().getOurMusic().getSoundVolume());
+    }
 }
