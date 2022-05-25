@@ -54,7 +54,7 @@ public class GameScreen extends ScreenAdapter {
         currentLevel = new Level(world, game, viewport, levelBuilder.generateRoom());
 
         //adding player
-        Vector2 p = currentLevel.getPlayerPosition();
+        Vector2 p = currentLevel.getPositionOfSomething();
         player = new Player(p.x,p.y, currentLevel);
         pos = this.player.getBody().getPosition();
 
