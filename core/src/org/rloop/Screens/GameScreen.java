@@ -35,6 +35,10 @@ public class GameScreen extends ScreenAdapter {
     public HashSet<Monster> monsters;
     public HashSet<Monster> monstersNotRender;
     public HashSet<Monster> monstersDied;
+    public HashSet<Projectiles> projectiles;
+    public HashSet<Projectiles> projectilesNotRender;
+    public HashSet<Projectiles> projectilesDied;
+
 
     Level currentLevel;
 
@@ -62,8 +66,13 @@ public class GameScreen extends ScreenAdapter {
         monsters = new HashSet<>();
         monstersNotRender = new HashSet<>();
         monstersDied = new HashSet<>();
-        monsters.add(new ChasingMonster(-1,-1, currentLevel,player));
-        monsters.add(new ShootingMonster(-3, -3, currentLevel, player));
+
+        projectiles = new HashSet<>();
+        projectilesNotRender = new HashSet<>();
+        projectilesDied = new HashSet<>();
+
+       // monsters.add(new ChasingMonster(-1,-1, currentLevel,player));
+      //  monsters.add(new ShootingMonster(-3, -3, currentLevel, player));
 
         monsters.add(new ShootingMonsterProjectile(-2, -2, currentLevel, this.player, new Vector2(1,1), 180));
         //monsters.add(new ShootingMonsterProjectile(-2, -2, currentRoom, this.player, new Vector2(1,1), 243));
@@ -103,6 +112,16 @@ public class GameScreen extends ScreenAdapter {
         }
         monstersDied.clear();
 
+        for(Projectiles projectile: projectiles){
+            projectile.update(x);
+        }
+
+        for(Projectiles projectile: projectilesDied){
+            projectile.body.getWorld().destroyBody(projectile.body);
+            projectiles.remove(projectile);
+        }
+        projectilesDied.clear();
+
         world.step(1 / 60f, 6, 2);
     }
 
@@ -113,14 +132,27 @@ public class GameScreen extends ScreenAdapter {
 
         //rendering monsters
         for(Monster monster: monsters){
+            //System.out.println(monster.toString());
             monster.render();
         }
         for(Monster monster: monstersNotRender){
+            //System.out.println(monster.toString());
             monster.render();
             monsters.add(monster);
         }
 
         monstersNotRender.clear();
+
+
+        for(Projectiles projectile: projectiles){
+            projectile.render();
+        }
+        for(Projectiles projectile: projectilesNotRender){
+            projectile.render();
+            projectiles.add(projectile);
+        }
+
+        projectilesNotRender.clear();
 
         gameScreenStage.update(this);
         gameScreenStage.getCurrentStage().act();

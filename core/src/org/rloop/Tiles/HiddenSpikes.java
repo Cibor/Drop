@@ -5,7 +5,7 @@ import org.rloop.Level;
 import org.rloop.Player;
 import org.rloop.Resources;
 
-public class HiddenSpikes extends Spikes{
+public class HiddenSpikes extends Spikes {
     public boolean isHidden = false;
 
     int hideCountDown = 150;
@@ -38,7 +38,7 @@ public class HiddenSpikes extends Spikes{
         }
     }
     @Override
-    public void makeDamage(Player player) {
+    public void makeDamagePlayer(Player player) {
         if (!isHidden) {
             player.getHit(0.05f);
             level.getGame().getOurMusic().dmgSound.play(level.getGame().getOurMusic().getSoundVolume());

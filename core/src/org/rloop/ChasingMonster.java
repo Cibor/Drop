@@ -14,7 +14,7 @@ import org.rloop.Tiles.Spikes;
 
 import java.util.ArrayList;
 
-public class ChasingMonster extends Monster implements DamageMaker {
+public class ChasingMonster extends Monster implements DamageMakerPlayer {
 
     int damageImmune = 0;
 
@@ -176,7 +176,7 @@ public class ChasingMonster extends Monster implements DamageMaker {
     }
 
     @Override
-    public void makeDamage(Player player) {
+    public void makeDamagePlayer(Player player) {
         player.getHit(damageMonst);
         level.getGame().getOurMusic().dmgSound.play(level.getGame().getOurMusic().getSoundVolume());
     }

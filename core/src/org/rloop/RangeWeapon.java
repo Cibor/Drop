@@ -14,7 +14,6 @@ public class RangeWeapon extends Weapon{
         @Override
         public void attack(Player player, float cursorX, float cursorY){
 
-            System.out.println(cursorX + " " + cursorY);
             float playerX = Gdx.graphics.getWidth() * 1f/2;
             float playerY = Gdx.graphics.getHeight() * 1f/2;
 

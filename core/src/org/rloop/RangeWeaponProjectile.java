@@ -15,7 +15,7 @@ public class RangeWeaponProjectile extends ShootingMonsterProjectile{
     }
 
     @Override
-    public void makeDamage(Player player){
+    public void makeDamagePlayer(Player player){
 
     }
 }

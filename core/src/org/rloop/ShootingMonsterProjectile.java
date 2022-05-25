@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 import static java.lang.Math.abs;
 
-public class ShootingMonsterProjectile extends Monster implements DamageMaker{
+public class ShootingMonsterProjectile extends Monster implements DamageMakerPlayer{
 
     Vector2 direction;
 
@@ -76,7 +76,6 @@ public class ShootingMonsterProjectile extends Monster implements DamageMaker{
         this.level.getGame().getBatch().begin();
 
         level.getGame().getBatch().draw(new TextureRegion(texture), x - 1, y - 1, 1, 1, 2, 2, 1, 1, angle);
-        System.out.println(direction.x + " " + direction.y + this.toString());
         this.level.getGame().getBatch().end();
 
         stateTime += Gdx.graphics.getDeltaTime();
@@ -114,7 +113,7 @@ public class ShootingMonsterProjectile extends Monster implements DamageMaker{
     }
 
     @Override
-    public void makeDamage(Player player) {
+    public void makeDamagePlayer(Player player) {
         player.getHit(damageMonst);
         level.getGame().getOurMusic().dmgSound.play(level.getGame().getOurMusic().getSoundVolume());
     }
