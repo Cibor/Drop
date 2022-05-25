@@ -7,6 +7,7 @@ public class rloop extends Game {
 	SpriteBatch batch;
 
 	public OurMusic ourMusic;
+	public Resources resources;
 
 	public float GlobalAudioSound = 100;
 
@@ -16,6 +17,8 @@ public class rloop extends Game {
 	public void create () {
 		batch = new SpriteBatch();
 		ourMusic = new OurMusic();
+		resources = new Resources();
+
 		this.setScreen(new MainMenuScreen(this));
 	}
 
@@ -32,5 +35,7 @@ public class rloop extends Game {
 	@Override
 	public void dispose () {
 		batch.dispose();
+		ourMusic.dispose();
+
 	}
 }

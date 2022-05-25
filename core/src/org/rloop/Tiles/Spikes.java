@@ -11,7 +11,7 @@ public class Spikes extends Tile{
     public boolean isHiddenOne = false;
 
     public Spikes(int x, int y, Level level) {
-        super(Resources.spikes, false, x, y, level);
+        super(level.getGame().resources.spikes, false, x, y, level);
     }
 
     @Override

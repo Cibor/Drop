@@ -25,9 +25,9 @@ public class HiddenSpikes extends Spikes{
         if (hideCountDown == 0) {
             isHidden = !isHidden;
             if (isHidden)
-                texture = Resources.spikes;
+                texture = level.getGame().resources.spikes;
             else
-                texture = Resources.hiddenSpikes;
+                texture = level.getGame().resources.hiddenSpikes;
             hideCountDown = 150;
         }
 

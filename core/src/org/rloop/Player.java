@@ -57,7 +57,6 @@ public class Player {
     }
 
     void definePhysics(){
-
         BodyDef def = new BodyDef();
         def.fixedRotation = true;
         def.type = BodyDef.BodyType.DynamicBody;

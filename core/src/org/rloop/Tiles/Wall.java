@@ -6,6 +6,6 @@ import org.rloop.Resources;
 
 public class Wall extends Tile {
     public Wall(int x, int y, Level level) {
-        super(Resources.water, true, x, y, level);
+        super(level.getGame().resources.water, true, x, y, level);
     }
 }

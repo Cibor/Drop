@@ -6,6 +6,6 @@ import org.rloop.Resources;
 
 public class Floor extends Tile{
     public Floor(int x, int y, Level level) {
-        super(Resources.stoneFloor, false, x, y, level);
+        super(level.getGame().resources.stoneFloor, false, x, y, level);
     }
 }
