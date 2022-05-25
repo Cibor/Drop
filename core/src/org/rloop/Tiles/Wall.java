@@ -5,7 +5,7 @@ import org.rloop.Level;
 import org.rloop.Resources;
 
 public class Wall extends Tile {
-    public Wall(int x, int y, Level level) {
-        super(level.getGame().resources.water, true, x, y, level);
+    public Wall(int x, int y, Level level, int firstIndexOfTexture, int secondIndexOfTexture) {
+        super(level.getGame().resources.walls[firstIndexOfTexture][secondIndexOfTexture], true, x, y, level);
     }
 }
