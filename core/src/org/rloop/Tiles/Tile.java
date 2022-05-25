@@ -1,6 +1,7 @@
 package org.rloop.Tiles;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -19,8 +20,25 @@ public abstract class Tile {
 
     final protected Level level;
 
+    TextureRegion textureRegion;
+
+    boolean isTextureRegionTile = false;
+
     public Tile(Texture texture, boolean isBarrier, int x, int y, Level level){
         this.texture = texture;
+        this.isBarrier = isBarrier;
+
+        this.x = x;
+        this.y = y;
+
+        this.level = level;
+
+        if (this.isBarrier)
+            createBarrier();
+    }
+    public Tile(TextureRegion texture, boolean isBarrier, int x, int y, Level level){
+        isTextureRegionTile = true;
+        this.textureRegion = texture;
         this.isBarrier = isBarrier;
 
         this.x = x;
@@ -44,7 +62,11 @@ public abstract class Tile {
     }
 
     public void render() {
-        level.getGame().getBatch().draw(texture, x-1, y-1, 2*WIDTH, 2*HEIGHT);
+        if(!isTextureRegionTile) {
+            level.getGame().getBatch().draw(texture, x - 1, y - 1, 2 * WIDTH, 2 * HEIGHT);
+        }else{
+            level.getGame().getBatch().draw(textureRegion, x - 1, y - 1, 2 * WIDTH, 2 * HEIGHT);
+        }
     }
 
     public void update(){}
