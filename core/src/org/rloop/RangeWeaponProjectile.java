@@ -14,4 +14,8 @@ public class RangeWeaponProjectile extends ShootingMonsterProjectile{
         texture = projTexture;
     }
 
+    @Override
+    public void makeDamage(Player player){
+
+    }
 }

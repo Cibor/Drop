@@ -47,6 +47,8 @@ public abstract class Tile {
         level.getGame().getBatch().draw(texture, x-1, y-1, 2*WIDTH, 2*HEIGHT);
     }
 
+    public void update(){}
+
     public float getX(){
         return x;
     }

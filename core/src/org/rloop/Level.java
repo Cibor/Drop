@@ -107,7 +107,7 @@ public class Level {
         this.getGame().getBatch().setProjectionMatrix(this.getCamera().combined);
         this.getGame().getBatch().begin();
         for(Tile tile: wallTiles){
-                tile.render();
+            tile.render();
         }
         for(Tile tile: floorTiles){
             tile.render();
@@ -116,6 +116,18 @@ public class Level {
             tile.render();
         }
         this.getGame().getBatch().end();
+    }
+
+    public void update(){
+        for(Tile tile: wallTiles){
+            tile.update();
+        }
+        for(Tile tile: floorTiles){
+            tile.update();
+        }
+        for(Tile tile: spikesTiles){
+            tile.update();
+        }
     }
 
     public Vector2 getPlayerPosition(){

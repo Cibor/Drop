@@ -176,32 +176,24 @@ public class Player {
 
     HashSet<DamageMaker> damageMakers = new HashSet<>();
 
-    void addDamageMaker(DamageMaker damageMaker) {
+    public void addDamageMaker(DamageMaker damageMaker) {
         damageMakers.add(damageMaker);
     }
-    void removeDamageMaker(DamageMaker damageMaker) {
+    public void removeDamageMaker(DamageMaker damageMaker) {
         damageMakers.remove(damageMaker);
     }
     long immuneTime = 1000;
     long lastDamaged = System.currentTimeMillis();
 
-    public boolean isImmune(){
+    private boolean isImmune(){
         return (System.currentTimeMillis() - lastDamaged < immuneTime);
     }
 
-    public void makeImmune() {
-        lastDamaged = System.currentTimeMillis();
-    }
-
     public void calculateDamage() {
-        System.out.print(System.currentTimeMillis() - lastDamaged);
-        System.out.print(" ");
-        System.out.println(isImmune());
-//        System.out.println(System.currentTimeMillis());
-        if (!isImmune()) {
+        if (!isImmune() && !damageMakers.isEmpty()) {
             for (DamageMaker damageMaker: damageMakers)
                 damageMaker.makeDamage(this);
-            makeImmune();
+            lastDamaged = System.currentTimeMillis();
         }
     }
 

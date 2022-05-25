@@ -79,17 +79,12 @@ public class GameScreen extends ScreenAdapter {
         if(!paused) {
             update(x);
             justRender(x);
-
-            if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
-                paused = !paused;
-            }
         } else{
             justRender(x);
             renderPauseScreen();
-
-            if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
-                paused = !paused;
-            }
+        }
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
+            paused = !paused;
         }
     }
 
@@ -98,6 +93,7 @@ public class GameScreen extends ScreenAdapter {
         camera.position.x = player.x;
         camera.position.y = player.y;
 
+        currentLevel.update();
         //clearing monsters
         for(Monster monster: monstersDied){
             monster.body.getWorld().destroyBody(monster.body);
@@ -122,6 +118,8 @@ public class GameScreen extends ScreenAdapter {
             monsters.add(monster);
         }
 
+        monstersNotRender.clear();
+
         gameScreenStage.update(this);
         gameScreenStage.currentStage.act();
         gameScreenStage.currentStage.draw();
@@ -143,142 +141,6 @@ public class GameScreen extends ScreenAdapter {
 
         pauseStage.act();
         pauseStage.draw();
-    }
-
-    void renderPaused(float x){
-        currentLevel.render();
-        this.player.render();
-
-        for(Monster monster: monsters){
-            monster.renderPaused();
-        }
-
-        for(Monster monster: monstersNotRender){
-            monster.renderPaused();
-            monsters.add(monster);
-        }
-
-        for(Monster monster: monstersDied){
-            monster.body.getWorld().destroyBody(monster.body);
-            monsters.remove(monster);
-        }
-        monstersDied.clear();
-
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0,0,0,0.5f);
-        shapeRenderer.rect(0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        shapeRenderer.end();
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-        Gdx.input.setInputProcessor(pauseStage);
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
-            paused = false;
-        }
-
-        pauseStage.act();
-        pauseStage.draw();
-    }
-
-    void renderUnpaused(float x){
-        stateTime += Gdx.graphics.getDeltaTime();
-        ScreenUtils.clear(0, 0, 0, 1);
-
-        currentLevel.render();
-        player.render();
-
-        for(Monster monster: monstersDied){
-            monster.body.getWorld().destroyBody(monster.body);
-            if(monsters.contains(monster))
-                monsters.remove(monster);
-        }
-
-        for(Monster monster: monsters){
-           monster.render();
-        }
-        for(Monster monster: monstersNotRender){
-            monster.render();
-            monsters.add(monster);
-        }
-
-        monstersDied.clear();
-
-        monstersNotRender.clear();
-
-        camera.position.x = player.x;
-        camera.position.y = player.y;
-//        for(Contact curCon : world.getContactList()){
-//            Fixture fa = curCon.getFixtureA();
-//            Fixture fb = curCon.getFixtureB();
-//            if(fa == null || fb == null){
-//                continue;
-//            }
-//            if(fa.getUserData() == null || fb.getUserData() == null){
-//               continue;
-//            }
-//            if((fa.getUserData().getClass() == Player.class && fb.getUserData().getClass() == ChasingMonster.class) || (fb.getUserData().getClass() == Player.class && fa.getUserData().getClass() == ChasingMonster.class)) {
-//                Player curPlayer;
-//                ChasingMonster curMonster;
-//                if (fb.getUserData().getClass() == Player.class) {
-//                    curPlayer = (Player) fb.getUserData();
-//                    curMonster = (ChasingMonster) fa.getUserData();
-//                } else {
-//                    curPlayer = (Player) fa.getUserData();
-//                    curMonster = (ChasingMonster) fb.getUserData();
-//                }
-//                if (!curPlayer.isImmune()) {
-//                    curPlayer.getHit(curMonster.damageMonst);
-//                    curPlayer.makeImmune();
-//                    game.getOurMusic().dmgSound.play(game.getOurMusic().getSoundVolume());
-//                }
-//            }
-//            else
-//            if((fa.getUserData().getClass() == Player.class && fb.getUserData().getClass() == ShootingMonsterProjectile.class) || (fb.getUserData().getClass() == Player.class && fa.getUserData().getClass() == ShootingMonsterProjectile.class)) {
-//                Player curPlayer;
-//                ShootingMonsterProjectile curMonster;
-//                if (fb.getUserData().getClass() == Player.class) {
-//                    curPlayer = (Player) fb.getUserData();
-//                    curMonster = (ShootingMonsterProjectile) fa.getUserData();
-//                } else {
-//                    curPlayer = (Player) fa.getUserData();
-//                    curMonster = (ShootingMonsterProjectile) fb.getUserData();
-//                }
-//
-//                if (!curPlayer.isImmune()){
-//                    curPlayer.getHit(curMonster.damageMonst);
-//                    curPlayer.makeImmune();
-//                    game.getOurMusic().dmgSound.play(game.getOurMusic().getSoundVolume());
-//                }
-//
-//                curMonster.getBody().getWorld().destroyBody(curMonster.getBody());
-//                monsters.remove(curMonster);
-//            }
-//            else if ((fa.getUserData().getClass() == Wall.class && fb.getUserData().getClass() == ShootingMonsterProjectile.class) || (fb.getUserData().getClass() == Wall.class && fa.getUserData().getClass() == ShootingMonsterProjectile.class)){
-//                Wall curWall;
-//                ShootingMonsterProjectile curMonster;
-//                if(fb.getUserData().getClass() == Wall.class) {
-//                    curWall = (Wall) fb.getUserData();
-//                    curMonster = (ShootingMonsterProjectile) fa.getUserData();
-//                }
-//                else{
-//                    curWall = (Wall) fa.getUserData();
-//                    curMonster = (ShootingMonsterProjectile) fb.getUserData();
-//                }
-//
-//                curMonster.getBody().getWorld().destroyBody(curMonster.getBody());
-//                monsters.remove(curMonster);
-//            }
-//        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            this.paused = true;
-        }
-        gameScreenStage.update(this);
-        gameScreenStage.currentStage.act();
-        gameScreenStage.currentStage.draw();
-
-        debugRenderer.render(world, camera.combined);
     }
 
     @Override

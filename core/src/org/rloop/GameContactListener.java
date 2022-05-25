@@ -106,6 +106,9 @@ public class GameContactListener implements ContactListener {
                 damageMaker = (DamageMaker) fa.getUserData();
             }
             player.addDamageMaker(damageMaker);
+            if(damageMaker instanceof ShootingMonsterProjectile && ! (damageMaker instanceof RangeWeaponProjectile)){
+                game.mainScreen.monstersDied.add((Monster) damageMaker);
+            }
         }
     }
 
