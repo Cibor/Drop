@@ -39,7 +39,7 @@ public class GameScreen extends ScreenAdapter {
 
     HashSet<Monster> monsters;
     HashSet<Monster> monstersNotRender;
-    ArrayList<Monster> monstersDied;
+    HashSet<Monster> monstersDied;
 
     Room currentRoom;
 
@@ -91,9 +91,9 @@ public class GameScreen extends ScreenAdapter {
         //adding monsters
         monsters = new HashSet<>();
         monstersNotRender = new HashSet<>();
-        monstersDied = new ArrayList<>();
+        monstersDied = new HashSet<>();
         monsters.add(new ChasingMonster(-1,-1,currentRoom,player));
-        monsters.add(new ShootingMonster(-3, -3, currentRoom, player));
+       // monsters.add(new ShootingMonster(-3, -3, currentRoom, player));
 
         monsters.add(new ShootingMonsterProjectile(-2, -2, currentRoom, this.player, new Vector2(1,1), 180));
         //monsters.add(new ShootingMonsterProjectile(-2, -2, currentRoom, this.player, new Vector2(1,1), 243));
@@ -153,25 +153,27 @@ public class GameScreen extends ScreenAdapter {
     }
 
     void renderUnpaused(){
+        System.out.println(2);
         stateTime += Gdx.graphics.getDeltaTime();
         ScreenUtils.clear(0, 0, 0, 1);
 
         currentRoom.render();
         player.render();
 
+        for(Monster monster: monstersDied){
+            monster.body.getWorld().destroyBody(monster.body);
+            if(monsters.contains(monster))
+                monsters.remove(monster);
+        }
+
         for(Monster monster: monsters){
            monster.render();
         }
-
         for(Monster monster: monstersNotRender){
             monster.render();
             monsters.add(monster);
         }
 
-        for(Monster monster: monstersDied){
-            monster.body.getWorld().destroyBody(monster.body);
-            monsters.remove(monster);
-        }
         monstersDied.clear();
 
         monstersNotRender.clear();
@@ -243,12 +245,8 @@ public class GameScreen extends ScreenAdapter {
         if(player.isImmune())
         player.damageImmune--;
 
-        if(player.statCurrentHP == 0){
-
-        }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            System.out.println(1);
             this.paused = true;
         }
         gameScreenStage.update(this);
@@ -256,7 +254,9 @@ public class GameScreen extends ScreenAdapter {
         gameScreenStage.currentStage.draw();
 
         debugRenderer.render(world, camera.combined);
+        System.out.println(1);
         world.step(1 / 60f, 6, 2);
+
     }
 
     @Override

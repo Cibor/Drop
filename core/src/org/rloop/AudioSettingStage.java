@@ -24,7 +24,6 @@ public class AudioSettingStage extends Stage {
         tab.background(backScreen);
 
         Window window = new Window("", skin);
-        System.out.println(Util.monitorResolutionX(1800));
         window.setBounds(Util.monitorResolutionX(1920/2 - 900), Util.monitorResolutionX(40), Util.monitorResolutionX(1800), Util.monitorResolutionY(1000));
         window.setTouchable(null);
         window.setMovable(false);

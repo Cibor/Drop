@@ -23,6 +23,8 @@ public class ShootingMonsterProjectile extends Monster{
 
     Texture texture;
 
+    static Texture prTexture = new Texture("ProjectileTexture.png");
+
     public ShootingMonsterProjectile(float x, float y, Room room, Player player, Vector2 direction, float angle){
         this.player = player;
         this.room = room;
@@ -41,10 +43,8 @@ public class ShootingMonsterProjectile extends Monster{
         direction.y *= Math.sqrt(kaf);
 
         stateTime = 0;
-        texture = new Texture("ProjectileTexture.png");  //TODO: change Texture
+        texture = prTexture;
         definePhysics();
-
-
     }
     @Override
     public void definePhysics(){
@@ -77,7 +77,9 @@ public class ShootingMonsterProjectile extends Monster{
         this.room.getViewport().apply();
         this.room.getGame().getBatch().setProjectionMatrix(room.getCamera().combined);
         this.room.getGame().getBatch().begin();
+
         room.getGame().getBatch().draw(new TextureRegion(texture), x - 1, y - 1, 1, 1, 2, 2, 1, 1, angle);
+        System.out.println(direction.x + " " + direction.y + this.toString());
         this.room.getGame().getBatch().end();
 
         stateTime += Gdx.graphics.getDeltaTime();

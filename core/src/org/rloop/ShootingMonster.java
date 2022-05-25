@@ -82,7 +82,9 @@ public class ShootingMonster extends Monster{
 
         stateTime += Gdx.graphics.getDeltaTime();
 
-        damageImmune--;
+        if( this.isImmune()){
+            damageImmune --;
+        }
 
         float playerX = this.player.getBody().getPosition().x;
         float playerY = this.player.getBody().getPosition().y;
@@ -134,12 +136,7 @@ public class ShootingMonster extends Monster{
         else{
             this.getBody().setLinearVelocity(new Vector2(0, 0));
             if(spellCastCount == 0) {
-                try {
-                    room.game.mainScreen.monstersNotRender.add(new ShootingMonsterProjectile((float) (this.x + (direction.x/ abs(direction.x)) * 0.7), (float) (this.y + (direction.y/ abs(direction.y)) * 0.7), this.room, this.player, directionCopy, angle));
-                }catch (Throwable e){
-                    System.out.println(e);
-
-                }
+                room.game.mainScreen.monstersNotRender.add(new ShootingMonsterProjectile(this.x , this.y , this.room, this.player, directionCopy, angle));
                 spellCastCount = 240;
             }
         }

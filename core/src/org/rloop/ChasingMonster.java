@@ -81,6 +81,10 @@ public class ChasingMonster extends Monster{
 
         stateTime += Gdx.graphics.getDeltaTime();
 
+        if(this.isImmune()){
+            damageImmune --;
+        }
+
         float playerX = this.player.getBody().getPosition().x;
         float playerY = this.player.getBody().getPosition().y;
         float myX = this.getBody().getPosition().x;
@@ -152,7 +156,7 @@ public class ChasingMonster extends Monster{
     }
 
     public void makeImmune(){
-        damageImmune = 120;
+        damageImmune = 60;
     }
 
 
