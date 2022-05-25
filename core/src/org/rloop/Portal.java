@@ -1,7 +1,6 @@
 package org.rloop;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class Portal {
@@ -10,12 +9,12 @@ public class Portal {
     Texture texture;
     int x;
     int y;
-    Room start, end;
+    Level start, end;
     Body body;
     Fixture fixture;
 
 
-    public Portal(int x, int y, Room start, Room end){
+    public Portal(int x, int y, Level start, Level end){
         this.texture = texture;
         this.x = x;
         this.y = y;

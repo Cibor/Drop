@@ -3,8 +3,6 @@ package org.rloop;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
-import java.awt.*;
-
 public class RangeWeapon extends Weapon{
         float projectileSpeed;
 
@@ -24,7 +22,7 @@ public class RangeWeapon extends Weapon{
 
             float angle = (float) Util.GetAngle(playerX, cursorY, cursorX, playerY); angle += 180;
 
-            RangeWeaponProjectile proj = new RangeWeaponProjectile(player.x, player.y, player.room, player, direction, angle);
+            RangeWeaponProjectile proj = new RangeWeaponProjectile(player.x, player.y, player.level, player, direction, angle);
 
 
             proj.damageMonst = this.weaponDamage;
@@ -32,6 +30,6 @@ public class RangeWeapon extends Weapon{
             proj.speedMonst = this.projectileSpeed;
 
 
-            player.room.game.mainScreen.monstersNotRender.add(proj);
+            player.level.game.mainScreen.monstersNotRender.add(proj);
         }
 }

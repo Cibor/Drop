@@ -1,9 +1,7 @@
 package org.rloop.Tiles;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import org.rloop.Player;
-import org.rloop.Room;
+import org.rloop.Level;
 
 public class HiddenSpikes extends Spikes{
     public boolean isHidden = false;
@@ -13,8 +11,8 @@ public class HiddenSpikes extends Spikes{
 
     static Texture hiddenOne = new Texture("pixil-frame-0.png");
 
-    public HiddenSpikes(int x, int y, Room room) {
-        super(x, y, room);
+    public HiddenSpikes(int x, int y, Level level) {
+        super(x, y, level);
         isHiddenOne = true;
     }
 
@@ -28,7 +26,7 @@ public class HiddenSpikes extends Spikes{
             hideCountDown = 150;
         }
         if (isHidden) {
-            room.getGame().getBatch().draw(hiddenOne, x-1, y-1, 2*WIDTH, 2*HEIGHT);
+            level.getGame().getBatch().draw(hiddenOne, x-1, y-1, 2*WIDTH, 2*HEIGHT);
         } else {
             super.render();
         }

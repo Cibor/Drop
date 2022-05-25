@@ -1,17 +1,13 @@
 package org.rloop;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-
-import java.util.ArrayList;
 
 import static java.lang.Math.abs;
 
@@ -25,9 +21,9 @@ public class ShootingMonsterProjectile extends Monster{
 
     static Texture prTexture = new Texture("ProjectileTexture.png");
 
-    public ShootingMonsterProjectile(float x, float y, Room room, Player player, Vector2 direction, float angle){
+    public ShootingMonsterProjectile(float x, float y, Level level, Player player, Vector2 direction, float angle){
         this.player = player;
-        this.room = room;
+        this.level = level;
         this.x = x;
         this.y = y;
 
@@ -53,7 +49,7 @@ public class ShootingMonsterProjectile extends Monster{
         def.fixedRotation = true;
         def.type = BodyDef.BodyType.DynamicBody;
         def.position.set(x, y);
-        body = room.getWorld().createBody(def);
+        body = level.getWorld().createBody(def);
 
         PolygonShape square = new PolygonShape();
         square.setAsBox(0.3f, 0.3f);
@@ -73,14 +69,14 @@ public class ShootingMonsterProjectile extends Monster{
     public void render(){
         this.setX(this.getBody().getPosition().x);
         this.setY(this.getBody().getPosition().y);
-        this.room.getCamera().update();
-        this.room.getViewport().apply();
-        this.room.getGame().getBatch().setProjectionMatrix(room.getCamera().combined);
-        this.room.getGame().getBatch().begin();
+        this.level.getCamera().update();
+        this.level.getViewport().apply();
+        this.level.getGame().getBatch().setProjectionMatrix(level.getCamera().combined);
+        this.level.getGame().getBatch().begin();
 
-        room.getGame().getBatch().draw(new TextureRegion(texture), x - 1, y - 1, 1, 1, 2, 2, 1, 1, angle);
+        level.getGame().getBatch().draw(new TextureRegion(texture), x - 1, y - 1, 1, 1, 2, 2, 1, 1, angle);
         System.out.println(direction.x + " " + direction.y + this.toString());
-        this.room.getGame().getBatch().end();
+        this.level.getGame().getBatch().end();
 
         stateTime += Gdx.graphics.getDeltaTime();
 
@@ -108,12 +104,12 @@ public class ShootingMonsterProjectile extends Monster{
         if (velx == 0 && vely == 0) {
             stateTime = 0;
         }
-        this.room.getCamera().update();
-        this.room.getViewport().apply();
-        this.room.getGame().getBatch().setProjectionMatrix(room.getCamera().combined);
-        this.room.getGame().getBatch().begin();
-        room.getGame().getBatch().draw(new TextureRegion(texture), x - 1, y - 1, 1, 1, 2, 2, 1, 1, angle);
-        this.room.getGame().getBatch().end();
+        this.level.getCamera().update();
+        this.level.getViewport().apply();
+        this.level.getGame().getBatch().setProjectionMatrix(level.getCamera().combined);
+        this.level.getGame().getBatch().begin();
+        level.getGame().getBatch().draw(new TextureRegion(texture), x - 1, y - 1, 1, 1, 2, 2, 1, 1, angle);
+        this.level.getGame().getBatch().end();
     }
 
 }

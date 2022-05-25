@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public abstract class Monster {
     protected Body body;
     protected Fixture fixture;
-    protected Room room;
+    protected Level level;
     Player player;
     protected float x;
     protected float y;

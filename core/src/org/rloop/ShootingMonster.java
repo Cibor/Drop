@@ -1,7 +1,6 @@
 package org.rloop;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import org.rloop.Tiles.HiddenSpikes;
 import org.rloop.Tiles.Spikes;
-import org.rloop.Tiles.Tile;
 
 import java.util.ArrayList;
 
@@ -27,9 +25,9 @@ public class ShootingMonster extends Monster{
 
     int spellCastCount;
 
-    public ShootingMonster(float x, float y, Room room, Player player){
+    public ShootingMonster(float x, float y, Level level, Player player){
         this.player = player;
-        this.room = room;
+        this.level = level;
         this.x = x;
         this.y = y;
 
@@ -53,7 +51,7 @@ public class ShootingMonster extends Monster{
         def.fixedRotation = true;
         def.type = BodyDef.BodyType.DynamicBody;
         def.position.set(x, y);
-        body = room.getWorld().createBody(def);
+        body = level.getWorld().createBody(def);
 
         PolygonShape square = new PolygonShape();
         square.setAsBox(0.65f, 0.85f);
@@ -73,12 +71,12 @@ public class ShootingMonster extends Monster{
         this.setX(this.getBody().getPosition().x);
         this.setY(this.getBody().getPosition().y);
         TextureRegion currentFrame = walkAnimation.get(direction).getKeyFrame(stateTime, true);
-        this.room.getCamera().update();
-        this.room.getViewport().apply();
-        this.room.getGame().getBatch().setProjectionMatrix(room.getCamera().combined);
-        this.room.getGame().getBatch().begin();
-        room.getGame().getBatch().draw(currentFrame, x - 1, y - 1, 2, 2);
-        this.room.getGame().getBatch().end();
+        this.level.getCamera().update();
+        this.level.getViewport().apply();
+        this.level.getGame().getBatch().setProjectionMatrix(level.getCamera().combined);
+        this.level.getGame().getBatch().begin();
+        level.getGame().getBatch().draw(currentFrame, x - 1, y - 1, 2, 2);
+        this.level.getGame().getBatch().end();
 
         stateTime += Gdx.graphics.getDeltaTime();
 
@@ -94,7 +92,7 @@ public class ShootingMonster extends Monster{
         Vector2 direction = new Vector2(playerX-myX, playerY-myY);
         Vector2 directionCopy = new Vector2(playerX-myX, playerY-myY);
 
-        for(Spikes spike: room.spikesTiles){
+        for(Spikes spike: level.spikesTiles){
             if(spike.isHiddenOne){
                 HiddenSpikes curSpike = (HiddenSpikes) spike;
                 if(curSpike.isHidden){
@@ -136,7 +134,7 @@ public class ShootingMonster extends Monster{
         else{
             this.getBody().setLinearVelocity(new Vector2(0, 0));
             if(spellCastCount == 0) {
-                room.game.mainScreen.monstersNotRender.add(new ShootingMonsterProjectile(this.x , this.y , this.room, this.player, directionCopy, angle));
+                level.game.mainScreen.monstersNotRender.add(new ShootingMonsterProjectile(this.x , this.y , this.level, this.player, directionCopy, angle));
                 spellCastCount = 240;
             }
         }
@@ -160,7 +158,7 @@ public class ShootingMonster extends Monster{
     public void getHit(float hit){
         hpMonst -= hit;
         if(hpMonst <= 0){
-            room.game.mainScreen.monstersDied.add(this);
+            level.game.mainScreen.monstersDied.add(this);
         }
     }
 
@@ -181,12 +179,12 @@ public class ShootingMonster extends Monster{
             stateTime = 0;
         }
         TextureRegion currentFrame = walkAnimation.get(direction).getKeyFrame(stateTime, true);
-        this.room.getCamera().update();
-        this.room.getViewport().apply();
-        this.room.getGame().getBatch().setProjectionMatrix(room.getCamera().combined);
-        this.room.getGame().getBatch().begin();
-        room.getGame().getBatch().draw(currentFrame, x - 1, y - 1, 2, 2);
-        this.room.getGame().getBatch().end();
+        this.level.getCamera().update();
+        this.level.getViewport().apply();
+        this.level.getGame().getBatch().setProjectionMatrix(level.getCamera().combined);
+        this.level.getGame().getBatch().begin();
+        level.getGame().getBatch().draw(currentFrame, x - 1, y - 1, 2, 2);
+        this.level.getGame().getBatch().end();
     }
 
 }

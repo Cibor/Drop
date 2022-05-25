@@ -11,13 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import org.rloop.Tiles.Tile;
 import org.rloop.Tiles.Wall;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Vector;
 
 public class GameScreen extends ScreenAdapter {
     final rloop game;
@@ -29,7 +25,7 @@ public class GameScreen extends ScreenAdapter {
     ExtendViewport viewport;
     Vector2 vel;
     Vector2 pos;
-    Room map;
+    Level map;
     float stateTime;
     boolean paused = false;
     ShapeRenderer shapeRenderer;
@@ -41,7 +37,7 @@ public class GameScreen extends ScreenAdapter {
     HashSet<Monster> monstersNotRender;
     HashSet<Monster> monstersDied;
 
-    Room currentRoom;
+    Level currentLevel;
 
     static Skin globalSkin = new Skin(Gdx.files.internal("pixthulhuui/pixthulhu-ui.json"));
 
@@ -55,8 +51,8 @@ public class GameScreen extends ScreenAdapter {
         camera = new OrthographicCamera();
         viewport = new ExtendViewport(32,24,camera);
 
-        MapBuilder mapBuilder = new MapBuilder(world);
-        currentRoom = new Room(world, game, viewport, mapBuilder.generateRoom());
+        LevelBuilder levelBuilder = new LevelBuilder(world);
+        currentLevel = new Level(world, game, viewport, levelBuilder.generateRoom());
         //generating map:
 //        currentRoom = new Room(world, game, viewport);
 
@@ -80,8 +76,8 @@ public class GameScreen extends ScreenAdapter {
 //        }
 
         //adding player
-        Vector2 p = currentRoom.getPlayerPosition();
-        player = new Player(p.x,p.y, currentRoom);
+        Vector2 p = currentLevel.getPlayerPosition();
+        player = new Player(p.x,p.y, currentLevel);
         pos = this.player.getBody().getPosition();
 
         //adding player
@@ -92,10 +88,10 @@ public class GameScreen extends ScreenAdapter {
         monsters = new HashSet<>();
         monstersNotRender = new HashSet<>();
         monstersDied = new HashSet<>();
-        monsters.add(new ChasingMonster(-1,-1,currentRoom,player));
+        monsters.add(new ChasingMonster(-1,-1, currentLevel,player));
        // monsters.add(new ShootingMonster(-3, -3, currentRoom, player));
 
-        monsters.add(new ShootingMonsterProjectile(-2, -2, currentRoom, this.player, new Vector2(1,1), 180));
+        monsters.add(new ShootingMonsterProjectile(-2, -2, currentLevel, this.player, new Vector2(1,1), 180));
         //monsters.add(new ShootingMonsterProjectile(-2, -2, currentRoom, this.player, new Vector2(1,1), 243));
 
         pauseStage = new PauseGUI(this, globalSkin).currentStage;
@@ -117,7 +113,7 @@ public class GameScreen extends ScreenAdapter {
     }
 
     void renderPaused(){
-        currentRoom.render();
+        currentLevel.render();
         this.player.renderPaused();
         for(Monster monster: monsters){
             monster.renderPaused();
@@ -157,7 +153,7 @@ public class GameScreen extends ScreenAdapter {
         stateTime += Gdx.graphics.getDeltaTime();
         ScreenUtils.clear(0, 0, 0, 1);
 
-        currentRoom.render();
+        currentLevel.render();
         player.render();
 
         for(Monster monster: monstersDied){

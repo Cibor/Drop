@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Player {
     protected Body body;
     protected Fixture fixture;
-    protected Room room;
+    protected Level level;
     protected float x;
     protected float y;
     protected ArrayList<Animation<TextureRegion>> walkAnimation;
@@ -31,8 +31,8 @@ public class Player {
 
     int attackCoolDown = 0;
 
-    public Player(float x, float y, Room room){
-        this.room = room;
+    public Player(float x, float y, Level level){
+        this.level = level;
         this.x = x;
         this.y = y;
 
@@ -62,7 +62,7 @@ public class Player {
         def.fixedRotation = true;
         def.type = BodyDef.BodyType.DynamicBody;
         def.position.set(x, y);
-        body = room.getWorld().createBody(def);
+        body = level.getWorld().createBody(def);
 
         PolygonShape square = new PolygonShape();
         square.setAsBox(0.65f, 0.85f);
@@ -81,12 +81,12 @@ public class Player {
         this.setX(this.getBody().getPosition().x);
         this.setY(this.getBody().getPosition().y);
         TextureRegion currentFrame = walkAnimation.get(direction).getKeyFrame(stateTime, true);
-        this.room.getCamera().update();
-        this.room.getViewport().apply();
-        this.room.getGame().getBatch().setProjectionMatrix(room.getCamera().combined);
-        this.room.getGame().getBatch().begin();
-        room.getGame().getBatch().draw(currentFrame, x - 1, y - 1, 2, 2);
-        this.room.getGame().getBatch().end();
+        this.level.getCamera().update();
+        this.level.getViewport().apply();
+        this.level.getGame().getBatch().setProjectionMatrix(level.getCamera().combined);
+        this.level.getGame().getBatch().begin();
+        level.getGame().getBatch().draw(currentFrame, x - 1, y - 1, 2, 2);
+        this.level.getGame().getBatch().end();
 
         stateTime += Gdx.graphics.getDeltaTime();
 
@@ -189,12 +189,12 @@ public class Player {
             stateTime = 0;
         }
         TextureRegion currentFrame = walkAnimation.get(direction).getKeyFrame(stateTime, true);
-        this.room.getCamera().update();
-        this.room.getViewport().apply();
-        this.room.getGame().getBatch().setProjectionMatrix(room.getCamera().combined);
-        this.room.getGame().getBatch().begin();
-        room.getGame().getBatch().draw(currentFrame, x - 1, y - 1, 2, 2);
-        this.room.getGame().getBatch().end();
+        this.level.getCamera().update();
+        this.level.getViewport().apply();
+        this.level.getGame().getBatch().setProjectionMatrix(level.getCamera().combined);
+        this.level.getGame().getBatch().begin();
+        level.getGame().getBatch().draw(currentFrame, x - 1, y - 1, 2, 2);
+        this.level.getGame().getBatch().end();
     }
 
 }
