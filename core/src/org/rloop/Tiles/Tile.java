@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import org.rloop.Level;
 
 public abstract class Tile {
-    final protected Texture texture;
+    protected Texture texture;
     final protected boolean isBarrier;
 
     final public static int WIDTH = 1;

@@ -4,18 +4,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import org.rloop.Level;
 import org.rloop.Player;
+import org.rloop.Resources;
 
 public class Spikes extends Tile{
 
     public boolean isHiddenOne = false;
 
     public Spikes(int x, int y, Level level) {
-        super(new Texture("Columned Spikes.png"), false, x, y, level);
+        super(Resources.spikes, false, x, y, level);
     }
 
     @Override
     public void render(){
-        level.getGame().getBatch().draw(texture, x-1, y-1, 2*WIDTH, 2*HEIGHT);
+        super.render();
+
         if(level.getPlayerCurrentPosition().x >= x - 1 && level.getPlayerCurrentPosition().x <= x + 1 && level.getPlayerCurrentPosition().y >= y - 1 && level.getPlayerCurrentPosition().y <= y + 1){
             Player curPlayer = level.getPlayer();
             if(!curPlayer.isImmune()){

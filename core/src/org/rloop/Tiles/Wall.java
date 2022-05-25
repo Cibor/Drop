@@ -2,12 +2,10 @@ package org.rloop.Tiles;
 
 import com.badlogic.gdx.graphics.Texture;
 import org.rloop.Level;
+import org.rloop.Resources;
 
 public class Wall extends Tile {
-
-    static Texture wallTexture = new Texture("water 3.png");
-
     public Wall(int x, int y, Level level) {
-        super(wallTexture, true, x, y, level);
+        super(Resources.water, true, x, y, level);
     }
 }
