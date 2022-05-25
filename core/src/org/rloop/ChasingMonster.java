@@ -29,10 +29,10 @@ public class ChasingMonster extends Monster implements DamageMaker {
         this.hpMonst = 2;
 
         stateTime = 0;
-        Texture texture = new Texture("player/player.png");  //TODO: change Texture
+        Texture texture = level.getGame().resources.goblin;
         TextureRegion[][] tmp = TextureRegion.split(texture,
-                texture.getWidth() / 4,
-                texture.getHeight() / 4);
+                16,
+                17);
         walkAnimation = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             walkAnimation.add(new Animation<>(0.25f, tmp[i]));
@@ -112,11 +112,11 @@ public class ChasingMonster extends Monster implements DamageMaker {
         if ((angle >= 0 && angle <= 45) || (angle >= 315 && angle <= 360)) {
             this.setDirection(3);
         } else if (angle > 45 && angle <= 135) {
-            this.setDirection(1);
+            this.setDirection(0);
         } else if (angle > 135 && angle <= 225) {
             this.setDirection(2);
         } else {
-            this.setDirection(0);
+            this.setDirection(1);
         }
 
         float kaf = direction.x * direction.x + direction.y * direction.y;
