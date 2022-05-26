@@ -29,6 +29,7 @@ public class ChooseWeaponStage {
         Window chooseWindow = new Window("", skin);
         chooseWindow.setBounds(Util.monitorResolutionX(20), Util.monitorResolutionY(20), Util.monitorResolutionX(1880), Util.monitorResolutionY(1040));
         chooseWindow.setResizable(false);
+        chooseWindow.setTouchable(null);
 
         currentStage.addActor(chooseWindow);
 
