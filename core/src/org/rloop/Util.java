@@ -2,7 +2,6 @@ package org.rloop;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Fixture;
-import jdk.internal.net.http.common.Pair;
 
 import java.awt.*;
 
