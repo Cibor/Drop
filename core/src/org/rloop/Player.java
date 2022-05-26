@@ -32,7 +32,7 @@ public class Player {
 
     public float getMaxHP() { return statMaxHP; }
 
-    public Player(float x, float y, Level level){
+    public Player(float x, float y, Level level, boolean choosenWeapon){
         this.level = level;
         this.x = x;
         this.y = y;
@@ -51,8 +51,12 @@ public class Player {
         statCurrentHP = 1.0f;
         statMaxHP = 1.0f;
 
-        playerWeapon = new MeleeWeapon(0.1f, 1, 1.3f);
-
+        if(choosenWeapon) {
+            playerWeapon = new MeleeWeapon(0.1f, 1, 1.3f);
+        }
+        else{
+            playerWeapon = new RangeWeapon(0.1f, 1, 1.3f);
+        }
         definePhysics();
 
     }

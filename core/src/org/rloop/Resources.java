@@ -14,6 +14,7 @@ public class Resources {
     public Texture goblin;
     public Texture allThings;
     public TextureRegion mainSword;
+    public TextureRegion magickBook;
 
     Resources() {
         hiddenSpikes = new Texture("HiddenSpikes.png");
@@ -28,6 +29,7 @@ public class Resources {
         goblin = new Texture("player/goblin.png");
         allThings = new Texture("all-assets-preview.png");
         mainSword = new TextureRegion(allThings, 512, 64, 15, 15);
+        magickBook = new TextureRegion(allThings, 673, 176, 15, 15);
     }
 
     void dispose() {

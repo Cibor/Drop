@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import org.rloop.Stages.AudioSettingStage;
+import org.rloop.Stages.ChooseWeaponStage;
 import org.rloop.Stages.SettingStage;
 import org.rloop.Stages.StartStage;
 import org.rloop.rloop;
@@ -21,6 +22,7 @@ public class MainMenuScreen extends ScreenAdapter {
     protected StartStage startStage;
     protected SettingStage settingsStage;
     protected AudioSettingStage audioStage;
+    protected ChooseWeaponStage chooseStage;
     public Viewport viewport;
 
     public MainMenuScreen(final rloop game) {
@@ -33,6 +35,7 @@ public class MainMenuScreen extends ScreenAdapter {
         startStage = new StartStage(this, skin, backScreen);
         settingsStage = new SettingStage(this, skin, backScreen);
         audioStage = new AudioSettingStage(this, skin, backScreen);
+        chooseStage = new ChooseWeaponStage(this, skin, backScreen);
 
         globalStage = startStage.currentStage;
 
