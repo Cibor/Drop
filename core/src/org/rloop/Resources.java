@@ -19,7 +19,6 @@ public class Resources {
     Resources() {
         hiddenSpikes = new Texture("HiddenSpikes.png");
         spikes = new Texture("Spikes.png");
-        stoneFloor = new Texture("StoneFloor.png");
         water = new Texture("water.png");
         Texture texture = new Texture("WallSet.png");
         walls = TextureRegion.split(texture,
@@ -36,7 +35,6 @@ public class Resources {
     void dispose() {
         hiddenSpikes.dispose();
         spikes.dispose();
-        stoneFloor.dispose();
         water.dispose();
         allThings.dispose();
     }
