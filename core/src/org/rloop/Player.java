@@ -52,10 +52,12 @@ public class Player {
         statMaxHP = 1.0f;
 
         if(choosenWeapon) {
-            playerWeapon = new MeleeWeapon(0.1f, 1, 1.3f);
+            playerWeapon = new MeleeWeapon(0.15f, 1, 1.3f);
         }
         else{
-            playerWeapon = new RangeWeapon(0.1f, 1, 1.3f);
+            playerWeapon = new RangeWeapon(0.1f, 1f, 1.3f);
+            attackTime = 200;
+            //TODO: change attackSpeed normally
         }
         definePhysics();
 

@@ -171,7 +171,7 @@ public class GameScreen extends ScreenAdapter {
         gameScreenStage.getCurrentStage().act();
         gameScreenStage.getCurrentStage().draw();
 
-        debugRenderer.render(world, camera.combined);
+//        debugRenderer.render(world, camera.combined);
     }
 
     public void renderPauseScreen() {
