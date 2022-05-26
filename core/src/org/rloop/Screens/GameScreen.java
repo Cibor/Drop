@@ -74,7 +74,6 @@ public class GameScreen extends ScreenAdapter {
             Vector2 monsterPos;
             do {
                 monsterPos = currentLevel.getPositionOfSomething();
-                System.out.printf("%f, %f; %f, %f%n", playerPos.x, playerPos.y, monsterPos.x, monsterPos.y);
             } while(monsterPos.dst(playerPos) < 10);
 
             int decideType = rnd(0, 1);
@@ -88,12 +87,6 @@ public class GameScreen extends ScreenAdapter {
         projectiles = new HashSet<>();
         projectilesNotRender = new HashSet<>();
         projectilesDied = new HashSet<>();
-
-        monsters.add(new ChasingMonster(-1,-1, currentLevel,player));
-        monsters.add(new ShootingMonster(-3, -3, currentLevel, player));
-
-        monsters.add(new ShootingMonsterProjectile(-2, -2, currentLevel, this.player, new Vector2(1,1), 180));
-        //monsters.add(new ShootingMonsterProjectile(-2, -2, currentRoom, this.player, new Vector2(1,1), 243));
 
         pauseStage = new PauseGUI(this, globalSkin).getCurrentStage();
 
