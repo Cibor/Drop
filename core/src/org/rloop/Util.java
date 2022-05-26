@@ -8,6 +8,10 @@ import java.awt.*;
 
 public class Util {
 
+    public static int rnd(int min, int max) {
+        max -= min;
+        return (int) (Math.random() * ++max) + min;
+    }
     public static int monitorResolutionY(int y){
         return Math.round(Gdx.graphics.getHeight() * 1f/1080 * y);
     }

@@ -17,6 +17,8 @@ import org.rloop.Stages.*;
 
 import java.util.HashSet;
 
+import static org.rloop.Util.rnd;
+
 public class GameScreen extends ScreenAdapter {
     final rloop game;
     Player player;
@@ -54,14 +56,30 @@ public class GameScreen extends ScreenAdapter {
         currentLevel = new Level(world, game, viewport, levelBuilder.generateRoom());
 
         //adding player
-        Vector2 p = currentLevel.getPositionOfSomething();
-        player = new Player(p.x,p.y, currentLevel);
+        Vector2 playerPos = currentLevel.getPositionOfSomething();
+        player = new Player(playerPos.x,playerPos.y, currentLevel);
         pos = this.player.getBody().getPosition();
 
         //adding monsters
         monsters = new HashSet<>();
         monstersNotRender = new HashSet<>();
         monstersDied = new HashSet<>();
+
+        int numberOfMonsters = rnd(4, 7);
+        for (int i = 0; i < numberOfMonsters; i++) {
+            Vector2 monsterPos;
+            do {
+                monsterPos = currentLevel.getPositionOfSomething();
+                System.out.printf("%f, %f; %f, %f%n", playerPos.x, playerPos.y, monsterPos.x, monsterPos.y);
+            } while(monsterPos.dst(playerPos) < 10);
+
+            int decideType = rnd(0, 1);
+            if (decideType == 0) {
+                monsters.add(new ChasingMonster(monsterPos.x,monsterPos.y, currentLevel,player));
+            } else if (decideType == 1) {
+                monsters.add(new ShootingMonster(monsterPos.x, monsterPos.y, currentLevel, player));
+            }
+        }
         monsters.add(new ChasingMonster(-1,-1, currentLevel,player));
         monsters.add(new ShootingMonster(-3, -3, currentLevel, player));
 

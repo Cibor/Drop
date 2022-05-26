@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import java.util.ArrayList;
 
 import static com.badlogic.gdx.math.Intersector.overlaps;
+import static org.rloop.Util.rnd;
 
 
 public class LevelBuilder {
@@ -18,10 +19,10 @@ public class LevelBuilder {
         this.world = world;
     }
 
-    public static int rnd(int min, int max) {
-        max -= min;
-        return (int) (Math.random() * ++max) + min;
-    }
+//    public static int rnd(int min, int max) {
+//        max -= min;
+//        return (int) (Math.random() * ++max) + min;
+//    }
 
     public ArrayList<Rectangle> generateRoom() {
         numOfRooms = rnd(4, 6);
