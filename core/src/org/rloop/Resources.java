@@ -13,10 +13,13 @@ public class Resources {
     public TextureRegion[][] walls;
     public Texture skeletonMage;
     public Texture goblin;
+    public Texture allThings;
+    public TextureRegion mainSword;
 
     Resources() {
         hiddenSpikes = new Texture("HiddenSpikes.png");
         spikes = new Texture("Spikes.png");
+        stoneFloor = new Texture("StoneFloor.png");
         water = new Texture("water.png");
         Texture texture = new Texture("WallSet.png");
         walls = TextureRegion.split(texture,
@@ -26,11 +29,15 @@ public class Resources {
 
         skeletonMage = new Texture("player/skeletonMage.png");
         goblin = new Texture("player/goblin.png");
+        allThings = new Texture("all-assets-preview.png");
+        mainSword = new TextureRegion(allThings, 512, 64, 15, 15);
     }
 
     void dispose() {
         hiddenSpikes.dispose();
         spikes.dispose();
+        stoneFloor.dispose();
         water.dispose();
+        allThings.dispose();
     }
 }

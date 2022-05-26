@@ -25,9 +25,7 @@ public abstract class Monster {
     float hpMonst;
 
 
-    void update() {
-
-    }
+    void update() {}
     public void render(){}
     void definePhysics(){}
     void renderPaused(){}

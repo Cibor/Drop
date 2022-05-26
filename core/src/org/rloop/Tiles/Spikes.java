@@ -2,12 +2,9 @@ package org.rloop.Tiles;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import org.rloop.DamageMaker;
-import org.rloop.Level;
-import org.rloop.Player;
-import org.rloop.Resources;
+import org.rloop.*;
 
-public class Spikes extends Tile implements DamageMaker {
+public class Spikes extends Tile implements DamageMakerPlayer, DamageMakerMonster {
 
     public boolean isHiddenOne = false;
 
@@ -37,8 +34,13 @@ public class Spikes extends Tile implements DamageMaker {
     }
 
     @Override
-    public void makeDamage(Player player) {
+    public void makeDamagePlayer(Player player) {
         player.getHit(0.05f);
         level.getGame().getOurMusic().dmgSound.play(level.getGame().getOurMusic().getSoundVolume());
+    }
+
+    @Override
+    public  void makeDamageMonster(Monster monster){
+
     }
 }

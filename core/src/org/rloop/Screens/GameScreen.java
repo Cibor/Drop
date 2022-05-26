@@ -37,6 +37,10 @@ public class GameScreen extends ScreenAdapter {
     public HashSet<Monster> monsters;
     public HashSet<Monster> monstersNotRender;
     public HashSet<Monster> monstersDied;
+    public HashSet<Projectiles> projectiles;
+    public HashSet<Projectiles> projectilesNotRender;
+    public HashSet<Projectiles> projectilesDied;
+
 
     Level currentLevel;
 
@@ -80,6 +84,11 @@ public class GameScreen extends ScreenAdapter {
                 monsters.add(new ShootingMonster(monsterPos.x, monsterPos.y, currentLevel, player));
             }
         }
+
+        projectiles = new HashSet<>();
+        projectilesNotRender = new HashSet<>();
+        projectilesDied = new HashSet<>();
+
         monsters.add(new ChasingMonster(-1,-1, currentLevel,player));
         monsters.add(new ShootingMonster(-3, -3, currentLevel, player));
 
@@ -121,6 +130,16 @@ public class GameScreen extends ScreenAdapter {
         }
         monstersDied.clear();
 
+        for(Projectiles projectile: projectiles){
+            projectile.update(x);
+        }
+
+        for(Projectiles projectile: projectilesDied){
+            projectile.body.getWorld().destroyBody(projectile.body);
+            projectiles.remove(projectile);
+        }
+        projectilesDied.clear();
+
         world.step(1 / 60f, 6, 2);
     }
 
@@ -139,6 +158,17 @@ public class GameScreen extends ScreenAdapter {
         }
 
         monstersNotRender.clear();
+
+
+        for(Projectiles projectile: projectiles){
+            projectile.render();
+        }
+        for(Projectiles projectile: projectilesNotRender){
+            projectile.render();
+            projectiles.add(projectile);
+        }
+
+        projectilesNotRender.clear();
 
         gameScreenStage.update(this);
         gameScreenStage.getCurrentStage().act();
