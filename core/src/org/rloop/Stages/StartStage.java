@@ -41,8 +41,9 @@ public class StartStage extends Stage {
         StartGameBut.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                mainMenu.dispose();
-                mainMenu.getGame().setScreen(mainMenu.getGame().mainScreen = new GameScreen(mainMenu.getGame()));
+                mainMenu.globalStage.dispose();
+                mainMenu.globalStage = new ChooseWeaponStage(mainMenu, skin, backScreen).currentStage;
+                Gdx.input.setInputProcessor(mainMenu.globalStage);
             }
         });
 

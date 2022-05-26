@@ -44,7 +44,7 @@ public class GameScreen extends ScreenAdapter {
 
     static Skin globalSkin = new Skin(Gdx.files.internal("pixthulhuui/pixthulhu-ui.json"));
 
-    public GameScreen(rloop game) {
+    public GameScreen(rloop game, boolean choosenWeapon) {
         this.game = game;
 
         debugRenderer = new Box2DDebugRenderer();
@@ -59,7 +59,7 @@ public class GameScreen extends ScreenAdapter {
 
         //adding player
         Vector2 p = currentLevel.getPlayerPosition();
-        player = new Player(p.x,p.y, currentLevel);
+        player = new Player(p.x,p.y, currentLevel, choosenWeapon);
         pos = this.player.getBody().getPosition();
 
         //adding monsters
