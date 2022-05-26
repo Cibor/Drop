@@ -51,7 +51,7 @@ public class Player {
         statCurrentHP = 1.0f;
         statMaxHP = 1.0f;
 
-        playerWeapon = new MeleeWeapon(0.1f, 1, 1);
+        playerWeapon = new MeleeWeapon(0.1f, 1, 1.3f);
 
         definePhysics();
 

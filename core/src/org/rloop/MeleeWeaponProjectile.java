@@ -58,7 +58,7 @@ public class MeleeWeaponProjectile extends Projectiles implements DamageMakerMon
 
         this.body.setTransform(player.x, player.y, beta);
 
-        alpha -= delta/0.5 * Math.PI * 2 / 3;
+        alpha -= delta/0.3 * Math.PI * 2 / 3;
         if (alpha < Math.PI / -3){
             level.game.mainScreen.projectilesDied.add(this);
         }
@@ -70,10 +70,10 @@ public class MeleeWeaponProjectile extends Projectiles implements DamageMakerMon
         this.level.getGame().getBatch().setProjectionMatrix(level.getCamera().combined);
         this.level.getGame().getBatch().begin();
         if(direction.x < 0) {
-            level.getGame().getBatch().draw(texture, player.x - 1, player.y - 0.1f, 1, 0, 1, 1.2f, 1.2f, 1.4f, (float) ((float) 180 / Math.PI * (fixture.getBody().getAngle()) - 30));
+            level.getGame().getBatch().draw(texture, player.x - 1, player.y - 0.1f, 1, 0, 1, 1.2f, 1.5f, 1.7f, (float) ((float) 180 / Math.PI * (fixture.getBody().getAngle()) - 30));
         }
         else{
-            level.getGame().getBatch().draw(texture, player.x - 1, player.y - 0.1f, 1, 0, 1, 1.2f, 1.2f, 1.2f, (float) ((float) 180 / Math.PI * (fixture.getBody().getAngle())) + 150);
+            level.getGame().getBatch().draw(texture, player.x - 1, player.y - 0.1f, 1, 0, 1, 1.2f, 1.5f, 1.7f, (float) ((float) 180 / Math.PI * (fixture.getBody().getAngle())) + 150);
         }
         this.level.getGame().getBatch().end();
     }

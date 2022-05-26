@@ -13,7 +13,7 @@ public class MeleeWeapon extends Weapon{
     public MeleeWeapon(float dam, float speed, float length){
         super(dam, speed);
         this.length = length;
-        this.width = length / 10;
+        this.width = length / 8;
     }
 
     @Override
