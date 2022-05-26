@@ -42,6 +42,7 @@ public class GameContactListener implements ContactListener {
             }
             if (!curMonster.isImmune()) {
                 curMonster.getHit(curProjectile.damageMonst);
+                game.getOurMusic().monsterDmgSound.play(game.getOurMusic().getSoundVolume());
                 curMonster.makeImmune();
                 game.mainScreen.monstersDied.add(curProjectile);
             }
@@ -61,6 +62,7 @@ public class GameContactListener implements ContactListener {
             }
             if (!curMonster.isImmune()) {
                 curMonster.getHit(curProjectile.damageMonst);
+                game.getOurMusic().monsterDmgSound.play(game.getOurMusic().getSoundVolume());
                 curMonster.makeImmune();
                 game.mainScreen.monstersDied.add(curProjectile);
             }
@@ -130,6 +132,7 @@ public class GameContactListener implements ContactListener {
             }
             if (!curMonster.isImmune()) {
                 curMonster.getHit(curMelee.myWeapon.weaponDamage);
+                game.getOurMusic().monsterDmgSound.play(game.getOurMusic().getSoundVolume());
                 curMonster.makeImmune();
             }
         } else if((fa.getUserData() instanceof MeleeWeaponProjectile && fb.getUserData() instanceof ShootingMonster) || (fb.getUserData() instanceof MeleeWeaponProjectile && fa.getUserData() instanceof ShootingMonster)){
@@ -144,6 +147,7 @@ public class GameContactListener implements ContactListener {
             }
             if (!curMonster.isImmune()) {
                 curMonster.getHit(curMelee.myWeapon.weaponDamage);
+                game.getOurMusic().monsterDmgSound.play(game.getOurMusic().getSoundVolume());
                 curMonster.makeImmune();
             }
         }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Sound;
 public class OurMusic {
     public Music bgAmbient;
     public Sound dmgSound;
+    public Sound monsterDmgSound;
 
     float SoundVolume = 1;
     float MusicVolume = 1;
@@ -20,6 +21,7 @@ public class OurMusic {
 
         //Sounds
         dmgSound = Gdx.audio.newSound(Gdx.files.internal("music/DamageSound.mp3"));
+        monsterDmgSound = Gdx.audio.newSound(Gdx.files.internal("music/MonsterDmgSound.ogg"));
     }
 
     public void setMusicVolume(float volume) {
