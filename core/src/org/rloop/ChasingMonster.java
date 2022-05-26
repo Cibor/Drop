@@ -26,7 +26,7 @@ public class ChasingMonster extends Monster implements DamageMakerPlayer {
 
         this.speedMonst = 3;
         this.damageMonst = (float) 0.05;
-        this.hpMonst = 2;
+        this.hpMonst = 1;
 
         stateTime = 0;
         Texture texture = level.getGame().resources.goblin;

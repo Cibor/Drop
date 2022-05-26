@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class ShootingMonster extends Monster {
     float speedMonst = 2;
     float damageMonst = (float) 0;
-    float hpMonst = 1;
+    float hpMonst = 0.5f;
     int damageImmune;
 
     int spellCastCount;
