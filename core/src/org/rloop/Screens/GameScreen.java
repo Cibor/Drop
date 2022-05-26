@@ -87,6 +87,10 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float x){
+        if(player.getCurrentHP() <= 0){
+            game.setScreen(new DeathScreen(game));
+            return;
+        }
         if(!paused) {
             update(x);
             justRender(x);
