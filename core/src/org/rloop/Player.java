@@ -32,8 +32,6 @@ public class Player {
 
     public float getMaxHP() { return statMaxHP; }
 
-    int attackCoolDown = 0;
-
     public Player(float x, float y, Level level){
         this.level = level;
         this.x = x;
@@ -97,10 +95,6 @@ public class Player {
             stateTime = 0;
         }
 
-        if(attackCoolDown > 0){
-            attackCoolDown --;
-        }
-
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             this.setDirection(3);
             vel.x = (-7.5f) * statSpeed;
@@ -140,8 +134,8 @@ public class Player {
         this.getBody().setLinearVelocity(vel);
 
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
-            if(attackCoolDown == 0){
-                attackCoolDown = Math.round(playerWeapon.getWeaponAttackSpeed() * 1);
+            if(this.canAttack()){
+                lastAttack = System.currentTimeMillis();
                 playerWeapon.attack(this, Gdx.input.getX(), Gdx.input.getY());
             }
         }
@@ -179,6 +173,13 @@ public class Player {
                 damageMaker.makeDamagePlayer(this);
             lastDamaged = System.currentTimeMillis();
         }
+    }
+
+    long attackTime = 500;
+    long lastAttack = 0;
+
+    public boolean canAttack(){
+       return !(System.currentTimeMillis() - lastAttack < attackTime);
     }
 
     public void setX(float x){

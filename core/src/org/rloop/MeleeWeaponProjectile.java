@@ -26,7 +26,20 @@ public class MeleeWeaponProjectile extends Projectiles implements DamageMakerMon
         projectileDamage = myWeapon.weaponDamage;
         getProjectileSpeed = myWeapon.weaponAttackSpeed;
 
-        definePhysics(myWeapon.width, myWeapon.length, new Vector2(0, myWeapon.length/2));
+        float kaf = direction.x * direction.x + direction.y * direction.y;
+        kaf = (myWeapon.length * myWeapon.length) / kaf;
+        direction.x *= Math.sqrt(kaf);
+        direction.y *= Math.sqrt(kaf);
+
+        Vector2 rtp = new Vector2();
+        if(direction.x > 0){
+            rtp.add(new Vector2(0, -1 * myWeapon.length));
+        }
+        else{
+            rtp.add(new Vector2(0, myWeapon.length));
+        }
+
+        definePhysics(myWeapon.width, myWeapon.length, rtp);
     }
 
 
@@ -56,7 +69,12 @@ public class MeleeWeaponProjectile extends Projectiles implements DamageMakerMon
         this.level.getViewport().apply();
         this.level.getGame().getBatch().setProjectionMatrix(level.getCamera().combined);
         this.level.getGame().getBatch().begin();
-        level.getGame().getBatch().draw(texture, player.x, player.y, 0, 0, 1, 1, 1, 1, beta);
+        if(direction.x < 0) {
+            level.getGame().getBatch().draw(texture, player.x - 1, player.y - 0.1f, 1, 0, 1, 1.2f, 1.2f, 1.4f, (float) ((float) 180 / Math.PI * (fixture.getBody().getAngle()) - 30));
+        }
+        else{
+            level.getGame().getBatch().draw(texture, player.x - 1, player.y - 0.1f, 1, 0, 1, 1.2f, 1.2f, 1.2f, (float) ((float) 180 / Math.PI * (fixture.getBody().getAngle())) + 150);
+        }
         this.level.getGame().getBatch().end();
     }
 

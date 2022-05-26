@@ -71,8 +71,8 @@ public class GameScreen extends ScreenAdapter {
         projectilesNotRender = new HashSet<>();
         projectilesDied = new HashSet<>();
 
-       // monsters.add(new ChasingMonster(-1,-1, currentLevel,player));
-      //  monsters.add(new ShootingMonster(-3, -3, currentLevel, player));
+        monsters.add(new ChasingMonster(-1,-1, currentLevel,player));
+        monsters.add(new ShootingMonster(-3, -3, currentLevel, player));
 
         monsters.add(new ShootingMonsterProjectile(-2, -2, currentLevel, this.player, new Vector2(1,1), 180));
         //monsters.add(new ShootingMonsterProjectile(-2, -2, currentRoom, this.player, new Vector2(1,1), 243));

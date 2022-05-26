@@ -33,11 +33,11 @@ public abstract class Projectiles {
         BodyDef def = new BodyDef();
         def.fixedRotation = true;
         def.type = BodyDef.BodyType.DynamicBody;
-        def.position.set(x, y);
+        def.position.set(vec.x, vec.y);
         body = level.getWorld().createBody(def);
 
         PolygonShape square = new PolygonShape();
-        square.setAsBox(hx, hy, vec , 180);
+        square.setAsBox(hx, hy, vec, 0);
         FixtureDef fixtureDef = new FixtureDef();
 
         fixtureDef.shape = square ;
