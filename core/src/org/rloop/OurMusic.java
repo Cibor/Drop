@@ -14,14 +14,14 @@ public class OurMusic {
 
     OurMusic() {
         //Musics
-        bgAmbient = Gdx.audio.newMusic(Gdx.files.internal("music/ambience_1.mp3"));
+        bgAmbient = Gdx.audio.newMusic(Gdx.files.internal("music/MusicAmbience.mp3"));
         bgAmbient.setLooping(true);
 
         bgAmbient.play();
 
         //Sounds
         dmgSound = Gdx.audio.newSound(Gdx.files.internal("music/DamageSound.mp3"));
-        monsterDmgSound = Gdx.audio.newSound(Gdx.files.internal("music/MonsterDmgSound.ogg"));
+        monsterDmgSound = Gdx.audio.newSound(Gdx.files.internal("music/MonsterDamageSound.ogg"));
     }
 
     public void setMusicVolume(float volume) {
