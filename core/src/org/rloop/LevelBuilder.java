@@ -34,8 +34,8 @@ public class LevelBuilder {
         SeparateRooms();
 
         for (Rectangle r : roomShapes) {
-            r.width += 6;
-            r.height += 6;
+            r.width += 8;
+            r.height += 8;
         }
         return roomShapes;
     }
