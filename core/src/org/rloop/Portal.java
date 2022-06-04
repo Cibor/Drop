@@ -1,63 +1,80 @@
 package org.rloop;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import org.rloop.Screens.GameScreen;
+import org.rloop.*;
+
+import java.util.ArrayList;
 
 public class Portal {
-    static int WIDTH = 2;
-    static int HEIGHT = 2;
+    static float WIDTH = 0.25F;
+    static float HEIGHT = 0.25F;
     Texture texture;
     int x;
     int y;
-    Level start, end;
-    Body body;
-    Fixture fixture;
+    Level level;
+    GameScreen gameScreen;
+    float stateTime;
+    Animation<TextureRegion> animation;
+    TextureRegion currentFrame;
 
 
-    public Portal(int x, int y, Level start, Level end){
-        this.texture = texture;
-        this.x = x;
-        this.y = y;
-        this.start = start;
-        this.end = end;
+
+    public Portal(Vector2 pos, Level level, GameScreen gameScreen){
+        stateTime = 0;
+        this.texture = level.getGame().resources.portal;
+        TextureRegion[][] tmp = TextureRegion.split(this.texture,
+                texture.getWidth(),
+                texture.getHeight() / 5);
+        TextureRegion[] temp = new TextureRegion[5];
+        for(int i=0;i<5;i++){
+            temp[i] = tmp[i][0];
+        }
+        animation = new Animation<>(0.25f, temp);
+        this.gameScreen = gameScreen;
+        this.texture = level.getGame().resources.portal;
+        this.x = (int) pos.x;
+        this.y = (int) pos.y;
+        this.level = level;
         definePhysics();
     }
 
     void definePhysics(){
+        BodyDef barrierDef = new BodyDef();
+        barrierDef.position.set(new Vector2((float)x+(float)0.5, (float)y+(float)0.5));
+        Body barrier = level.getWorld().createBody(barrierDef);
 
-        BodyDef def = new BodyDef();
-        def.fixedRotation = true;
-        def.type = BodyDef.BodyType.DynamicBody;
-        def.position.set(x, y);
-        body = start.getWorld().createBody(def);
-
-        PolygonShape square = new PolygonShape();
-        square.setAsBox(0.65f, 0.85f);
-        FixtureDef fixtureDef = new FixtureDef();
-
-        fixtureDef.shape = square ;
-        fixtureDef.density = 0.5f;
-        fixtureDef.friction = 0.2f;
-        fixtureDef.restitution = 0f;
-
-        fixture = this.body.createFixture(fixtureDef);
-        fixture.setUserData(this);
-        square.dispose();
+        PolygonShape barrierBox = new PolygonShape();
+        barrierBox.setAsBox(WIDTH, HEIGHT);
+        barrier.createFixture(barrierBox, 0.0f).setUserData(this);
+        barrierBox.dispose();
     }
 
     public void render() {
-        start.getGame().getBatch().draw(texture, x-1, y-1, 2*WIDTH, 2*HEIGHT);
+        stateTime += Gdx.graphics.getDeltaTime();
+        currentFrame = animation.getKeyFrame(stateTime, true);
+        this.level.getCamera().update();
+        this.level.getViewport().apply();
+        this.level.getGame().getBatch().setProjectionMatrix(level.getCamera().combined);
+        this.level.getGame().getBatch().begin();
+        this.level.getGame().getBatch().draw(currentFrame, x-1, y-1, 3, 3);
+        this.level.getGame().getBatch().end();
     }
 
     public Texture getTexture() {
         return texture;
     }
 
-    public int getWidth() {
+    public float getWidth() {
         return WIDTH;
     }
 
-    public int getHeight() {
+    public float getHeight() {
         return HEIGHT;
     }
 }

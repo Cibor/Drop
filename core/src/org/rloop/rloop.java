@@ -12,14 +12,15 @@ public class rloop extends Game {
 	public Resources resources;
 
 	public GameScreen mainScreen;
+	public MainMenuScreen mainMenu;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		ourMusic = new OurMusic();
 		resources = new Resources();
-
-		this.setScreen(new MainMenuScreen(this));
+		mainMenu = new MainMenuScreen(this);
+		this.setScreen(mainMenu);
 	}
 
 	@Override

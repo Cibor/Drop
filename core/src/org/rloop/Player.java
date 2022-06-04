@@ -23,6 +23,7 @@ public class Player {
     float stateTime;
 
     Weapon playerWeapon;
+    TextureRegion currentFrame;
 
     protected float statCurrentHP;
     protected float statMaxHP;
@@ -147,7 +148,9 @@ public class Player {
         }
     }
 
-    TextureRegion currentFrame;
+    public Vector2 getPosition(){
+        return new Vector2(this.getBody().getPosition().x,this.getBody().getPosition().y);
+    }
     public void render(){
         currentFrame = walkAnimation.get(direction).getKeyFrame(stateTime, true);
         this.level.getCamera().update();

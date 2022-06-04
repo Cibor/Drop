@@ -15,6 +15,8 @@ public class Resources {
     public Texture allThings;
     public TextureRegion mainSword;
     public TextureRegion magickBook;
+    public Texture portal;
+    public Texture chest;
 
     Resources() {
         hiddenSpikes = new Texture("HiddenSpikes.png");
@@ -22,9 +24,10 @@ public class Resources {
         Texture texture = new Texture("WallSet.png");
         walls = TextureRegion.split(texture,
                 texture.getWidth() / 4,
-                texture.getHeight() / 4);;
+                texture.getHeight() / 4);
         stoneFloor = walls[3][3];
-
+        portal = new Texture("teleport.png");
+        chest = new Texture("chest.png");
         skeletonMage = new Texture("player/skeletonMage.png");
         goblin = new Texture("player/goblin.png");
         allThings = new Texture("all-assets-preview.png");

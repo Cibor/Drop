@@ -2,6 +2,7 @@ package org.rloop;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.*;
+import org.rloop.Screens.GameScreen;
 import org.rloop.Tiles.Wall;
 
 //@author Marcin Kozik, Andrei Daletski
@@ -149,6 +150,12 @@ public class GameContactListener implements ContactListener {
                 curMonster.getHit(curMelee.myWeapon.weaponDamage);
                 game.getOurMusic().monsterDmgSound.play(game.getOurMusic().getSoundVolume());
                 curMonster.makeImmune();
+            }
+        } else if((fa.getUserData() instanceof Portal && fb.getUserData() instanceof Player) || (fa.getUserData() instanceof Player && fb.getUserData() instanceof Portal)){
+            if(fa.getUserData() instanceof Portal){
+                game.setScreen(game.mainScreen = new GameScreen(game, ((Portal) fa.getUserData()).gameScreen.choosenWeapon));
+            }else{
+                game.setScreen(game.mainScreen = new GameScreen(game, ((Portal) fb.getUserData()).gameScreen.choosenWeapon));
             }
         }
     }

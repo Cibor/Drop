@@ -27,11 +27,11 @@ public class GameScreen extends ScreenAdapter {
     Box2DDebugRenderer debugRenderer;
     ExtendViewport viewport;
     Vector2 pos;
-    float stateTime;
     public boolean paused = false;
     ShapeRenderer shapeRenderer;
 
     Stage pauseStage;
+    Stage chestStage;
     GameStage gameScreenStage;
 
     public HashSet<Monster> monsters;
@@ -40,6 +40,11 @@ public class GameScreen extends ScreenAdapter {
     public HashSet<Projectiles> projectiles;
     public HashSet<Projectiles> projectilesNotRender;
     public HashSet<Projectiles> projectilesDied;
+    public boolean choosenWeapon;
+    public LevelBuilder levelBuilder;
+    public Portal portal = null;
+    public Chest chest;
+    public boolean chestMode = false;
 
 
     Level currentLevel;
@@ -48,6 +53,7 @@ public class GameScreen extends ScreenAdapter {
 
     public GameScreen(rloop game, boolean choosenWeapon) {
         this.game = game;
+        this.choosenWeapon = choosenWeapon;
 
         debugRenderer = new Box2DDebugRenderer();
         world = new World(new Vector2(0, 0), true);
@@ -56,7 +62,7 @@ public class GameScreen extends ScreenAdapter {
         camera = new OrthographicCamera();
         viewport = new ExtendViewport(32,24,camera);
 
-        LevelBuilder levelBuilder = new LevelBuilder(world);
+        levelBuilder = new LevelBuilder(world);
         currentLevel = new Level(world, game, viewport, levelBuilder.generateRoom());
 
         //adding player
@@ -69,7 +75,7 @@ public class GameScreen extends ScreenAdapter {
         monstersNotRender = new HashSet<>();
         monstersDied = new HashSet<>();
 
-        int numberOfMonsters = rnd(4, 7);
+        int numberOfMonsters = rnd(0,0);
         for (int i = 0; i < numberOfMonsters; i++) {
             Vector2 monsterPos;
             do {
@@ -89,6 +95,7 @@ public class GameScreen extends ScreenAdapter {
         projectilesDied = new HashSet<>();
 
         pauseStage = new PauseGUI(this, globalSkin).getCurrentStage();
+//        chestStage = new ChestGUI(this, globalSkin).getCurrentStage();
 
         gameScreenStage = new GameStage(this, globalSkin);
 
@@ -98,15 +105,23 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float x){
-        if(!paused) {
-            update(x);
-            justRender(x);
-        } else{
+        if(paused) {
             justRender(x);
             renderPauseScreen();
+        } else if(chestMode){
+            justRender(x);
+            renderChestScreen();
+        }else{
+            update(x);
+            justRender(x);
         }
         if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
-            paused = !paused;
+            if(!chestMode) {
+                paused = !paused;
+            }else{
+                chest.textureNumber = 0;
+                chestMode = false;
+            }
         }
     }
 
@@ -143,8 +158,6 @@ public class GameScreen extends ScreenAdapter {
     public void justRender(float x) {
         ScreenUtils.clear(0, 0, 0, 1);
         currentLevel.render();
-        this.player.render();
-
         //rendering monsters
         for(Monster monster: monsters){
             monster.render();
@@ -164,6 +177,24 @@ public class GameScreen extends ScreenAdapter {
             projectile.render();
             projectiles.add(projectile);
         }
+        if(monstersDied.size() == monsters.size()){
+            if(portal == null) {
+                Vector2 portalPos;
+                do {
+                    portalPos = currentLevel.getPortalPosition();
+                } while (portalPos.dst(player.getPosition()) < 10);
+                portal = new Portal(portalPos, currentLevel, this);
+                Vector2 chestPos;
+                do {
+                    chestPos = currentLevel.getPositionOfSomething();
+                } while (chestPos.dst(player.getPosition()) < 10 || chestPos.dst(portalPos) < 4);
+                chest = new Chest(chestPos, currentLevel, this);
+            }else{
+                portal.render();
+                chest.render();
+            }
+        }
+        this.player.render();
 
         projectilesNotRender.clear();
 
@@ -172,6 +203,28 @@ public class GameScreen extends ScreenAdapter {
         gameScreenStage.getCurrentStage().draw();
 
 //        debugRenderer.render(world, camera.combined);
+    }
+
+    public void renderChestScreen(){
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0,0,0,0.5f);
+        shapeRenderer.rect(0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        shapeRenderer.setColor(1,10,1,0.5f);
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 4; j++){
+                shapeRenderer.rect(1000+110*i,600+110*j, 100, 100);
+            }
+        }
+        shapeRenderer.end();
+
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+//        Gdx.input.setInputProcessor(chestStage);
+//
+//        chestStage.act();
+//        chestStage.draw();
     }
 
     public void renderPauseScreen() {

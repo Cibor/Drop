@@ -259,11 +259,16 @@ public class Level {
 
     public Vector2 getPositionOfSomething(){
         int k = new Random().nextInt(floorTiles.size());
-        return new Vector2(floorTiles.get(k).getX()+1, floorTiles.get(k).getY()+1);
+        return new Vector2(floorTiles.get(k).getX(), floorTiles.get(k).getY());
     }
 
     public Vector2 getPlayerCurrentPosition(){
         return new Vector2(game.mainScreen.getPlayer().x, game.mainScreen.getPlayer().y);
+    }
+
+    public Vector2 getPortalPosition(){
+        int k = new Random().nextInt(template.size());
+        return new Vector2(template.get(k).x+2, template.get(k).y+2);
     }
 
     public Level(World world, rloop game, Viewport viewport, ArrayList<Rectangle> r){
