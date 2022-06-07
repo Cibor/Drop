@@ -25,7 +25,7 @@ public class LevelBuilder {
 //    }
 
     public ArrayList<Rectangle> generateRoom() {
-        numOfRooms = rnd(4, 6);
+        numOfRooms = rnd(20, 30);
         roomShapes = new ArrayList<>();
         for (int i = 0; i < numOfRooms; i++) {
             Rectangle rec = new Rectangle(0, 0, 2 * rnd(4, 7), 2 * rnd(4, 7)); // Parity is important!!
@@ -34,8 +34,8 @@ public class LevelBuilder {
         SeparateRooms();
 
         for (Rectangle r : roomShapes) {
-            r.width += 8;
-            r.height += 8;
+            r.width += 6;
+            r.height += 6;
         }
         return roomShapes;
     }

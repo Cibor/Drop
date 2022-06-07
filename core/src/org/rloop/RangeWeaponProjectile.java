@@ -9,8 +9,8 @@ public class RangeWeaponProjectile extends ShootingMonsterProjectile{
 
     static Texture projTexture = new Texture("projectilePlayer.png");
 
-    public RangeWeaponProjectile(float x, float y, Level level, Player player, Vector2 direction, float angle){
-        super(x, y, level, player, direction, angle);
+    public RangeWeaponProjectile(float x, float y, Level level, Player player, Vector2 direction,Object spawner, float angle){
+        super(x, y, level, player, direction,spawner, angle);
         texture = projTexture;
     }
 

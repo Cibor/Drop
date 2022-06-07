@@ -98,7 +98,7 @@ public class Level {
             return;
         }
         if(flagL && flagR && flagD && flagU){
-            wallTiles.add(new Wall(x-1, y-1, this, 3, 2));
+            wallTiles.add(new Wall(x-1, y-1, this, 0, 0));
             return;
         }
         if((flagU && flagD && flagL) || (flagU && flagD && flagR)){

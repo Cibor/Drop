@@ -21,14 +21,14 @@ public class RangeWeapon extends Weapon{
 
             float angle = (float) Util.GetAngle(playerX, cursorY, cursorX, playerY); angle += 180;
 
-            RangeWeaponProjectile proj = new RangeWeaponProjectile(player.x, player.y, player.level, player, direction, angle);
+            RangeWeaponProjectile proj = new RangeWeaponProjectile(player.x, player.y, player.level, player, direction, this, angle);
 
 
-            proj.damageMonst = this.weaponDamage;
+            proj.projectileDamage = this.weaponDamage;
 
-            proj.speedMonst = this.projectileSpeed;
+            proj.getProjectileSpeed = this.projectileSpeed;
 
 
-            player.level.game.mainScreen.monstersNotRender.add(proj);
+            player.level.game.mainScreen.projectilesNotRender.add(proj);
         }
 }

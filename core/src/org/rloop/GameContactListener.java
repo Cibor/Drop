@@ -21,7 +21,6 @@ public class GameContactListener implements ContactListener {
         Fixture fa = contact.getFixtureA();
         Fixture fb = contact.getFixtureB();
 
-        //обработать хуйню
         if(fa == null || fb == null){
             return;
         }
@@ -29,7 +28,6 @@ public class GameContactListener implements ContactListener {
             return;
         }
 
-        //Урон монстрам от проджектайла
         if(     (fa.getUserData().getClass() == RangeWeaponProjectile.class && fb.getUserData().getClass() == ChasingMonster.class)
                 || (fb.getUserData().getClass() == RangeWeaponProjectile.class && fa.getUserData().getClass() == ChasingMonster.class)) {
             RangeWeaponProjectile curProjectile;
@@ -42,13 +40,12 @@ public class GameContactListener implements ContactListener {
                 curMonster = (ChasingMonster) fb.getUserData();
             }
             if (!curMonster.isImmune()) {
-                curMonster.getHit(curProjectile.damageMonst);
+                curMonster.getHit(curProjectile.projectileDamage);
                 game.getOurMusic().monsterDmgSound.play(game.getOurMusic().getSoundVolume());
-                curMonster.makeImmune();
-                game.mainScreen.monstersDied.add(curProjectile);
+                game.mainScreen.projectilesDied.add(curProjectile);
             }
             else{
-                game.mainScreen.monstersDied.add(curProjectile);
+                game.mainScreen.projectilesDied.add(curProjectile);
             }
         }
         else if((fa.getUserData().getClass() == RangeWeaponProjectile.class && fb.getUserData().getClass() == ShootingMonster.class) || (fb.getUserData().getClass() == RangeWeaponProjectile.class && fa.getUserData().getClass() == ShootingMonster.class)) {
@@ -62,13 +59,12 @@ public class GameContactListener implements ContactListener {
                 curMonster = (ShootingMonster) fb.getUserData();
             }
             if (!curMonster.isImmune()) {
-                curMonster.getHit(curProjectile.damageMonst);
+                curMonster.getHit(curProjectile.projectileDamage);
                 game.getOurMusic().monsterDmgSound.play(game.getOurMusic().getSoundVolume());
-                curMonster.makeImmune();
-                game.mainScreen.monstersDied.add(curProjectile);
+                game.mainScreen.projectilesDied.add(curProjectile);
             }
             else{
-                game.mainScreen.monstersDied.add(curProjectile);
+                game.mainScreen.projectilesDied.add(curProjectile);
             }
         }
         else if((fa.getUserData().getClass() == RangeWeaponProjectile.class && fb.getUserData().getClass() == Wall.class) || (fb.getUserData().getClass() == RangeWeaponProjectile.class && fa.getUserData().getClass() == Wall.class)) {
@@ -78,7 +74,7 @@ public class GameContactListener implements ContactListener {
             } else {
                 curProjectile = (RangeWeaponProjectile) fa.getUserData();
             }
-            game.mainScreen.monstersDied.add(curProjectile);
+            game.mainScreen.projectilesDied.add(curProjectile);
 
         } else if (((fa.getUserData() instanceof ShootingMonsterProjectile && fb.getUserData() instanceof Wall)
                 || (fb.getUserData() instanceof ShootingMonsterProjectile && fa.getUserData() instanceof Wall))) {
@@ -94,7 +90,7 @@ public class GameContactListener implements ContactListener {
                 }
 
 //                curMonster.getBody().getWorld().destroyBody(curMonster.getBody());
-                game.mainScreen.monstersDied.add(curMonster);
+                game.mainScreen.projectilesDied.add(curMonster);
         } else if ((fa.getUserData() instanceof Player && fb.getUserData() instanceof DamageMakerPlayer)
                 || (fb.getUserData() instanceof Player && fa.getUserData() instanceof DamageMakerPlayer)) {
             Player player;
@@ -108,7 +104,7 @@ public class GameContactListener implements ContactListener {
             }
             player.addDamageMaker(damageMakerPlayer);
             if(damageMakerPlayer instanceof ShootingMonsterProjectile && ! (damageMakerPlayer instanceof RangeWeaponProjectile)){
-                game.mainScreen.monstersDied.add((Monster) damageMakerPlayer);
+                game.mainScreen.projectilesDied.add((Projectiles) damageMakerPlayer);
             }
         } else if((fa.getUserData() instanceof MeleeWeaponProjectile && fb.getUserData() instanceof ShootingMonsterProjectile) || (fb.getUserData() instanceof MeleeWeaponProjectile && fa.getUserData() instanceof ShootingMonsterProjectile)) {
             MeleeWeaponProjectile curMelee;
@@ -120,7 +116,7 @@ public class GameContactListener implements ContactListener {
                 curMelee = (MeleeWeaponProjectile) fb.getUserData();
                 curRange = (ShootingMonsterProjectile) fa.getUserData();
             }
-            game.mainScreen.monstersDied.add((Monster) curRange);
+            game.mainScreen.projectilesDied.add((Projectiles) curRange);
         } else if((fa.getUserData() instanceof MeleeWeaponProjectile && fb.getUserData() instanceof ChasingMonster) || (fb.getUserData() instanceof MeleeWeaponProjectile && fa.getUserData() instanceof ChasingMonster)){
             MeleeWeaponProjectile curMelee;
             ChasingMonster curMonster;
@@ -134,7 +130,6 @@ public class GameContactListener implements ContactListener {
             if (!curMonster.isImmune()) {
                 curMonster.getHit(curMelee.myWeapon.weaponDamage);
                 game.getOurMusic().monsterDmgSound.play(game.getOurMusic().getSoundVolume());
-                curMonster.makeImmune();
             }
         } else if((fa.getUserData() instanceof MeleeWeaponProjectile && fb.getUserData() instanceof ShootingMonster) || (fb.getUserData() instanceof MeleeWeaponProjectile && fa.getUserData() instanceof ShootingMonster)){
             MeleeWeaponProjectile curMelee;
@@ -149,7 +144,6 @@ public class GameContactListener implements ContactListener {
             if (!curMonster.isImmune()) {
                 curMonster.getHit(curMelee.myWeapon.weaponDamage);
                 game.getOurMusic().monsterDmgSound.play(game.getOurMusic().getSoundVolume());
-                curMonster.makeImmune();
             }
         } else if((fa.getUserData() instanceof Portal && fb.getUserData() instanceof Player) || (fa.getUserData() instanceof Player && fb.getUserData() instanceof Portal)){
             if(fa.getUserData() instanceof Portal){
@@ -157,6 +151,18 @@ public class GameContactListener implements ContactListener {
             }else{
                 game.setScreen(game.mainScreen = new GameScreen(game, ((Portal) fb.getUserData()).gameScreen.choosenWeapon));
             }
+        }
+        else if((fa.getUserData() instanceof Chest && fb.getUserData() instanceof Projectiles) ||(fb.getUserData() instanceof Chest && fa.getUserData() instanceof Projectiles)){
+            Projectiles proj;
+            Chest chest;
+            if (fa.getUserData() instanceof Chest) {
+                chest = (Chest) fa.getUserData();
+                proj = (Projectiles) fb.getUserData();
+            } else {
+                chest = (Chest) fb.getUserData();
+                proj = (Projectiles) fa.getUserData();
+            }
+            game.mainScreen.projectilesDied.add(proj);
         }
     }
 
@@ -218,6 +224,12 @@ public class GameContactListener implements ContactListener {
             contact.setEnabled(false);
         }
         else if((fa.getUserData() instanceof  MeleeWeaponProjectile && fb.getUserData() instanceof Wall) || (fb.getUserData() instanceof  MeleeWeaponProjectile && fa.getUserData() instanceof Wall) ){
+            contact.setEnabled(false);
+        }
+        else if((fa.getUserData() instanceof Chest && fb.getUserData() instanceof  MeleeWeaponProjectile) || (fa.getUserData() instanceof MeleeWeaponProjectile && fb.getUserData() instanceof  Chest)){
+            contact.setEnabled(false);
+        }
+        else if((fa.getUserData() instanceof Portal && fb.getUserData() instanceof  Projectiles) || (fa.getUserData() instanceof Projectiles && fb.getUserData() instanceof  Portal)){
             contact.setEnabled(false);
         }
 

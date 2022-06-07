@@ -14,6 +14,11 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import org.rloop.Screens.GameScreen;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
+import static org.rloop.Util.rnd;
+
 public class Chest {
     static float WIDTH = 1;
     static float HEIGHT = 1;
@@ -28,6 +33,8 @@ public class Chest {
     TextureRegion currentFrame;
     public int textureNumber = 0;
     TextureRegion[] textureRegion;
+
+    ArrayList<Items> drop;
 
     public boolean PointIsInChest(float x, float y){
         if(x >= barrier.getPosition().x-1 && y >= barrier.getPosition().y-1 && x <= barrier.getPosition().x+1 && y <= barrier.getPosition().y+1){
@@ -44,11 +51,22 @@ public class Chest {
                 texture.getWidth()/2,
                 texture.getHeight());
         textureRegion = tmp[0];
+        drop = new ArrayList<>();
         this.gameScreen = gameScreen;
         this.texture = level.getGame().resources.portal;
         this.x = (int) pos.x;
         this.y = (int) pos.y;
         this.level = level;
+
+        int itemCount = rnd(1, 2);
+
+        for(int i = 0; i < itemCount; i++){
+            int ranItem = rnd(0, gameScreen.PossibleItems.size() - 1);
+            if(gameScreen.PossibleItems.get(ranItem) == DamagePotion.class){
+                drop.add(new DamagePotion(rnd(20, 50) * 1f/100f, level));
+            }
+        }
+
         definePhysics();
     }
 

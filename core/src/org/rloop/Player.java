@@ -22,6 +22,9 @@ public class Player {
     float MAX_VELOCITY = 5;
     float stateTime;
 
+    protected int playerDamage = 1;
+    protected int playerAttackSpeed = 1;
+
     Weapon playerWeapon;
     TextureRegion currentFrame;
 
@@ -53,10 +56,10 @@ public class Player {
         statMaxHP = 1.0f;
 
         if(choosenWeapon) {
-            playerWeapon = new MeleeWeapon(0.15f, 1, 1.3f);
+            playerWeapon = new MeleeWeapon(0.15f * playerDamage, 1f * playerAttackSpeed, 1.3f);
         }
         else{
-            playerWeapon = new RangeWeapon(0.1f, 1f, 1.3f);
+            playerWeapon = new RangeWeapon(0.1f * playerDamage, 1f * playerAttackSpeed, 1.3f);
             attackTime = 200;
             //TODO: change attackSpeed normally
         }
@@ -172,7 +175,7 @@ public class Player {
     long immuneTime = 1000;
     long lastDamaged = System.currentTimeMillis();
 
-    private boolean isImmune(){
+    public boolean isImmune(){
         return (System.currentTimeMillis() - lastDamaged < immuneTime);
     }
 

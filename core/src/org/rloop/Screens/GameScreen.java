@@ -15,6 +15,7 @@ import org.rloop.*;
 import org.rloop.Stages.GameStage;
 import org.rloop.Stages.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import static org.rloop.Util.rnd;
@@ -40,6 +41,10 @@ public class GameScreen extends ScreenAdapter {
     public HashSet<Projectiles> projectiles;
     public HashSet<Projectiles> projectilesNotRender;
     public HashSet<Projectiles> projectilesDied;
+
+    public ArrayList<Items> itemList;
+    public ArrayList<Class> PossibleItems ;
+
     public boolean choosenWeapon;
     public LevelBuilder levelBuilder;
     public Portal portal = null;
@@ -54,6 +59,9 @@ public class GameScreen extends ScreenAdapter {
     public GameScreen(rloop game, boolean choosenWeapon) {
         this.game = game;
         this.choosenWeapon = choosenWeapon;
+        PossibleItems = new ArrayList<>();
+        itemList = new ArrayList<>();
+        PossibleItems.add(DamagePotion.class);
 
         debugRenderer = new Box2DDebugRenderer();
         world = new World(new Vector2(0, 0), true);
@@ -62,7 +70,10 @@ public class GameScreen extends ScreenAdapter {
         camera = new OrthographicCamera();
         viewport = new ExtendViewport(32,24,camera);
 
+
         levelBuilder = new LevelBuilder(world);
+
+
         currentLevel = new Level(world, game, viewport, levelBuilder.generateRoom());
 
         //adding player
@@ -75,7 +86,8 @@ public class GameScreen extends ScreenAdapter {
         monstersNotRender = new HashSet<>();
         monstersDied = new HashSet<>();
 
-        int numberOfMonsters = rnd(0,0);
+
+        int numberOfMonsters = rnd(5,8);
         for (int i = 0; i < numberOfMonsters; i++) {
             Vector2 monsterPos;
             do {
@@ -136,6 +148,11 @@ public class GameScreen extends ScreenAdapter {
 
         currentLevel.update();
         //clearing monsters
+
+        for(Monster monster: monsters){
+            monster.update(x);
+        }
+
         for(Monster monster: monstersDied){
             monster.body.getWorld().destroyBody(monster.body);
             monsters.remove(monster);
@@ -169,14 +186,6 @@ public class GameScreen extends ScreenAdapter {
 
         monstersNotRender.clear();
 
-
-        for(Projectiles projectile: projectiles){
-            projectile.render();
-        }
-        for(Projectiles projectile: projectilesNotRender){
-            projectile.render();
-            projectiles.add(projectile);
-        }
         if(monstersDied.size() == monsters.size()){
             if(portal == null) {
                 Vector2 portalPos;
@@ -194,6 +203,15 @@ public class GameScreen extends ScreenAdapter {
                 chest.render();
             }
         }
+
+        for(Projectiles projectile: projectiles){
+            projectile.render();
+        }
+        for(Projectiles projectile: projectilesNotRender){
+            projectile.render();
+            projectiles.add(projectile);
+        }
+
         this.player.render();
 
         projectilesNotRender.clear();
@@ -202,7 +220,7 @@ public class GameScreen extends ScreenAdapter {
         gameScreenStage.getCurrentStage().act();
         gameScreenStage.getCurrentStage().draw();
 
-//        debugRenderer.render(world, camera.combined);
+        debugRenderer.render(world, camera.combined);
     }
 
     public void renderChestScreen(){
@@ -215,7 +233,7 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.setColor(1,10,1,0.5f);
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 4; j++){
-                shapeRenderer.rect(1000+110*i,600+110*j, 100, 100);
+                shapeRenderer.rect(Util.monitorResolutionX(1000+110*i),Util.monitorResolutionY(600+110*j), Util.monitorResolutionX(100), Util.monitorResolutionY(100));
             }
         }
         shapeRenderer.end();

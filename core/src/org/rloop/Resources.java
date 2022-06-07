@@ -15,8 +15,10 @@ public class Resources {
     public Texture allThings;
     public TextureRegion mainSword;
     public TextureRegion magickBook;
+    public TextureRegion damagePotion;
     public Texture portal;
     public Texture chest;
+    public Texture prTexture ;
 
     Resources() {
         hiddenSpikes = new Texture("HiddenSpikes.png");
@@ -33,11 +35,14 @@ public class Resources {
         allThings = new Texture("all-assets-preview.png");
         mainSword = new TextureRegion(allThings, 512, 64, 15, 15);
         magickBook = new TextureRegion(allThings, 673, 176, 15, 15);
+        damagePotion = new TextureRegion(allThings, 31, 64, 16, 16);
+        prTexture = new Texture("ProjectileTexture.png");
     }
 
     void dispose() {
         hiddenSpikes.dispose();
         spikes.dispose();
         allThings.dispose();
+        prTexture.dispose();
     }
 }
