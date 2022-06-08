@@ -15,14 +15,17 @@ import org.rloop.Tiles.Spikes;
 import java.util.ArrayList;
 
 public class ShootingMonster extends Monster {
-    float speedMonst = 2;
-    float damageMonst = (float) 0;
-    float hpMonst = 0.5f;
+
+
 
     int spellCastCount;
 
     public ShootingMonster(float x, float y, Level level, Player player) {
         super(x, y, level, player);
+
+        speedMonst = 2;
+        damageMonst = (float) 0;
+        hpMonst = 0.5f;
 
         Texture texture = level.getGame().resources.skeletonMage;
         TextureRegion[][] tmp = TextureRegion.split(texture,
@@ -62,7 +65,7 @@ public class ShootingMonster extends Monster {
             }
             if (this.x >= spike.getX() - 1 && this.x <= spike.getX() + 1 && this.y >= spike.getY() - 1 && this.y <= spike.getY() + 1) {
                 if (!this.isImmune()) {
-                    this.getHit(0.03f);
+                    this.getHit(0.02f);
                     //Gdx.audio.newSound(Gdx.files.internal("music/DamageSound.mp3")).play(room.getGame().GlobalAudioSound);
                 }
             }

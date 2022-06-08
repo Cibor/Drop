@@ -1,8 +1,9 @@
 package org.rloop;
 
-public abstract class Weapon {
+public abstract class Weapon implements Items {
     float weaponDamage;
     float weaponAttackSpeed;
+    Player player;
 
     public Weapon(float dam, float speed){
         weaponDamage = dam;
@@ -19,6 +20,11 @@ public abstract class Weapon {
 
     public float getWeaponAttackSpeed(){
         return this.weaponAttackSpeed;
+    }
+
+    public void pickUp(Player player) {
+        player.playerWeapon = this;
+        player.mainScreen.itemList.add(this);
     }
 
 }

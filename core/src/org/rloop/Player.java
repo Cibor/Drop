@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import org.rloop.Screens.GameScreen;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,22 +22,24 @@ public class Player {
     protected int direction;
     float MAX_VELOCITY = 5;
     float stateTime;
+    public GameScreen mainScreen;
 
-    protected int playerDamage = 1;
-    protected int playerAttackSpeed = 1;
+    public int playerDamage = 1;
+    public int playerAttackSpeed = 1;
 
-    Weapon playerWeapon;
+    public Weapon playerWeapon;
     TextureRegion currentFrame;
 
-    protected float statCurrentHP;
-    protected float statMaxHP;
-    protected float statSpeed;
+    public float statCurrentHP;
+    public float statMaxHP;
+    public float statSpeed;
 
     public float getCurrentHP() { return statCurrentHP; }
 
     public float getMaxHP() { return statMaxHP; }
 
-    public Player(float x, float y, Level level, boolean choosenWeapon){
+    public Player(float x, float y, Level level, boolean choosenWeapon, GameScreen mainScreen, boolean withoutWeapon){
+        this.mainScreen = mainScreen;
         this.level = level;
         this.x = x;
         this.y = y;
@@ -54,14 +57,13 @@ public class Player {
         statSpeed = 1.0f;
         statCurrentHP = 1.0f;
         statMaxHP = 1.0f;
-
-        if(choosenWeapon) {
-            playerWeapon = new MeleeWeapon(0.15f * playerDamage, 1f * playerAttackSpeed, 1.3f);
-        }
-        else{
-            playerWeapon = new RangeWeapon(0.1f * playerDamage, 1f * playerAttackSpeed, 1.3f);
-            attackTime = 200;
-            //TODO: change attackSpeed normally
+        if (!withoutWeapon) {
+            if (choosenWeapon) {
+                new MeleeWeapon(0.15f * playerDamage, 1f * playerAttackSpeed, 1.3f, this).pickUp(this);
+            } else {
+                new RangeWeapon(0.1f * playerDamage, 1f * playerAttackSpeed, 1.3f, this).pickUp(this);
+                attackTime = 200;
+            }
         }
         definePhysics();
 

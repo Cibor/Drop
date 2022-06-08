@@ -16,9 +16,13 @@ public class Resources {
     public TextureRegion mainSword;
     public TextureRegion magickBook;
     public TextureRegion damagePotion;
+    public TextureRegion speedPotion;
+    public TextureRegion hpPotion;
+    public TextureRegion tripleShot;
     public Texture portal;
     public Texture chest;
     public Texture prTexture ;
+    public Texture boots;
 
     Resources() {
         hiddenSpikes = new Texture("HiddenSpikes.png");
@@ -33,10 +37,14 @@ public class Resources {
         skeletonMage = new Texture("player/skeletonMage.png");
         goblin = new Texture("player/goblin.png");
         allThings = new Texture("all-assets-preview.png");
-        mainSword = new TextureRegion(allThings, 512, 64, 15, 15);
-        magickBook = new TextureRegion(allThings, 673, 176, 15, 15);
+        mainSword = new TextureRegion(allThings, 512, 64, 16, 16);
+        magickBook = new TextureRegion(allThings, 673, 176, 16, 16);
         damagePotion = new TextureRegion(allThings, 31, 64, 16, 16);
+        hpPotion = new TextureRegion(allThings, 271, 32, 16, 16);
+        speedPotion = new TextureRegion(allThings, 175, 64, 16, 16);
+        tripleShot = new TextureRegion(allThings, 783, 48, 16, 16);
         prTexture = new Texture("ProjectileTexture.png");
+        boots = new Texture("chain_boots.png");
     }
 
     void dispose() {

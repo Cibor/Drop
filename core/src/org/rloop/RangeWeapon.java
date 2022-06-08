@@ -1,13 +1,15 @@
 package org.rloop;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public class RangeWeapon extends Weapon{
         float projectileSpeed;
 
-        public RangeWeapon(float dam, float speed, float prSpeed){
+        public RangeWeapon(float dam, float speed, float prSpeed, Player player){
             super(dam, speed);
+            this.player = player;
             projectileSpeed = prSpeed;
         }
 
@@ -31,4 +33,9 @@ public class RangeWeapon extends Weapon{
 
             player.level.game.mainScreen.projectilesNotRender.add(proj);
         }
+
+    @Override
+    public TextureRegion getTexture() {
+        return player.level.game.resources.magickBook;
+    }
 }

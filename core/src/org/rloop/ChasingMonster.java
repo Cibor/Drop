@@ -59,7 +59,7 @@ public class ChasingMonster extends Monster implements DamageMakerPlayer {
             }
             if (this.x >= spike.getX() - 1 && this.x <= spike.getX() + 1 && this.y >= spike.getY() - 1 && this.y <= spike.getY() + 1) {
                 if (!this.isImmune()) {
-                    this.getHit(0.03f);
+                    this.getHit(0.02f);
                     //Gdx.audio.newSound(Gdx.files.internal("music/DamageSound.mp3")).play(room.getGame().GlobalAudioSound);
                 }
             }

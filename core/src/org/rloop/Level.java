@@ -302,4 +302,10 @@ public class Level {
     public void render(float delta) {
 
     }
+
+    public void dispose(){
+        wallTiles.clear();
+        floorTiles.clear();
+        spikesTiles.clear();
+    }
 }

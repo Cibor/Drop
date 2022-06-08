@@ -9,8 +9,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.rloop.*;
 import org.rloop.Stages.GameStage;
 import org.rloop.Stages.*;
@@ -23,16 +25,18 @@ import static org.rloop.Util.rnd;
 public class GameScreen extends ScreenAdapter {
     final rloop game;
     Player player;
-    World world;
+    public World world;
     Camera camera;
     Box2DDebugRenderer debugRenderer;
-    ExtendViewport viewport;
+    public ExtendViewport viewport;
     Vector2 pos;
     public boolean paused = false;
     ShapeRenderer shapeRenderer;
 
-    Stage pauseStage;
-    Stage chestStage;
+    public boolean nextLvl = false;
+
+    public Stage pauseStage;
+    public Stage chestStage;
     GameStage gameScreenStage;
 
     public HashSet<Monster> monsters;
@@ -52,7 +56,7 @@ public class GameScreen extends ScreenAdapter {
     public boolean chestMode = false;
 
 
-    Level currentLevel;
+    public Level currentLevel;
 
     static Skin globalSkin = new Skin(Gdx.files.internal("pixthulhuui/pixthulhu-ui.json"));
 
@@ -61,8 +65,15 @@ public class GameScreen extends ScreenAdapter {
         this.choosenWeapon = choosenWeapon;
         PossibleItems = new ArrayList<>();
         itemList = new ArrayList<>();
-        PossibleItems.add(DamagePotion.class);
 
+
+        PossibleItems.add(DamagePotion.class);
+        PossibleItems.add(SpeedPotion.class);
+        PossibleItems.add(HpPotion.class);
+        PossibleItems.add(DefendingShoes.class);
+        PossibleItems.add(TripleRangeWeapon.class);
+
+        chestStage = new Stage(new ScreenViewport());
         debugRenderer = new Box2DDebugRenderer();
         world = new World(new Vector2(0, 0), true);
         world.setContactListener(new GameContactListener(game));
@@ -78,7 +89,7 @@ public class GameScreen extends ScreenAdapter {
 
         //adding player
         Vector2 playerPos = currentLevel.getPositionOfSomething();
-        player = new Player(playerPos.x,playerPos.y, currentLevel, choosenWeapon);
+        player = new Player(playerPos.x,playerPos.y, currentLevel, choosenWeapon, this, false);
         pos = this.player.getBody().getPosition();
 
         //adding monsters
@@ -117,6 +128,19 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void render(float x){
+        if(nextLvl){
+            nextLvl = false;
+            currentLevel.dispose();
+            portal = null;
+            chest = null;
+            Array<Body> bodys = new Array<>();
+            world.getBodies(bodys);
+            for(Body body : bodys){
+                world.destroyBody(body);
+            }
+            createNextLvl();
+        }
+
         if(paused) {
             justRender(x);
             renderPauseScreen();
@@ -133,6 +157,7 @@ public class GameScreen extends ScreenAdapter {
             }else{
                 chest.textureNumber = 0;
                 chestMode = false;
+                Gdx.input.setInputProcessor(gameScreenStage.getCurrentStage());
             }
         }
     }
@@ -239,10 +264,9 @@ public class GameScreen extends ScreenAdapter {
         shapeRenderer.end();
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
-//        Gdx.input.setInputProcessor(chestStage);
-//
-//        chestStage.act();
-//        chestStage.draw();
+        Gdx.input.setInputProcessor(chestStage);
+        chestStage.act();
+        chestStage.draw();
     }
 
     public void renderPauseScreen() {
@@ -281,5 +305,43 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void resume(){
         paused = false;
+    }
+
+    void createNextLvl(){
+        world = new World(new Vector2(0, 0), true);
+        world.setContactListener(new GameContactListener(game));
+
+        levelBuilder = new LevelBuilder(world);
+
+        currentLevel = new Level(world, game, viewport, levelBuilder.generateRoom());
+
+        Vector2 playerPos = currentLevel.getPositionOfSomething();
+
+        Player playercopy = new Player(playerPos.x,playerPos.y, currentLevel, false, this, true);
+
+        playercopy.playerWeapon = player.playerWeapon;
+        playercopy.playerDamage = player.playerDamage;
+        playercopy.playerAttackSpeed = player.playerAttackSpeed;
+        playercopy.statSpeed = player.statSpeed;
+        playercopy.statCurrentHP = player.statCurrentHP;
+        playercopy.statMaxHP = player.statMaxHP;
+
+        player = playercopy;
+
+        pos = this.player.getBody().getPosition();
+        int numberOfMonsters = rnd(5,8);
+        for (int i = 0; i < numberOfMonsters; i++) {
+            Vector2 monsterPos;
+            do {
+                monsterPos = currentLevel.getPositionOfSomething();
+            } while(monsterPos.dst(playerPos) < 10);
+
+            int decideType = rnd(0, 1);
+            if (decideType == 0) {
+                monsters.add(new ChasingMonster(monsterPos.x,monsterPos.y, currentLevel,getPlayer()));
+            } else if (decideType == 1) {
+                monsters.add(new ShootingMonster(monsterPos.x, monsterPos.y, currentLevel, getPlayer()));
+            }
+        }
     }
 }

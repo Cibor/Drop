@@ -1,9 +1,12 @@
 package org.rloop;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import org.rloop.Screens.GameScreen;
 import org.rloop.Tiles.Wall;
+
+import static org.rloop.Util.rnd;
 
 //@author Marcin Kozik, Andrei Daletski
 
@@ -146,11 +149,7 @@ public class GameContactListener implements ContactListener {
                 game.getOurMusic().monsterDmgSound.play(game.getOurMusic().getSoundVolume());
             }
         } else if((fa.getUserData() instanceof Portal && fb.getUserData() instanceof Player) || (fa.getUserData() instanceof Player && fb.getUserData() instanceof Portal)){
-            if(fa.getUserData() instanceof Portal){
-                game.setScreen(game.mainScreen = new GameScreen(game, ((Portal) fa.getUserData()).gameScreen.choosenWeapon));
-            }else{
-                game.setScreen(game.mainScreen = new GameScreen(game, ((Portal) fb.getUserData()).gameScreen.choosenWeapon));
-            }
+            game.mainScreen.nextLvl = true;
         }
         else if((fa.getUserData() instanceof Chest && fb.getUserData() instanceof Projectiles) ||(fb.getUserData() instanceof Chest && fa.getUserData() instanceof Projectiles)){
             Projectiles proj;

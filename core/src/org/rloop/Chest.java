@@ -12,11 +12,17 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import org.rloop.Screens.GameScreen;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import static org.rloop.Util.monitorResolutionY;
 import static org.rloop.Util.rnd;
 
 public class Chest {
@@ -35,6 +41,7 @@ public class Chest {
     TextureRegion[] textureRegion;
 
     ArrayList<Items> drop;
+    ArrayList<Actor> actors;
 
     public boolean PointIsInChest(float x, float y){
         if(x >= barrier.getPosition().x-1 && y >= barrier.getPosition().y-1 && x <= barrier.getPosition().x+1 && y <= barrier.getPosition().y+1){
@@ -52,19 +59,54 @@ public class Chest {
                 texture.getHeight());
         textureRegion = tmp[0];
         drop = new ArrayList<>();
+        actors = new ArrayList<>();
         this.gameScreen = gameScreen;
         this.texture = level.getGame().resources.portal;
         this.x = (int) pos.x;
         this.y = (int) pos.y;
         this.level = level;
 
-        int itemCount = rnd(1, 2);
+        int itemCount = rnd(10, 15);
 
         for(int i = 0; i < itemCount; i++){
             int ranItem = rnd(0, gameScreen.PossibleItems.size() - 1);
-            if(gameScreen.PossibleItems.get(ranItem) == DamagePotion.class){
-                drop.add(new DamagePotion(rnd(20, 50) * 1f/100f, level));
+            TextureRegionDrawable ret = new TextureRegionDrawable();
+            if(gameScreen.PossibleItems.get(ranItem) == DamagePotion.class) {
+                drop.add(new DamagePotion(rnd(20, 50) * 1f / 100f, level));
+                ret = new TextureRegionDrawable(gameScreen.getGame().resources.damagePotion);
+
+            }else if(gameScreen.PossibleItems.get(ranItem) == SpeedPotion.class){
+                drop.add(new SpeedPotion(rnd(5, 20) * 1f/100f, level));
+                ret = new TextureRegionDrawable(gameScreen.getGame().resources.speedPotion);
             }
+            else if(gameScreen.PossibleItems.get(ranItem) == HpPotion.class){
+                drop.add(new HpPotion(rnd(5, 10) * 1f/100f, level));
+                ret = new TextureRegionDrawable(gameScreen.getGame().resources.hpPotion);
+            }
+            else if(gameScreen.PossibleItems.get(ranItem) == DefendingShoes.class){
+                drop.add(new DefendingShoes(level));
+                ret = new TextureRegionDrawable(gameScreen.getGame().resources.boots);
+            }
+            else if(gameScreen.PossibleItems.get(ranItem) == TripleRangeWeapon.class){
+                drop.add(new TripleRangeWeapon(0.1f * level.getPlayer().playerDamage, 1f * level.getPlayer().playerAttackSpeed, 1.3f, level.getPlayer()));
+                ret = new TextureRegionDrawable(gameScreen.getGame().resources.tripleShot);
+            }
+
+            final int idx = i;
+            ret.setMinSize(Util.monitorResolutionX(90), Util.monitorResolutionY(90));
+            ImageButton item = new ImageButton(ret);
+            item.setBounds(Util.monitorResolutionX(1005 + 110 * (i / 4)), monitorResolutionY(606+110*(i%4)), Util.monitorResolutionX(90), Util.monitorResolutionY(90));
+            item.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    actor.addAction(Actions.removeActor());
+                    actors.set(idx, null);
+                    drop.get(idx).pickUp(level.getPlayer());
+                    drop.set(idx, null);
+                }
+            });
+            gameScreen.chestStage.addActor(item);
+            actors.add(item);
         }
 
         definePhysics();

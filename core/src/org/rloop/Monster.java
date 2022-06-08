@@ -87,6 +87,7 @@ public abstract class Monster {
 
 
     public void update(float x) {}
+
     public void render(){
         this.setX(this.getBody().getPosition().x);
         this.setY(this.getBody().getPosition().y);
@@ -98,4 +99,6 @@ public abstract class Monster {
         level.getGame().getBatch().draw(currentFrame, x - 1, y - 1, 2, 2);
         this.level.getGame().getBatch().end();
     }
+
+
 }
