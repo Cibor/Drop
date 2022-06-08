@@ -45,7 +45,7 @@ public class Spikes extends Tile implements DamageMakerPlayer, DamageMakerMonste
     }
 
     @Override
-    public  void makeDamageMonster(Monster monster){
+    public void makeDamageMonster(Monster monster){
 
     }
 }

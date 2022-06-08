@@ -98,7 +98,7 @@ public class GameScreen extends ScreenAdapter {
         monstersDied = new HashSet<>();
 
 
-        int numberOfMonsters = rnd(5,8);
+        int numberOfMonsters = rnd(5,7);
         for (int i = 0; i < numberOfMonsters; i++) {
             Vector2 monsterPos;
             do {

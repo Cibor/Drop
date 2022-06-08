@@ -23,9 +23,11 @@ public class Resources {
     public Texture chest;
     public Texture prTexture ;
     public Texture boots;
+    public Texture flamethrower;
 
     Resources() {
         hiddenSpikes = new Texture("HiddenSpikes.png");
+        flamethrower = new Texture("flameTrap.png");
         spikes = new Texture("Spikes.png");
         Texture texture = new Texture("WallSet.png");
         walls = TextureRegion.split(texture,

@@ -21,6 +21,7 @@ public class Level {
     protected ArrayList<Tile> wallTiles;
     protected ArrayList<Tile> floorTiles;
     protected ArrayList<Spikes> spikesTiles;
+    protected ArrayList<Flamethrower> flameThrowers;
     protected Viewport viewport;
     protected Vector2 pos;
     protected ArrayList<Rectangle> template;
@@ -226,6 +227,41 @@ public class Level {
                 }
             }
         }
+        flameThrowers = new ArrayList<>();
+        for(Tile tile: wallTiles){
+            if(new Random().nextInt(100) == 0){
+                float x = tile.getX();
+                float y = tile.getY();
+                x++;
+                y++;
+                int direction = -1;
+                for(Rectangle rectangle: template) {
+                    if (PointIsInRectangle(x, y+2, rectangle)) {
+                        y += 2;
+                        direction = 0;
+                        break;
+                    }
+                    if (PointIsInRectangle(x-2, y, rectangle)) {
+                        x-=2;
+                        direction = 3;
+                        break;
+                    }
+                    if (PointIsInRectangle(x+2, y, rectangle)) {
+                        x+=2;
+                        direction = 1;
+                        break;
+                    }
+                    if (PointIsInRectangle(x, y-2, rectangle)) {
+                        y-=2;
+                        direction = 2;
+                        break;
+                    }
+                }
+                if(direction!=-1) {
+                    flameThrowers.add(new Flamethrower(new Vector2(x - 1, y - 1), this, direction));
+                }
+            }
+        }
     }
 
     public void render(){
@@ -242,6 +278,9 @@ public class Level {
         for(Tile tile: spikesTiles){
             tile.render();
         }
+        for(Flamethrower flamethrower: flameThrowers){
+            flamethrower.render();
+        }
         this.getGame().getBatch().end();
     }
 
@@ -254,6 +293,9 @@ public class Level {
         }
         for(Tile tile: spikesTiles){
             tile.update();
+        }
+        for(Flamethrower flamethrower: flameThrowers){
+            flamethrower.update();
         }
     }
 
