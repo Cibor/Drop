@@ -20,11 +20,11 @@ public class TripleRangeWeapon extends RangeWeapon{
         Vector2 direction2 = new Vector2((float) (direction1.x * Math.cos(Math.PI/6f) - direction1.y * Math.sin(Math.PI/6f)), (float) (direction1.x * Math.sin(Math.PI/6f) + direction1.y * Math.cos(Math.PI/6f)));
         Vector2 direction3 = new Vector2((float) (direction1.x * Math.cos(Math.PI * 2 - Math.PI/6f) - direction1.y * Math.sin(Math.PI * 2 -Math.PI/6f)), (float) (direction1.x * Math.sin(Math.PI * 2 - Math.PI/6f) + direction1.y * Math.cos(Math.PI * 2 - Math.PI/6f)));
 
-        float angle = (float) Util.GetAngle(playerX, cursorY, cursorX, playerY); angle += 180;
+        float angle = (float) Util.GetAngle(playerX, cursorY, cursorX, playerY); angle = (angle + 215) % 360;
 
-        RangeWeaponProjectile proj1 = new RangeWeaponProjectile(player.x, player.y, player.level, player, direction1, this, angle);
-        RangeWeaponProjectile proj2 = new RangeWeaponProjectile(player.x, player.y, player.level, player, direction2, this, (angle + 30) % 360);
-        RangeWeaponProjectile proj3 = new RangeWeaponProjectile(player.x, player.y, player.level, player, direction3, this, (angle - 30 + 360) % 360);
+        ThrowingDaggers proj1 = new ThrowingDaggers(player.x, player.y, player.level, player, direction1, this, angle);
+        ThrowingDaggers proj2 = new ThrowingDaggers(player.x, player.y, player.level, player, direction2, this, (angle + 30) % 360);
+        ThrowingDaggers proj3 = new ThrowingDaggers(player.x, player.y, player.level, player, direction3, this, (angle - 30 + 360) % 360);
 
 
         proj1.projectileDamage = this.weaponDamage;

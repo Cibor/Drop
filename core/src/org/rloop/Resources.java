@@ -44,7 +44,7 @@ public class Resources {
         damagePotion = new TextureRegion(allThings, 31, 64, 16, 16);
         hpPotion = new TextureRegion(allThings, 271, 32, 16, 16);
         speedPotion = new TextureRegion(allThings, 175, 64, 16, 16);
-        tripleShot = new TextureRegion(allThings, 783, 48, 16, 16);
+        tripleShot = new TextureRegion(allThings, 528, 80, 16, 16);
         prTexture = new Texture("ProjectileTexture.png");
         boots = new Texture("chain_boots.png");
     }

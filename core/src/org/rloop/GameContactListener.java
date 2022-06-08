@@ -31,11 +31,11 @@ public class GameContactListener implements ContactListener {
             return;
         }
 
-        if(     (fa.getUserData().getClass() == RangeWeaponProjectile.class && fb.getUserData().getClass() == ChasingMonster.class)
-                || (fb.getUserData().getClass() == RangeWeaponProjectile.class && fa.getUserData().getClass() == ChasingMonster.class)) {
+        if(     (fa.getUserData()instanceof RangeWeaponProjectile && fb.getUserData().getClass() == ChasingMonster.class)
+                || (fb.getUserData() instanceof RangeWeaponProjectile && fa.getUserData().getClass() == ChasingMonster.class)) {
             RangeWeaponProjectile curProjectile;
             ChasingMonster curMonster;
-            if (fb.getUserData().getClass() == RangeWeaponProjectile.class) {
+            if (fb.getUserData() instanceof RangeWeaponProjectile) {
                 curProjectile = (RangeWeaponProjectile) fb.getUserData();
                 curMonster = (ChasingMonster) fa.getUserData();
             } else {
@@ -51,10 +51,10 @@ public class GameContactListener implements ContactListener {
                 game.mainScreen.projectilesDied.add(curProjectile);
             }
         }
-        else if((fa.getUserData().getClass() == RangeWeaponProjectile.class && fb.getUserData().getClass() == ShootingMonster.class) || (fb.getUserData().getClass() == RangeWeaponProjectile.class && fa.getUserData().getClass() == ShootingMonster.class)) {
+        else if((fa.getUserData() instanceof RangeWeaponProjectile && fb.getUserData().getClass() == ShootingMonster.class) || (fb.getUserData() instanceof RangeWeaponProjectile && fa.getUserData().getClass() == ShootingMonster.class)) {
             RangeWeaponProjectile curProjectile;
             ShootingMonster curMonster;
-            if (fb.getUserData().getClass() == RangeWeaponProjectile.class) {
+            if (fb.getUserData() instanceof RangeWeaponProjectile) {
                 curProjectile = (RangeWeaponProjectile) fb.getUserData();
                 curMonster = (ShootingMonster) fa.getUserData();
             } else {
@@ -70,9 +70,9 @@ public class GameContactListener implements ContactListener {
                 game.mainScreen.projectilesDied.add(curProjectile);
             }
         }
-        else if((fa.getUserData().getClass() == RangeWeaponProjectile.class && fb.getUserData().getClass() == Wall.class) || (fb.getUserData().getClass() == RangeWeaponProjectile.class && fa.getUserData().getClass() == Wall.class)) {
+        else if((fa.getUserData() instanceof RangeWeaponProjectile  && fb.getUserData().getClass() == Wall.class) || (fb.getUserData() instanceof RangeWeaponProjectile && fa.getUserData().getClass() == Wall.class)) {
             RangeWeaponProjectile curProjectile;
-            if (fb.getUserData().getClass() == RangeWeaponProjectile.class) {
+            if (fb.getUserData() instanceof RangeWeaponProjectile) {
                 curProjectile = (RangeWeaponProjectile) fb.getUserData();
             } else {
                 curProjectile = (RangeWeaponProjectile) fa.getUserData();
@@ -207,13 +207,13 @@ public class GameContactListener implements ContactListener {
                 || (fb.getUserData().getClass() == ShootingMonsterProjectile.class && fa.getUserData() instanceof  Monster)){
             contact.setEnabled(false);
         }
-        else if ((fa.getUserData().getClass() == RangeWeaponProjectile.class && fb.getUserData().getClass() == Player.class) || (fb.getUserData().getClass() == RangeWeaponProjectile.class && fa.getUserData().getClass() == Player.class)){
+        else if ((fa.getUserData() instanceof RangeWeaponProjectile && fb.getUserData().getClass() == Player.class) || (fb.getUserData() instanceof RangeWeaponProjectile && fa.getUserData().getClass() == Player.class)){
             contact.setEnabled(false);
         }
-        else if ((fa.getUserData().getClass() == RangeWeaponProjectile.class && fb.getUserData().getClass() == RangeWeaponProjectile.class)){
+        else if ((fa.getUserData() instanceof RangeWeaponProjectile && fb.getUserData() instanceof RangeWeaponProjectile)){
             contact.setEnabled(false);
         }
-        else if ((fa.getUserData().getClass() == RangeWeaponProjectile.class && fb.getUserData().getClass() == ShootingMonsterProjectile.class) || (fb.getUserData().getClass() == RangeWeaponProjectile.class && fa.getUserData().getClass() == ShootingMonsterProjectile.class)){
+        else if ((fa.getUserData() instanceof RangeWeaponProjectile && fb.getUserData().getClass() == ShootingMonsterProjectile.class) || (fb.getUserData() instanceof RangeWeaponProjectile && fa.getUserData().getClass() == ShootingMonsterProjectile.class)){
             contact.setEnabled(false);
         }
         else if((fa.getUserData() instanceof Player && fb.getUserData() instanceof MeleeWeaponProjectile) || (fb.getUserData() instanceof Player && fa.getUserData() instanceof MeleeWeaponProjectile)){

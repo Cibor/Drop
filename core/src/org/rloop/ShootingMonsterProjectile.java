@@ -13,7 +13,7 @@ import static java.lang.Math.abs;
 
 public class ShootingMonsterProjectile extends Projectiles implements DamageMakerPlayer{
 
-    Texture texture;
+    TextureRegion texture;
     int stateTime;
 
     public ShootingMonsterProjectile(float x, float y, Level level, Player player, Vector2 direction,Object spawner, float angle){
@@ -30,7 +30,7 @@ public class ShootingMonsterProjectile extends Projectiles implements DamageMake
         direction.y *= Math.sqrt(kaf);
 
         stateTime = 0;
-        texture = level.game.resources.prTexture;
+        texture = new TextureRegion(level.game.resources.prTexture);
         definePhysics(0.3f, 0.3f , null);
     }
     @Override

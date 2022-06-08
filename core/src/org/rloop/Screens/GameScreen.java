@@ -329,7 +329,7 @@ public class GameScreen extends ScreenAdapter {
         player = playercopy;
 
         pos = this.player.getBody().getPosition();
-        int numberOfMonsters = rnd(5,8);
+        int numberOfMonsters = rnd(0,0);
         for (int i = 0; i < numberOfMonsters; i++) {
             Vector2 monsterPos;
             do {
