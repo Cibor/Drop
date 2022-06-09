@@ -1,13 +1,15 @@
 package org.rloop;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public class RangeWeapon extends Weapon{
         float projectileSpeed;
 
-        public RangeWeapon(float dam, float speed, float prSpeed){
+        public RangeWeapon(float dam, float speed, float prSpeed, Player player){
             super(dam, speed);
+            this.player = player;
             projectileSpeed = prSpeed;
         }
 
@@ -21,14 +23,19 @@ public class RangeWeapon extends Weapon{
 
             float angle = (float) Util.GetAngle(playerX, cursorY, cursorX, playerY); angle += 180;
 
-            RangeWeaponProjectile proj = new RangeWeaponProjectile(player.x, player.y, player.level, player, direction, angle);
+            RangeWeaponProjectile proj = new RangeWeaponProjectile(player.x, player.y, player.level, player, direction, this, angle);
 
 
-            proj.damageMonst = this.weaponDamage;
+            proj.projectileDamage = this.weaponDamage;
 
-            proj.speedMonst = this.projectileSpeed;
+            proj.getProjectileSpeed = this.projectileSpeed;
 
 
-            player.level.game.mainScreen.monstersNotRender.add(proj);
+            player.level.game.mainScreen.projectilesNotRender.add(proj);
         }
+
+    @Override
+    public TextureRegion getTexture() {
+        return player.level.game.resources.magickBook;
+    }
 }

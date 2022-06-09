@@ -11,60 +11,27 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 import static java.lang.Math.abs;
 
-public class ShootingMonsterProjectile extends Monster implements DamageMakerPlayer{
+public class ShootingMonsterProjectile extends Projectiles implements DamageMakerPlayer{
 
-    Vector2 direction;
+    TextureRegion texture;
+    int stateTime;
 
-    float angle;
+    public ShootingMonsterProjectile(float x, float y, Level level, Player player, Vector2 direction,Object spawner, float angle){
+        super(x, y, level, player, direction, spawner);
 
-    Texture texture;
-
-    //TODO: move to Resources
-    static Texture prTexture = new Texture("ProjectileTexture.png");
-
-    public ShootingMonsterProjectile(float x, float y, Level level, Player player, Vector2 direction, float angle){
-        this.player = player;
-        this.level = level;
-        this.x = x;
-        this.y = y;
-
-        this.direction = direction;
-        this.speedMonst = 7;
-        this.damageMonst = (float) 0.1;
+        this.getProjectileSpeed = 7;
+        this.projectileDamage = (float) 0.1;
         this.angle = angle;
 
 
         float kaf = direction.x * direction.x + direction.y * direction.y;
-        kaf = (speedMonst * speedMonst) / kaf;
+        kaf = (getProjectileSpeed * getProjectileSpeed) / kaf;
         direction.x *= Math.sqrt(kaf);
         direction.y *= Math.sqrt(kaf);
 
         stateTime = 0;
-        texture = prTexture;
-        definePhysics();
-    }
-    @Override
-    public void definePhysics(){
-
-        BodyDef def = new BodyDef();
-        def.fixedRotation = true;
-        def.type = BodyDef.BodyType.DynamicBody;
-        def.position.set(x, y);
-        body = level.getWorld().createBody(def);
-
-        PolygonShape square = new PolygonShape();
-        square.setAsBox(0.3f, 0.3f);
-        FixtureDef fixtureDef = new FixtureDef();
-
-        fixtureDef.shape = square ;
-        fixtureDef.density = 0.5f;
-        fixtureDef.friction = 0.2f;
-        fixtureDef.restitution = 0f;
-
-
-        fixture = this.body.createFixture(fixtureDef);
-        fixture.setUserData(this);
-        square.dispose();
+        texture = new TextureRegion(level.game.resources.prTexture);
+        definePhysics(0.3f, 0.3f , null);
     }
     @Override
     public void render(){
@@ -78,43 +45,18 @@ public class ShootingMonsterProjectile extends Monster implements DamageMakerPla
         level.getGame().getBatch().draw(new TextureRegion(texture), x - 1, y - 1, 1, 1, 2, 2, 1, 1, angle);
         this.level.getGame().getBatch().end();
 
-        stateTime += Gdx.graphics.getDeltaTime();
-
-        this.getBody().setLinearVelocity(direction);
-
-    }
-    public void setX(float x){
-        this.x = x;
     }
 
-    public void setY(float y){
-        this.y = y;
-    }
-
-
-    public Body getBody() {
-        return body;
-    }
-
-    void renderPaused(){
+    public void update(float x){
         this.setX(this.getBody().getPosition().x);
         this.setY(this.getBody().getPosition().y);
-        float velx = getBody().getLinearVelocity().x;
-        float vely = getBody().getLinearVelocity().y;
-        if (velx == 0 && vely == 0) {
-            stateTime = 0;
-        }
-        this.level.getCamera().update();
-        this.level.getViewport().apply();
-        this.level.getGame().getBatch().setProjectionMatrix(level.getCamera().combined);
-        this.level.getGame().getBatch().begin();
-        level.getGame().getBatch().draw(new TextureRegion(texture), x - 1, y - 1, 1, 1, 2, 2, 1, 1, angle);
-        this.level.getGame().getBatch().end();
+        stateTime += x;
+        this.getBody().setLinearVelocity(direction);
     }
 
     @Override
     public void makeDamagePlayer(Player player) {
-        player.getHit(damageMonst);
+        player.getHit(projectileDamage);
         level.getGame().getOurMusic().dmgSound.play(level.getGame().getOurMusic().getSoundVolume());
     }
 }

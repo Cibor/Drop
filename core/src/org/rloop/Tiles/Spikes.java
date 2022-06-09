@@ -21,6 +21,11 @@ public class Spikes extends Tile implements DamageMakerPlayer, DamageMakerMonste
 
     public void update(){
         Player curPlayer = level.getPlayer();
+        for(Items item :  curPlayer.mainScreen.itemList){
+            if(item.getClass() == DefendingShoes.class){
+                return;
+            }
+        }
         if(level.getPlayerCurrentPosition().x >= x - 1 && level.getPlayerCurrentPosition().x <= x + 1 && level.getPlayerCurrentPosition().y >= y - 1 && level.getPlayerCurrentPosition().y <= y + 1){
             curPlayer.addDamageMaker(this);
             wasJustOnSpikes = true;
@@ -40,7 +45,7 @@ public class Spikes extends Tile implements DamageMakerPlayer, DamageMakerMonste
     }
 
     @Override
-    public  void makeDamageMonster(Monster monster){
+    public void makeDamageMonster(Monster monster){
 
     }
 }

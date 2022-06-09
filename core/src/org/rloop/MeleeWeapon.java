@@ -10,15 +10,15 @@ public class MeleeWeapon extends Weapon{
     float length;
     float width;
 
-    public MeleeWeapon(float dam, float speed, float length){
+    public MeleeWeapon(float dam, float speed, float length, Player player){
         super(dam, speed);
+        this.player = player;
         this.length = length;
         this.width = length / 8;
     }
 
     @Override
     public void attack(Player player, float cursorX, float cursorY){
-
         Vector3 vec = new Vector3(cursorX, cursorY,0);
         vec = player.level.getCamera().unproject(vec);
 
@@ -31,4 +31,9 @@ public class MeleeWeapon extends Weapon{
 
     @Override
     public void specialAttack(Player player, float cursorX, float cursorY){}
+
+    @Override
+    public TextureRegion getTexture() {
+        return player.level.game.resources.mainSword;
+    }
 }

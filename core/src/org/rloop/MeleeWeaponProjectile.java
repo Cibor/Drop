@@ -16,8 +16,8 @@ public class MeleeWeaponProjectile extends Projectiles implements DamageMakerMon
 
         myWeapon = (MeleeWeapon) spawner;
 
-        projectileDamage = myWeapon.weaponDamage;
-        getProjectileSpeed = myWeapon.weaponAttackSpeed;
+        projectileDamage = myWeapon.weaponDamage * player.playerDamage;
+        getProjectileSpeed = myWeapon.weaponAttackSpeed * player.playerAttackSpeed;
 
         float kaf = direction.x * direction.x + direction.y * direction.y;
         kaf = (myWeapon.length * myWeapon.length) / kaf;

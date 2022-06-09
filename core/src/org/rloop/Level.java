@@ -21,6 +21,7 @@ public class Level {
     protected ArrayList<Tile> wallTiles;
     protected ArrayList<Tile> floorTiles;
     protected ArrayList<Spikes> spikesTiles;
+    protected ArrayList<Flamethrower> flameThrowers;
     protected Viewport viewport;
     protected Vector2 pos;
     protected ArrayList<Rectangle> template;
@@ -30,6 +31,172 @@ public class Level {
             return true;
         }else{
             return false;
+        }
+    }
+
+    void chooseTile(int x, int y){
+        boolean flagThis = false;
+        boolean flagL = false;
+        boolean flagR = false;
+        boolean flagU = false;
+        boolean flagD = false;
+        boolean flagLD = false;
+        boolean flagLU = false;
+        boolean flagRD = false;
+        boolean flagRU = false;
+//        boolean flagDD = false;
+        for(Rectangle rectangle: template) {
+            if (PointIsInRectangle(x, y, rectangle)){
+                flagThis = true;
+            }
+        }
+//        for(Rectangle rectangle: template) {
+//            if (PointIsInRectangle(x-4, y, rectangle)){
+//                flagDD = true;
+//            }
+//        }
+        for(Rectangle rectangle: template) {
+            if (PointIsInRectangle(x-2, y-2, rectangle)){
+                flagLD = true;
+            }
+        }
+        for(Rectangle rectangle: template) {
+            if (PointIsInRectangle(x-2, y+2, rectangle)){
+                flagLU = true;
+            }
+        }
+        for(Rectangle rectangle: template) {
+            if (PointIsInRectangle(x+2, y+2, rectangle)){
+                flagRU = true;
+            }
+        }
+        for(Rectangle rectangle: template) {
+            if (PointIsInRectangle(x+2, y-2, rectangle)){
+                flagRD = true;
+            }
+        }
+        for(Rectangle rectangle: template) {
+            if (PointIsInRectangle(x-2, y, rectangle)){
+                flagL = true;
+            }
+        }
+        for(Rectangle rectangle: template) {
+            if (PointIsInRectangle(x+2, y, rectangle)){
+                flagR = true;
+            }
+        }
+        for(Rectangle rectangle: template) {
+            if (PointIsInRectangle(x, y-2, rectangle)){
+                flagD = true;
+            }
+        }
+        for(Rectangle rectangle: template) {
+            if (PointIsInRectangle(x, y+2, rectangle)){
+                flagU = true;
+            }
+        }
+        if(flagThis){
+            return;
+        }
+        if(flagL && flagR && flagD && flagU){
+            wallTiles.add(new Wall(x-1, y-1, this, 0, 0));
+            return;
+        }
+        if((flagU && flagD && flagL) || (flagU && flagD && flagR)){
+            wallTiles.add(new Wall(x-1, y-1, this, 0, 0));
+            return;
+        }
+        if(flagL && flagR && flagD){
+            wallTiles.add(new Wall(x-1, y-1, this, 0, 0));
+            return;
+        }
+        if(flagL && flagR && flagU){
+            wallTiles.add(new Wall(x-1, y-1, this, 2, 1));
+            return;
+        }
+//        if(flagU && flagR && (flagRD || flagLD || flagDD)){
+//            wallTiles.add(new Wall(x-1, y-1, this, 1, 3));
+//            return;
+//        }
+        if(flagU && flagD){
+            wallTiles.add(new Wall(x-1, y-1, this, 0, 0));
+            return;
+        }
+        if(flagL && flagD){
+            wallTiles.add(new Wall(x-1, y-1, this, 0, 0));
+            return;
+        }
+        if(flagU && flagLD){
+            wallTiles.add(new Wall(x-1, y-1, this, 2, 0));
+            return;
+        }
+        if(flagU && flagRD){
+            wallTiles.add(new Wall(x-1, y-1, this, 1, 3));
+            return;
+        }
+        if(flagR && flagU){
+            wallTiles.add(new Wall(x-1, y-1, this, 1, 3));
+            return;
+        }
+        if(flagL && flagU){
+            wallTiles.add(new Wall(x-1, y-1, this, 2, 0));
+            return;
+        }
+        if(flagU || flagD){
+            wallTiles.add(new Wall(x-1, y-1, this, 0, 0));
+            return;
+        }
+        if(((flagR && (flagLD || flagLU)) || (flagL && (flagRD || flagRU))) && !(flagU || flagD)){
+            wallTiles.add(new Wall(x-1, y-1, this, 3, 0));
+            return;
+        }
+        if(flagL && flagR){
+            if(flagU) {
+                wallTiles.add(new Wall(x - 1, y - 1, this, 2, 1));
+            }else{
+                wallTiles.add(new Wall(x - 1, y - 1, this, 3, 0));
+            }
+            return;
+        }
+        if(flagL){
+            wallTiles.add(new Wall(x-1, y-1, this, 2, 3));
+            return;
+        }
+        if(flagR){
+            wallTiles.add(new Wall(x-1, y-1, this, 2, 2));
+            return;
+        }
+        if((flagLU || flagLD) && (flagRU || flagRD)){
+            if(flagU) {
+                wallTiles.add(new Wall(x - 1, y - 1, this, 2, 1));
+            }else{
+                wallTiles.add(new Wall(x - 1, y - 1, this, 3, 0));
+            }
+            return;
+        }
+        if((flagLU || flagRU) && (flagLD || flagRD)){
+            if(flagRU) {
+                wallTiles.add(new Wall(x - 1, y - 1, this, 2,2));
+            }else{
+                wallTiles.add(new Wall(x - 1, y - 1, this, 2,3));
+            }
+            return;
+        }
+        if(flagRU){
+            wallTiles.add(new Wall(x-1, y-1, this, 3, 1));
+            return;
+        }
+        if(flagLD){
+            wallTiles.add(new Wall(x-1, y-1, this, 2, 3));
+            return;
+        }
+        if(flagRD){
+            wallTiles.add(new Wall(x-1, y-1, this, 2, 2));
+            return;
+        }
+        if(flagLU){
+            wallTiles.add(new Wall(x-1, y-1, this, 3, 2));
+            return;
         }
     }
     public void GenerateTiles(){
@@ -47,152 +214,51 @@ public class Level {
                     }
                 }
             }
-            boolean flag = false;
-            for(Rectangle r2: template) {
-                if (PointIsInRectangle(r1.x-1, r1.y - 1, r2)){
-                    flag = true;
-                }
-            }
 
-            if (!flag){
-                boolean help4 = false;
-                for(Rectangle r2: template){
-                    if(PointIsInRectangle(r1.x-3, r1.y - 1, r2)){
-                        help4 = true;
-                    }
-                }
-                if(help4){
-                    wallTiles.add(new Wall((int)r1.x-2, (int)r1.y-2, this, 2,2));
-                }else {
-                    wallTiles.add(new Wall((int) r1.x - 2, (int) r1.y - 2, this, 3, 1));
-                }
-            }
+            chooseTile((int) r1.x-1,(int)r1.y - 1);
             for(int i = 0; i <= r1.width; i += 2){
                 for(int j = 0; j <= r1.height; j += 2){
                     float x = r1.x + i;
                     float y = r1.y + j;
-                    flag = false;
-                    for(Rectangle r2: template) {
-                        if (PointIsInRectangle(x+1, r1.y - 1, r2)){
-                            flag = true;
-                        }
+                    chooseTile((int) x+1,(int)r1.y - 1);
+                    chooseTile((int) x+1,(int)(r1.y + r1.height + 1));
+                    chooseTile((int)r1.x-1,  (int) y+1);
+                    chooseTile((int) r1.x + (int) r1.width + 1, (int) y+1);
+                }
+            }
+        }
+        flameThrowers = new ArrayList<>();
+        for(Tile tile: wallTiles){
+            if(new Random().nextInt(100) == 0){
+                float x = tile.getX();
+                float y = tile.getY();
+                x++;
+                y++;
+                int direction = -1;
+                for(Rectangle rectangle: template) {
+                    if (PointIsInRectangle(x, y+2, rectangle)) {
+                        y += 2;
+                        direction = 0;
+                        break;
                     }
-                    if (!flag){
-                        boolean help = false;
-                        for(Rectangle r2: template){
-                            if(PointIsInRectangle(x + 3, r1.y - 1, r2)){
-                                help = true;
-                            }
-                        }
-                        boolean help2 = false;
-                        for(Rectangle r2: template){
-                            if(PointIsInRectangle(x - 1, r1.y - 1, r2)){
-                                help2 = true;
-                            }
-                        }
-                        if(help){
-                            boolean help3 = false;
-                            for(Rectangle r2: template){
-                                if(PointIsInRectangle(x + 1, r1.y - 3, r2)){
-                                    help3 = true;
-                                }
-                            }
-                            if(i!=r1.width) {
-                                if(!help3) {
-                                    wallTiles.add(new Wall((int) x, (int) r1.y - 2, this, 1, 3));
-                                }else{
-                                    wallTiles.add(new Wall((int) x, (int) r1.y - 2, this, 0, 0));
-                                }
-                            }else {
-                                wallTiles.add(new Wall((int) x, (int) r1.y - 2, this, 0, 0));
-                            }
-                        }else if(help2){
-                            boolean help3 = false;
-                            for(Rectangle r2: template){
-                                if(PointIsInRectangle(x + 1, r1.y - 3, r2)){
-                                    help3 = true;
-                                }
-                            }
-                            if(help3){
-                                wallTiles.add(new Wall((int) x, (int) r1.y - 2, this, 0, 0));
-                            }else {
-                                if(i!=r1.width) {
-                                    wallTiles.add(new Wall((int) x, (int) r1.y - 2, this, 2, 0));
-                                }else{
-                                    boolean help4 = false;
-                                    for(Rectangle r2: template){
-                                        if(PointIsInRectangle(x + 1, r1.y + 1, r2)){
-                                            help4 = true;
-                                        }
-                                    }
-                                    if(help4) {
-                                        wallTiles.add(new Wall((int) x, (int) r1.y - 2, this, 0, 0));
-                                    }else{
-                                        wallTiles.add(new Wall((int) x, (int) r1.y - 2, this, 2, 0));
-                                    }
-                                }
-                            }
-                        }else{
-                            if (i != r1.width) {
-                                wallTiles.add(new Wall((int) x, (int) r1.y - 2, this, 0, 0));
-                            } else {
-                                wallTiles.add(new Wall((int) x, (int) r1.y - 2, this, 3, 2));
-                            }
-                        }
+                    if (PointIsInRectangle(x-2, y, rectangle)) {
+                        x-=2;
+                        direction = 3;
+                        break;
                     }
-                    flag = false;
-                    for(Rectangle r2: template) {
-                        if (PointIsInRectangle(x+1, r1.y + r1.height + 1, r2)){
-                            flag = true;
-                        }
+                    if (PointIsInRectangle(x+2, y, rectangle)) {
+                        x+=2;
+                        direction = 1;
+                        break;
                     }
-                    if (!flag){
-                        if(i!=r1.width) {
-                            wallTiles.add(new Wall((int) x, (int) (r1.y + r1.height), this, 0, 0));
-                        }
+                    if (PointIsInRectangle(x, y-2, rectangle)) {
+                        y-=2;
+                        direction = 2;
+                        break;
                     }
-                    flag = false;
-                    for(Rectangle r2: template) {
-                        if (PointIsInRectangle(r1.x-1, y+1, r2)){
-                            flag = true;
-                        }
-                    }
-                    if (!flag){
-                        wallTiles.add(new Wall((int)r1.x-2, (int)y, this, 2,2));
-                    }
-                    flag = false;
-                    for(Rectangle r2: template) {
-                        if (PointIsInRectangle(r1.x + r1.width + 1, y+1, r2)){
-                            flag = true;
-                        }
-                    }
-                    if (!flag){
-                        if(j != r1.height){
-                            wallTiles.add(new Wall((int) (r1.x + r1.width), (int) y, this, 2, 3));
-                        }else {
-                            boolean help = false;
-                            for (Rectangle r2 : template) {
-                                if (PointIsInRectangle(r1.x + r1.width + 3, y+1, r2)) {
-                                    help = true;
-                                }
-                            }
-                            if (help) {
-                                boolean help2 = false;
-                                for (Rectangle r2 : template) {
-                                    if (PointIsInRectangle(r1.x + r1.width + 1, r1.height-1, r2)) {
-                                        help2 = true;
-                                    }
-                                }
-                                if(help2){
-                                    wallTiles.add(new Wall((int) (r1.x + r1.width), (int) y, this, 0, 0));
-                                }else{
-                                    wallTiles.add(new Wall((int) (r1.x + r1.width), (int) y, this, 2, 1));
-                                }
-                            } else {
-                                wallTiles.add(new Wall((int) (r1.x + r1.width), (int) y, this, 2, 3));
-                            }
-                        }
-                    }
+                }
+                if(direction!=-1) {
+                    flameThrowers.add(new Flamethrower(new Vector2(x - 1, y - 1), this, direction));
                 }
             }
         }
@@ -212,6 +278,9 @@ public class Level {
         for(Tile tile: spikesTiles){
             tile.render();
         }
+        for(Flamethrower flamethrower: flameThrowers){
+            flamethrower.render();
+        }
         this.getGame().getBatch().end();
     }
 
@@ -225,15 +294,23 @@ public class Level {
         for(Tile tile: spikesTiles){
             tile.update();
         }
+        for(Flamethrower flamethrower: flameThrowers){
+            flamethrower.update();
+        }
     }
 
     public Vector2 getPositionOfSomething(){
         int k = new Random().nextInt(floorTiles.size());
-        return new Vector2(floorTiles.get(k).getX()+1, floorTiles.get(k).getY()+1);
+        return new Vector2(floorTiles.get(k).getX(), floorTiles.get(k).getY());
     }
 
     public Vector2 getPlayerCurrentPosition(){
         return new Vector2(game.mainScreen.getPlayer().x, game.mainScreen.getPlayer().y);
+    }
+
+    public Vector2 getPortalPosition(){
+        int k = new Random().nextInt(template.size());
+        return new Vector2(template.get(k).x+2, template.get(k).y+2);
     }
 
     public Level(World world, rloop game, Viewport viewport, ArrayList<Rectangle> r){
@@ -266,5 +343,11 @@ public class Level {
 
     public void render(float delta) {
 
+    }
+
+    public void dispose(){
+        wallTiles.clear();
+        floorTiles.clear();
+        spikesTiles.clear();
     }
 }
