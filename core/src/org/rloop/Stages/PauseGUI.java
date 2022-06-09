@@ -75,7 +75,6 @@ public class PauseGUI extends Stage {
         currentStage.addActor(pauseBlock);
         currentStage.addActor(backBut);
         currentStage.addActor(pauseLab);
-        currentStage.addActor(settingBut);
         currentStage.addActor(exitBut);
 
     }
