@@ -14,7 +14,7 @@ Was implemented:
 - new weapons
 - new trap: flamethrower
 - refactor, bug fixed and quality of life features
-- 
+
 Also jar file was added
 ### UPD 2022-05-26
 Was implemented:
