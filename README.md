@@ -2,7 +2,7 @@
 Roguelike game project for OOP course in Jagiellonian University
 
 ## How to run
-You can run rloop.jar file from releases page with `java -jar rloop.jar'.
+You can run rloop.jar file from releases page with `java -jar rloop.jar'. You will need Java 17 installed.
 To compile game clone repository to your local machine. Then open it with some IDE (we use Intellij IDEA) as a gradle project. 
 Execute gradle "run" task.
 
@@ -13,7 +13,6 @@ Was implemented:
 - level system, now you can play endlessly with rising difficulty
 - new weapons
 - new trap: flamethrower
-- now you can save you game progress and continue from it
 - refactor, bug fixed and quality of life features
 Also jar file was added
 ### UPD 2022-05-26
