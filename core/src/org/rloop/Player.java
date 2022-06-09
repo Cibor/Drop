@@ -189,7 +189,7 @@ public class Player {
         }
     }
 
-    long attackTime = 500;
+   public long attackTime = 500;
     long lastAttack = 0;
 
     public boolean canAttack(){

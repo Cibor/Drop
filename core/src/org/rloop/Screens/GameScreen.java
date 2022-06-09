@@ -334,6 +334,7 @@ public class GameScreen extends ScreenAdapter {
         playercopy.statSpeed = player.statSpeed;
         playercopy.statCurrentHP = player.statCurrentHP;
         playercopy.statMaxHP = player.statMaxHP;
+        playercopy.attackTime = 200;
 
         player = playercopy;
 
