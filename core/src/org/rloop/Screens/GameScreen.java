@@ -55,6 +55,9 @@ public class GameScreen extends ScreenAdapter {
     public Chest chest;
     public boolean chestMode = false;
 
+    public int monsterCountLeft = 5;
+    public int monsterCountRight = 8;
+
 
     public Level currentLevel;
 
@@ -74,7 +77,7 @@ public class GameScreen extends ScreenAdapter {
         PossibleItems.add(TripleRangeWeapon.class);
 
         chestStage = new Stage(new ScreenViewport());
-        debugRenderer = new Box2DDebugRenderer();
+        //debugRenderer = new Box2DDebugRenderer();
         world = new World(new Vector2(0, 0), true);
         world.setContactListener(new GameContactListener(game));
 
@@ -98,7 +101,7 @@ public class GameScreen extends ScreenAdapter {
         monstersDied = new HashSet<>();
 
 
-        int numberOfMonsters = rnd(5,7);
+        int numberOfMonsters = rnd(monsterCountLeft,monsterCountRight);
         for (int i = 0; i < numberOfMonsters; i++) {
             Vector2 monsterPos;
             do {
@@ -133,6 +136,12 @@ public class GameScreen extends ScreenAdapter {
             currentLevel.dispose();
             portal = null;
             chest = null;
+            monsters.clear();
+            monstersNotRender.clear();
+            monstersDied.clear();
+            projectiles.clear();
+            projectilesNotRender.clear();
+            projectilesDied.clear();
             Array<Body> bodys = new Array<>();
             world.getBodies(bodys);
             for(Body body : bodys){
@@ -245,7 +254,7 @@ public class GameScreen extends ScreenAdapter {
         gameScreenStage.getCurrentStage().act();
         gameScreenStage.getCurrentStage().draw();
 
-        debugRenderer.render(world, camera.combined);
+        //debugRenderer.render(world, camera.combined);
     }
 
     public void renderChestScreen(){
@@ -329,7 +338,9 @@ public class GameScreen extends ScreenAdapter {
         player = playercopy;
 
         pos = this.player.getBody().getPosition();
-        int numberOfMonsters = rnd(0,0);
+        monsterCountLeft = monsterCountRight;
+        monsterCountRight += 3;
+        int numberOfMonsters = rnd(monsterCountLeft,monsterCountRight);
         for (int i = 0; i < numberOfMonsters; i++) {
             Vector2 monsterPos;
             do {
