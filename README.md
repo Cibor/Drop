@@ -1,5 +1,7 @@
 # rloop
-Roguelike game project for OOP course in Jagiellonian University
+Roguelike game project for OOP course in Jagiellonian University. 
+Authors: Mikalai Navitski, Leonid Dorochko, Daniil Yurshevich. Each of us did the same amount od work.
+
 
 ## How to run
 You can run rloop.jar file from releases page with `java -jar rloop.jar'. You will need Java 17 installed.
