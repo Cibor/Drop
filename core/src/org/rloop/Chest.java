@@ -66,8 +66,9 @@ public class Chest {
         this.y = (int) pos.y;
         this.level = level;
 
-        int itemCount = rnd(10, 15);
-
+        int itemCount = rnd(1, 10);
+        if (itemCount == 10) itemCount = 2;
+        else itemCount = 1;
         for(int i = 0; i < itemCount; i++){
             int ranItem = rnd(0, gameScreen.PossibleItems.size() - 1);
             TextureRegionDrawable ret = new TextureRegionDrawable();
