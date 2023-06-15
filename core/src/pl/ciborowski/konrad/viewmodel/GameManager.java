@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import pl.ciborowski.konrad.model.Character;
+import pl.ciborowski.konrad.model.Direction;
 import pl.ciborowski.konrad.model.Level;
 import static pl.ciborowski.konrad.model.Role.*;
 import pl.ciborowski.konrad.view.GameScreen;
@@ -22,25 +23,39 @@ public class GameManager {
     private Level level;
     private Map<Character, Shape> shapes = new HashMap<>();
     private CharacterMover characterMover;
+    private final GameScreen gameScreen;
+    private Character hero;
     
     public static final Texture heroImage  = new Texture(Gdx.files.internal("hero2.png"));
     private static final Texture enemyImage  = new Texture(Gdx.files.internal("enemy2.png"));
 
     public GameManager(Game game) {
         this.game = game;
-        game.setScreen(new GameScreen(this));
+        gameScreen = new GameScreen(this);
+        game.setScreen(gameScreen);
         prepareNewLevel();
     }
     
     
+    public void changeHeroDirections() {
+        hero.directions.clear();
+        for (var direction : Direction.values()) {
+            for (var keyCode : direction.keyCodes) {
+                if (gameScreen.isKeyPressed(keyCode)) {
+                    hero.directions.add(direction);
+                }
+            }
+        }
+    }
     
     public Collection<Shape> getShapesAfterMove() {
-        characterMover.moveEnemies();
-        characterMover.moveHero();
+        characterMover.moveEnemies(gameScreen.getDeltaTime());
+        changeHeroDirections();
+        characterMover.moveHero(gameScreen.getDeltaTime());
         adjustShapesPositionToMatchCharacters();
         return shapes.values();
     }
-
+    
     private void adjustShapesPositionToMatchCharacters() {
         for (var entry : shapes.entrySet()) {
             var shape = entry.getValue();
@@ -52,7 +67,7 @@ public class GameManager {
     
     private void prepareNewLevel() {
         var levelNumber = level == null ? 1 : level.number + 1;
-        var hero = new Character(HERO);
+        hero = new Character(HERO);
         List<Character> characters = new LinkedList<>();
         hero.x = (CAMERA_WIDTH - HERO_WIDTH) / 2;
         hero.y = (CAMERA_HEIGHT - HERO_HEIGHT) / 2;
@@ -77,7 +92,6 @@ public class GameManager {
     }
 
     private void addHeroShapeForCurrentLevel() {
-        var hero = level.characters.stream().filter(c -> c.role == HERO).findFirst().get();
         var rectangle = new Rectangle(hero.x, hero.y, HERO_WIDTH, HERO_HEIGHT);
         shapes.put(hero, new Shape(heroImage, rectangle));
     }

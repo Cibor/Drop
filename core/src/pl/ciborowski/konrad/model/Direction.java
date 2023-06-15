@@ -14,22 +14,4 @@ public enum Direction {
         this.keyCodes = keyCodes;
     }
 
-    public void moveCharacter(Character character) {
-        switch (this) {
-            case NORTH -> {
-                character.y += character.speed;
-            }
-            case SOUTH -> {
-                character.y -= character.speed;
-            }
-            case EAST -> {
-                character.x += character.speed;
-            }
-            case WEST -> {
-                character.x -= character.speed;
-            }
-            default -> throw new AssertionError();
-        }
-    }
-
 }

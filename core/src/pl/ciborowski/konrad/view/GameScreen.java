@@ -48,11 +48,15 @@ public class GameScreen implements Screen {
         }
         batch.end();
 ////        
-//        		if (Gdx.input.isKeyPressed(Keys.LEFT))
-//			hero.x -= 200 * Gdx.graphics.getDeltaTime();
-//		if (Gdx.input.isKeyPressed(Keys.UP))
-//                    hero.y += 200 * Gdx.graphics.getDeltaTime();
 
+    }
+    
+    public boolean isKeyPressed(int keyCode) {
+        return Gdx.input.isKeyPressed(keyCode);
+    }
+    
+    public float getDeltaTime() {
+        return Gdx.graphics.getDeltaTime();
     }
 
     @Override
