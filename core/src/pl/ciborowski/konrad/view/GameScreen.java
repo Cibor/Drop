@@ -2,10 +2,9 @@ package pl.ciborowski.konrad.view;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
+import static com.badlogic.gdx.Input.Keys.SPACE;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import static com.badlogic.gdx.utils.ScreenUtils.clear;
@@ -44,17 +43,19 @@ public class GameScreen implements Screen {
         for (var shape : gameManager.getShapesAfterMove()) {
             batch.draw(shape.texture, shape.rectangle.x, shape.rectangle.y,
                     shape.rectangle.width, shape.rectangle.height);
-
         }
         batch.end();
+        if (isKeyPressed(SPACE)) {
+            gameManager.fire();
+        }
 ////        
 
     }
-    
+
     public boolean isKeyPressed(int keyCode) {
         return Gdx.input.isKeyPressed(keyCode);
     }
-    
+
     public float getDeltaTime() {
         return Gdx.graphics.getDeltaTime();
     }
