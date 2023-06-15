@@ -1,10 +1,12 @@
 package pl.ciborowski.konrad.viewmodel;
 
+import static java.lang.Float.max;
+import static java.lang.Float.min;
 import java.util.List;
 import static java.util.stream.Collectors.toList;
 import pl.ciborowski.konrad.model.Character;
-import pl.ciborowski.konrad.model.Direction;
 import static pl.ciborowski.konrad.model.Role.*;
+import static pl.ciborowski.konrad.view.GameScreen.*;
 
 public class CharacterMover {
 
@@ -18,15 +20,26 @@ public class CharacterMover {
 
     public void moveEnemies() {
         for (var enemy : enemies) {
-            for (var direction : Direction.values()) {
+            for (var direction : enemy.directions) {
                 direction.moveCharacter(enemy);
+                fixCharacterChoordinatesToStayInbounds(enemy);
             }
         }
     }
 
     public void moveHero() {
-        for (var direction : Direction.values()) {
+        for (var direction : hero.directions) {
             direction.moveCharacter(hero);
+            fixCharacterChoordinatesToStayInbounds(hero);
         }
+    }
+    
+    private void fixCharacterChoordinatesToStayInbounds(Character character) {
+        var characterWidth = character.role == ENEMY ? ENEMY_WIDTH : HERO_WIDTH;
+        var characterHeight = character.role == ENEMY ? ENEMY_HEIGHT : HERO_HEIGHT;
+        character.x = max(character.x, 0);
+        character.x = min(character.x, CAMERA_WIDTH - characterWidth);
+        character.y = max(character.y, 0);
+        character.y = min(character.y, CAMERA_HEIGHT - characterHeight);
     }
 }

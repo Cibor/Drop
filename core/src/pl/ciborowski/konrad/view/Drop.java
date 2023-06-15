@@ -3,17 +3,19 @@ package pl.ciborowski.konrad.view;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import pl.ciborowski.konrad.viewmodel.GameManager;
 
 public class Drop extends Game {
 
     public SpriteBatch batch;
     public BitmapFont font;
+    public GameManager gameManager;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
         font = new BitmapFont(); // use libGDX's default Arial font
-        setScreen(new MainMenuScreen(this));
+        gameManager = new GameManager(this);
     }
 
     @Override

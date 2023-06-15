@@ -1,60 +1,58 @@
 package pl.ciborowski.konrad.view;
 
-
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import static com.badlogic.gdx.utils.ScreenUtils.clear;
+import pl.ciborowski.konrad.viewmodel.GameManager;
 
 public class GameScreen implements Screen {
 
-    public static final float HERO_WIDTH = 50;
-    public static final float HERO_HEIGHT = 25;
-    public static final float ENEMY_WIDTH = 50;
-    public static final float ENEMY_HEIGHT = 25;
-    
-    private final Drop game;
-    private static final float CAMERA_WIDTH = 1000;
-    private static final float CAMERA_HEIGHT = 1000;
-    
-    private static final Texture heroImage  = new Texture(Gdx.files.internal("hero2.png"));
-    
+    public static final float HERO_WIDTH = 100;
+    public static final float HERO_HEIGHT = 50;
+    public static final float ENEMY_WIDTH = 100;
+    public static final float ENEMY_HEIGHT = 50;
+
+    public static final float CAMERA_WIDTH = 1000;
+    public static final float CAMERA_HEIGHT = 1000;
+
     private OrthographicCamera camera;
     private Rectangle hero;
+    private GameManager gameManager;
+    private Game game;
+    private SpriteBatch batch;
 
-    public GameScreen(final Drop game) {
-        this.game = game;
-
+    public GameScreen(GameManager gameManager) {
+        this.gameManager = gameManager;
+        game = gameManager.game;
+        batch = new SpriteBatch();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
-        hero = new Rectangle();
-        hero.x = CAMERA_WIDTH / 2 - HERO_WIDTH / 2;
-        hero.y = CAMERA_HEIGHT / 2 - HERO_HEIGHT / 2;
-        
-        hero.height = 64;
-        hero.width = 64;
-
     }
-
 
     @Override
     public void render(float delta) {
         clear(1, 1, 1, 0);
         camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
-        game.batch.begin();
-        game.batch.draw(heroImage, hero.x, hero.y, hero.width, hero.height);
-        game.batch.end();
-        
-        		if (Gdx.input.isKeyPressed(Keys.LEFT))
-			hero.x -= 200 * Gdx.graphics.getDeltaTime();
-		if (Gdx.input.isKeyPressed(Keys.UP))
-                    hero.y += 200 * Gdx.graphics.getDeltaTime();
-        
-        
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        for (var shape : gameManager.getShapesAfterMove()) {
+            batch.draw(shape.texture, shape.rectangle.x, shape.rectangle.y,
+                    shape.rectangle.width, shape.rectangle.height);
+
+        }
+        batch.end();
+////        
+//        		if (Gdx.input.isKeyPressed(Keys.LEFT))
+//			hero.x -= 200 * Gdx.graphics.getDeltaTime();
+//		if (Gdx.input.isKeyPressed(Keys.UP))
+//                    hero.y += 200 * Gdx.graphics.getDeltaTime();
+
     }
 
     @Override
