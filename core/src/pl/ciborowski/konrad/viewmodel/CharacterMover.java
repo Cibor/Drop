@@ -2,6 +2,7 @@ package pl.ciborowski.konrad.viewmodel;
 
 import static java.lang.Float.max;
 import static java.lang.Float.min;
+import static java.lang.Math.signum;
 import java.util.List;
 import static java.util.stream.Collectors.toList;
 import pl.ciborowski.konrad.model.Character;
@@ -23,10 +24,10 @@ public class CharacterMover {
 
     public void moveEnemies(float deltaTime) {
         for (var enemy : enemies) {
-            for (var direction : enemy.directions) {
-                moveCharacter(enemy, direction, deltaTime);
-                fixCharacterChoordinatesToStayInbounds(enemy);
-            }
+            var xDistanceToHero = hero.x - enemy.x;
+            var yDistanceToHero = hero.y - enemy.y;
+            enemy.x += enemy.speed * deltaTime * signum(xDistanceToHero);
+            enemy.y += enemy.speed * deltaTime * signum(yDistanceToHero);
         }
     }
 

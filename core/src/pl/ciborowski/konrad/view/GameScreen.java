@@ -13,9 +13,9 @@ import pl.ciborowski.konrad.viewmodel.GameManager;
 
 public class GameScreen implements Screen {
 
-    public static final float HERO_WIDTH = 100;
-    public static final float HERO_HEIGHT = 50;
-    public static final float ENEMY_WIDTH = 100;
+    public static final float HERO_WIDTH = 50;
+    public static final float HERO_HEIGHT = 100;
+    public static final float ENEMY_WIDTH = 50;
     public static final float ENEMY_HEIGHT = 50;
 
     public static final float CAMERA_WIDTH = 1000;

@@ -3,6 +3,7 @@ package pl.ciborowski.konrad.viewmodel;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import static com.badlogic.gdx.math.MathUtils.random;
 import com.badlogic.gdx.math.Rectangle;
 import java.util.Collection;
 import java.util.HashMap;
@@ -75,9 +76,9 @@ public class GameManager {
         characters.add(hero);
         for (int i = 0; i < levelNumber; i++) {
             var enemy = new Character(ENEMY);
-            enemy.x = 0;
-            enemy.y = 0;
-            enemy.speed = 200;
+            enemy.x = random(0, CAMERA_WIDTH - ENEMY_WIDTH);
+            enemy.y = random(0, CAMERA_HEIGHT - ENEMY_HEIGHT);
+            enemy.speed = 100;
             characters.add(enemy);
         }
         level = new Level(levelNumber, characters);
@@ -98,7 +99,7 @@ public class GameManager {
 
     private void addEnemyShapesForCurrentLevel() {
         level.characters.stream().filter(c -> c.role == ENEMY).forEach(enemy -> {
-            shapes.put(enemy, new Shape(enemyImage, new Rectangle(enemy.x, enemy.y, HERO_WIDTH, HERO_HEIGHT)));
+            shapes.put(enemy, new Shape(enemyImage, new Rectangle(enemy.x, enemy.y, ENEMY_WIDTH, ENEMY_HEIGHT)));
         });
     }
 }
