@@ -1,13 +1,9 @@
 package org.rloop;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import org.rloop.rloop;
-
-import java.awt.*;
+import org.rloop.Screens.Drop;
 
 // Please note that on macOS your application needs to be started with the -XstartOnFirstThread JVM argument
 public class DesktopLauncher {
@@ -19,6 +15,17 @@ public class DesktopLauncher {
 		config.setHdpiMode(HdpiMode.Logical);
 		config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode(Lwjgl3ApplicationConfiguration.getPrimaryMonitor()));
 		//config.setWindowedMode(1280, 720);
-		new Lwjgl3Application(new rloop(), config);
+//		new Lwjgl3Application(new rloop(), config);
+		new Lwjgl3Application(new Drop(), getConfig());
 	}
+        
+        
+    private static Lwjgl3ApplicationConfiguration getConfig() {
+        Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+        config.setTitle("Drop");
+        config.setWindowedMode(800, 480);
+        config.useVsync(true);
+        config.setForegroundFPS(60);
+        return config;
+    }
 }
