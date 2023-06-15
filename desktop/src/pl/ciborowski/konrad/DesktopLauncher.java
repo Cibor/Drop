@@ -6,6 +6,10 @@ import com.badlogic.gdx.graphics.glutils.HdpiMode;
 
 // Please note that on macOS your application needs to be started with the -XstartOnFirstThread JVM argument
 public class DesktopLauncher {
+    
+    public static final int HORIZONTAL_SCREEN_SIZE = 800; 
+    public static final int VERTICIAL_SCREEN_SIZE= 800; 
+    
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
@@ -22,7 +26,7 @@ public class DesktopLauncher {
     private static Lwjgl3ApplicationConfiguration getConfig() {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setTitle("Drop");
-        config.setWindowedMode(800, 480);
+        config.setWindowedMode(HORIZONTAL_SCREEN_SIZE, VERTICIAL_SCREEN_SIZE);
         config.useVsync(true);
         config.setForegroundFPS(60);
         return config;
