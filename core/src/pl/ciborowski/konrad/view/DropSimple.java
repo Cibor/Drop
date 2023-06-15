@@ -1,4 +1,4 @@
-package pl.ciborowski.konrad;
+package pl.ciborowski.konrad.view;
 
 import java.util.Iterator;
 

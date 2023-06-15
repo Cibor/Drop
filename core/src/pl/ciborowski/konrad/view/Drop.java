@@ -1,4 +1,4 @@
-package pl.ciborowski.konrad;
+package pl.ciborowski.konrad.view;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;

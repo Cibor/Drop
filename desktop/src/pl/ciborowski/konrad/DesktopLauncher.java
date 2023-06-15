@@ -1,5 +1,6 @@
 package pl.ciborowski.konrad;
 
+import pl.ciborowski.konrad.view.Drop;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.glutils.HdpiMode;

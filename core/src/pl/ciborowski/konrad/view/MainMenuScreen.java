@@ -1,4 +1,4 @@
-package pl.ciborowski.konrad;
+package pl.ciborowski.konrad.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;

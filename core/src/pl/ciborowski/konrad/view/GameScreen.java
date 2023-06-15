@@ -1,7 +1,8 @@
-package pl.ciborowski.konrad;
+package pl.ciborowski.konrad.view;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,12 +11,15 @@ import static com.badlogic.gdx.utils.ScreenUtils.clear;
 
 public class GameScreen implements Screen {
 
+    public static final float HERO_WIDTH = 50;
+    public static final float HERO_HEIGHT = 25;
+    public static final float ENEMY_WIDTH = 50;
+    public static final float ENEMY_HEIGHT = 25;
+    
     private final Drop game;
     private static final float CAMERA_WIDTH = 1000;
     private static final float CAMERA_HEIGHT = 1000;
-    private static final float HERO_WIDTH = 50;
-    private static final float HERO_HEIGHT = 25;
-
+    
     private static final Texture heroImage  = new Texture(Gdx.files.internal("hero2.png"));
     
     private OrthographicCamera camera;
@@ -24,7 +28,6 @@ public class GameScreen implements Screen {
     public GameScreen(final Drop game) {
         this.game = game;
 
-        // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
         camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
         hero = new Rectangle();
@@ -39,12 +42,17 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        clear(0, 0, 0.2f, 1);
+        clear(1, 1, 1, 0);
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
         game.batch.draw(heroImage, hero.x, hero.y, hero.width, hero.height);
         game.batch.end();
+        
+        		if (Gdx.input.isKeyPressed(Keys.LEFT))
+			hero.x -= 200 * Gdx.graphics.getDeltaTime();
+		if (Gdx.input.isKeyPressed(Keys.UP))
+                    hero.y += 200 * Gdx.graphics.getDeltaTime();
         
         
     }
