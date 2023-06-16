@@ -77,6 +77,7 @@ public class GameManager {
         bulletOutOfBounds.forEach(bullet -> shapes.remove(bullet));
         var bulletsThatHit = collisionsDetector.detectHitsAndReturnBulletsToRemove(shapes.keySet());
         bulletsThatHit.forEach(bullet -> shapes.remove(bullet));
+        removeDeadEnemies();
         adjustShapesPositionToMatchCharacters();
         List<Shape> hpBars = hpBarsSupplier.generateHpBars(shapes.keySet());
         var allShapes = new LinkedList<>(shapes.values());
@@ -84,7 +85,7 @@ public class GameManager {
         return allShapes;
     }
 
-    public void changeHeroDirections() {
+    private void changeHeroDirections() {
         hero.directions.clear();
         for (var direction : Direction.values()) {
             for (var keyCode : direction.keyCodes) {
@@ -102,6 +103,17 @@ public class GameManager {
             hero.timeOfLastShotInMillis = currentTime;
         }
     }
+    
+        
+    private void removeDeadEnemies() {
+        for (var i = shapes.entrySet().iterator(); i.hasNext();) {
+            Character enemy = i.next().getKey();
+            if (enemy.healthPoints <= 0) {
+                i.remove();
+            }
+        }
+    }
+
 
     private List<Character> fireByEnemiesAndReturnNewBullets() {
         long currentTime = currentTimeMillis();
@@ -112,8 +124,9 @@ public class GameManager {
                 var bullet = new Character(ENEMY_BULLET);
                 bullet.x = enemy.x;
                 bullet.y = enemy.y;
-                bullet.speed = 2 * enemy.speed;
+                bullet.speed = enemy.speed;
                 bullet.speedVector = new Vector2((hero.x - enemy.x), hero.y - enemy.y);
+                bullet.speedVector.limit(bullet.speed);
                 bullets.add(bullet);
             }
         });
@@ -156,7 +169,7 @@ public class GameManager {
             enemy.x = random(0, CAMERA_WIDTH - ENEMY_WIDTH);
             enemy.y = random(0, CAMERA_HEIGHT - ENEMY_HEIGHT);
             enemy.coolDownPeriodInMillis = 1000;
-            enemy.speed = 10 * levelNumber;
+            enemy.speed = 10;
             characters.add(enemy);
         }
         level = new Level(levelNumber, characters);
