@@ -49,14 +49,14 @@ public class GameManager {
         mainMenuScreen = new MainMenuScreen(this);
         game.setScreen(mainMenuScreen);
     }
-    
+
     public void changeScreenIfEnded() {
         var winner = determineLevelWinnerIfExists();
         if (winner.isPresent()) {
             game.setScreen(mainMenuScreen);
         }
     }
-    
+
     public void menuScreenTapped() {
         prepareNewLevel();
         game.setScreen(gameScreen);
@@ -66,7 +66,7 @@ public class GameManager {
         characterMover.moveEnemies(gameScreen.getDeltaTime());
         var newEnemyBullets = fireByEnemiesAndReturnNewBullets();
         for (var bullet : newEnemyBullets) {
-            shapes.put(bullet, new Shape(bulletImage, 
+            shapes.put(bullet, new Shape(bulletImage,
                     new Rectangle(bullet.x, bullet.y, BULLET_RECTANGLE_SIZE, BULLET_RECTANGLE_SIZE)));
         }
         changeHeroDirections();
@@ -74,6 +74,17 @@ public class GameManager {
             addBulletShotByHero();
         }
         characterMover.moveHero(gameScreen.getDeltaTime());
+        shapes.entrySet().stream().filter(e -> e.getKey().role == ENEMY || e.getKey().role == HERO)
+                .forEach(e -> {
+                    var character = e.getKey();
+                    var shape = e.getValue();
+            var blocksRunInto = collisionsDetector.fetchBlocksCharacterRanInto(shape, shapes);
+            for(var block : blocksRunInto) {
+                characterMover.fixCharacterChoordinatesToStayClearOfBlock(character, block, 
+                        shape.rectangle.width, shape.rectangle.height);
+            }
+        });
+
         var bulletOutOfBounds = characterMover.moveBulletsAndReturnBulletsOutOfBounds(gameScreen.getDeltaTime());
         bulletOutOfBounds.forEach(bullet -> shapes.remove(bullet));
         var bulletsThatHit = collisionsDetector.detectHitsAndReturnBulletsToRemove(shapes.keySet());
@@ -104,8 +115,7 @@ public class GameManager {
             hero.timeOfLastShotInMillis = currentTime;
         }
     }
-    
-        
+
     private void removeDeadEnemies() {
         for (var i = shapes.entrySet().iterator(); i.hasNext();) {
             Character enemy = i.next().getKey();
@@ -114,7 +124,6 @@ public class GameManager {
             }
         }
     }
-
 
     private List<Character> fireByEnemiesAndReturnNewBullets() {
         long currentTime = currentTimeMillis();
@@ -199,12 +208,13 @@ public class GameManager {
             shapes.put(enemy, new Shape(enemyImage, new Rectangle(enemy.x, enemy.y, ENEMY_WIDTH, ENEMY_HEIGHT)));
         });
     }
-    
+
     private void addBlocksForCurrentLevel() {
         level.characters.stream().filter(c -> c.role == BLOCK).forEach(block -> {
             shapes.put(block, new Shape(blockImage, new Rectangle(block.x, block.y, BLOCK_WIDTH, BLOCK_HEIGHT)));
         });
     }
+
     private Optional<LevelWinner> determineLevelWinnerIfExists() {
         if (hero.healthPoints <= 0) {
             return Optional.of(LevelWinner.ENEMIES);

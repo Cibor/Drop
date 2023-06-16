@@ -7,6 +7,8 @@ import static java.lang.Math.signum;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import static java.util.stream.Collectors.toList;
 import pl.ciborowski.konrad.model.Character;
 import pl.ciborowski.konrad.model.Direction;
@@ -18,9 +20,11 @@ import pl.ciborowski.konrad.view.Shape;
 public class CharacterMover {
 
     private Map<Character, Shape> shapes;
+    private CollisionsDetector collisionsDetector;
 
     public CharacterMover(Map<Character, Shape> shapes) {
         this.shapes = shapes;
+        this.collisionsDetector = collisionsDetector;
     }
 
     public void moveEnemies(float deltaTime) {
@@ -72,6 +76,37 @@ public class CharacterMover {
         character.x = min(character.x, CAMERA_WIDTH - characterWidth);
         character.y = max(character.y, 0);
         character.y = min(character.y, CAMERA_HEIGHT - characterHeight);
+    }
+
+    public void fixCharacterChoordinatesToStayClearOfBlock(Character character, Character block, 
+            float characterWidth, float characterHeight) {
+        var leftMoveDelta =  character.x - block.x + characterWidth;
+        var rightMoveDelta = block.x - character.x + BLOCK_WIDTH;
+        var upMoveDelta = block.y - character.y + BLOCK_HEIGHT;
+        var downMoveDelta = character.y - block.y + characterHeight;
+        SortedMap<Float, Direction> deltas = new TreeMap<>();
+        deltas.put(upMoveDelta, NORTH);
+        deltas.put(downMoveDelta, SOUTH);
+        deltas.put(leftMoveDelta, WEST);
+        deltas.put(rightMoveDelta, EAST);
+        var delta = deltas.firstKey();
+        var direction = deltas.get(delta);
+        switch (direction) {
+            case NORTH -> {
+                character.y += delta;
+            }
+            case SOUTH -> {
+                character.y -= delta;
+            }
+            case EAST -> {
+                character.x += delta;
+            }
+            case WEST -> {
+                character.x -= delta;
+            }
+            default ->
+                throw new AssertionError();
+        }
     }
 
     public void moveCharacter(Character character, Direction direction, float deltaTime) {
