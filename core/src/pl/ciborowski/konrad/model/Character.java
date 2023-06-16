@@ -18,6 +18,7 @@ public class Character {
 
     public Character(Role role) {
         this.role = role;
+        healthPoints = 100;
     }
     
     

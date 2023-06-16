@@ -30,8 +30,10 @@ public class GameManager {
     private final GameScreen gameScreen;
     private Character hero;
     private boolean bulletFired;
+    private HpBarsSupplier hpBarsSupplier = new HpBarsSupplier();
+    private CollisionsDetector collisionsDetector = new CollisionsDetector();
 
-    public static final Texture heroImage = new Texture(Gdx.files.internal("hero2.png"));
+    public static final Texture heroImage = new Texture(Gdx.files.internal("pngegg.png"));
     private static final Texture enemyImage = new Texture(Gdx.files.internal("enemy2.png"));
     private static final Texture bulletImage = new Texture(Gdx.files.internal("bullet-png-free-image-download-11.png"));
 
@@ -46,7 +48,8 @@ public class GameManager {
         characterMover.moveEnemies(gameScreen.getDeltaTime());
         var newEnemyBullets = fireByEnemiesAndReturnNewBullets();
         for (var bullet : newEnemyBullets) {
-            shapes.put(bullet, new Shape(bulletImage, new Rectangle(bullet.x, bullet.y, 20, 20)));
+            shapes.put(bullet, new Shape(bulletImage, 
+                    new Rectangle(bullet.x, bullet.y, BULLET_RECTANGLE_SIZE, BULLET_RECTANGLE_SIZE)));
         }
         changeHeroDirections();
         if (bulletFired) {
@@ -55,8 +58,13 @@ public class GameManager {
         characterMover.moveHero(gameScreen.getDeltaTime());
         var bulletOutOfBounds = characterMover.moveBulletsAndReturnBulletsOutOfBounds(gameScreen.getDeltaTime());
         bulletOutOfBounds.forEach(bullet -> shapes.remove(bullet));
+        var bulletsThatHit = collisionsDetector.detectHitsAndReturnBulletsToRemove(shapes.keySet());
+        bulletsThatHit.forEach(bullet -> shapes.remove(bullet));
         adjustShapesPositionToMatchCharacters();
-        return shapes.values();
+        List<Shape> hpBars = hpBarsSupplier.generateHpBars(shapes.keySet());
+        var allShapes = new LinkedList<>(shapes.values());
+        allShapes.addAll(hpBars);
+        return allShapes;
     }
 
     public void changeHeroDirections() {

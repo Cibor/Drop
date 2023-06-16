@@ -16,6 +16,7 @@ public class GameScreen implements Screen {
     public static final float HERO_HEIGHT = 100;
     public static final float ENEMY_WIDTH = 50;
     public static final float ENEMY_HEIGHT = 50;
+    public static final int BULLET_RECTANGLE_SIZE = 20;
 
     public static final float CAMERA_WIDTH = 1000;
     public static final float CAMERA_HEIGHT = 1000;
@@ -33,7 +34,7 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
     }
-
+    
     @Override
     public void render(float delta) {
         clear(1, 1, 1, 0);
