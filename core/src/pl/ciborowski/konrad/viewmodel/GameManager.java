@@ -13,12 +13,16 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import static java.util.Optional.empty;
 import pl.ciborowski.konrad.model.Character;
 import pl.ciborowski.konrad.model.Direction;
 import pl.ciborowski.konrad.model.Level;
+import pl.ciborowski.konrad.model.LevelWinner;
 import static pl.ciborowski.konrad.model.Role.*;
 import pl.ciborowski.konrad.view.GameScreen;
 import static pl.ciborowski.konrad.view.GameScreen.*;
+import pl.ciborowski.konrad.view.MainMenuScreen;
 import pl.ciborowski.konrad.view.Shape;
 
 public class GameManager {
@@ -28,6 +32,7 @@ public class GameManager {
     private Map<Character, Shape> shapes = new HashMap<>();
     private CharacterMover characterMover;
     private final GameScreen gameScreen;
+    private final MainMenuScreen mainMenuScreen;
     private Character hero;
     private boolean bulletFired;
     private HpBarsSupplier hpBarsSupplier = new HpBarsSupplier();
@@ -40,8 +45,20 @@ public class GameManager {
     public GameManager(Game game) {
         this.game = game;
         gameScreen = new GameScreen(this);
-        game.setScreen(gameScreen);
+        mainMenuScreen = new MainMenuScreen(this);
+        game.setScreen(mainMenuScreen);
+    }
+    
+    public void changeScreenIfEnded() {
+        var winner = determineLevelWinnerIfExists();
+        if (winner.isPresent()) {
+            game.setScreen(mainMenuScreen);
+        }
+    }
+    
+    public void menuScreenTapped() {
         prepareNewLevel();
+        game.setScreen(gameScreen);
     }
 
     public Collection<Shape> getShapesAfterMove() {
@@ -162,5 +179,18 @@ public class GameManager {
         level.characters.stream().filter(c -> c.role == ENEMY).forEach(enemy -> {
             shapes.put(enemy, new Shape(enemyImage, new Rectangle(enemy.x, enemy.y, ENEMY_WIDTH, ENEMY_HEIGHT)));
         });
+    }
+    
+    private Optional<LevelWinner> determineLevelWinnerIfExists() {
+        if (hero.healthPoints <= 0) {
+            return Optional.of(LevelWinner.ENEMIES);
+        }
+        Optional<LevelWinner> winner = Optional.of(LevelWinner.HERO);
+        for (Character enemy : shapes.keySet().stream().filter(e -> e.role == ENEMY).toList()) {
+            if (enemy.healthPoints > 0) {
+                winner = empty();
+            }
+        }
+        return winner;
     }
 }
