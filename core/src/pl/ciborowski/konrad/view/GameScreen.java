@@ -46,7 +46,7 @@ public class GameScreen implements Screen {
         }
         batch.end();
         if (isKeyPressed(SPACE)) {
-            gameManager.fire();
+            gameManager.fireByHero();
         }
 ////        
 
