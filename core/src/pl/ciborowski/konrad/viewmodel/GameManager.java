@@ -41,6 +41,7 @@ public class GameManager {
     public static final Texture heroImage = new Texture(Gdx.files.internal("pngegg.png"));
     private static final Texture enemyImage = new Texture(Gdx.files.internal("enemy2.png"));
     private static final Texture bulletImage = new Texture(Gdx.files.internal("bullet-png-free-image-download-11.png"));
+    private static final Texture blockImage = new Texture(Gdx.files.internal("stoneWall.png"));
 
     public GameManager(Game game) {
         this.game = game;
@@ -172,6 +173,10 @@ public class GameManager {
             enemy.speed = 10;
             characters.add(enemy);
         }
+        Character block = new Character(BLOCK);
+        block.x = 300;
+        block.y = 300;
+        characters.add(block);
         level = new Level(levelNumber, characters);
         initializeShapesMap();
     }
@@ -180,6 +185,7 @@ public class GameManager {
         shapes.clear();
         addHeroShapeForCurrentLevel();
         addEnemyShapesForCurrentLevel();
+        addBlocksForCurrentLevel();
         characterMover = new CharacterMover(shapes);
     }
 
@@ -194,6 +200,11 @@ public class GameManager {
         });
     }
     
+    private void addBlocksForCurrentLevel() {
+        level.characters.stream().filter(c -> c.role == BLOCK).forEach(block -> {
+            shapes.put(block, new Shape(blockImage, new Rectangle(block.x, block.y, BLOCK_WIDTH, BLOCK_HEIGHT)));
+        });
+    }
     private Optional<LevelWinner> determineLevelWinnerIfExists() {
         if (hero.healthPoints <= 0) {
             return Optional.of(LevelWinner.ENEMIES);
